@@ -13,9 +13,16 @@ keywords = ["scraping", "api", "twitter", "google", "amazon"]
 categories = ["api-bindings", "web-programming::http-client", "command-line-utilities"]
 include = [
     "src/**/*.rs",
+    "docs/CLI.md",
     "README.md",
     "LICENSE",
 ]
+
+# docs.rs builds with all features so the CLI + stream surfaces are documented,
+# and sets `--cfg docsrs` to enable the `#[doc(cfg(...))]` feature annotations.
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 
 [lib]
 name = "scrapebadger"
