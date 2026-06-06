@@ -76,7 +76,9 @@ Verify webhook callbacks with
 ## CLI
 
 ```bash
-export SCRAPEBADGER_API_KEY=sb_live_xxx
+# Store the key once in the global config (~/.config/scrapebadger/config.json, chmod 600):
+scrapebadger config set-key sb_live_xxx
+# (or `export SCRAPEBADGER_API_KEY=sb_live_xxx`, or pass `--api-key`)
 
 scrapebadger account
 scrapebadger scrape https://example.com --format markdown --render-js
