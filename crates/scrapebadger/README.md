@@ -75,18 +75,42 @@ Verify webhook callbacks with
 
 ## CLI
 
+Every one of the 137 endpoints is a **nested subcommand**
+(`scrapebadger <platform> <group> <action> [<ids>] [--flags]`), generated from
+the same specs as the SDK. The full tree is in [`docs/CLI.md`](docs/CLI.md) and
+on [docs.rs](https://docs.rs/scrapebadger) under `cli_reference`.
+
 ```bash
 # Store the key once in the global config (~/.config/scrapebadger/config.json, chmod 600):
 scrapebadger config set-key sb_live_xxx
 # (or `export SCRAPEBADGER_API_KEY=sb_live_xxx`, or pass `--api-key`)
 
-scrapebadger account
-scrapebadger scrape https://example.com --format markdown --render-js
-scrapebadger flights --from DEL --to BOM --date 2026-07-01
-scrapebadger amazon-product B08N5WRWNW
-scrapebadger twitter-search "rust lang"
+scrapebadger account me
+scrapebadger web scrape --url https://example.com --format markdown --render-js
+scrapebadger google flights search --departure-id DEL --arrival-id BOM --outbound-date 2026-07-01
+scrapebadger amazon products get B08N5WRWNW
+scrapebadger reddit subreddits posts sneakers --sort new --limit 10 --select '.posts[].title'
+```
 
-# raw reaches any endpoint:
+### Discovering commands
+
+```bash
+scrapebadger reddit --help        # lists every reddit command at once (no drilling)
+scrapebadger --help-all           # the entire tree, all platforms
+scrapebadger commands | grep wiki # grep-able flat listing
+scrapebadger completions zsh      # shell completion script
+```
+
+### Output, inspection & escape hatch
+
+```bash
+-o json|jsonl|raw                 # output format (pretty JSON default)
+--select '.posts[].title'         # project a field path
+--all                             # auto-follow pagination cursors (best-effort)
+--explain                         # print the resolved HTTP request, don't send
+--curl                            # print an equivalent curl command
+
+# raw reaches any endpoint directly:
 scrapebadger raw /v1/amazon/products/B08N5WRWNW
 scrapebadger raw --method POST /v1/web/scrape -d '{"url":"https://example.com"}'
 ```

@@ -17,6 +17,7 @@ use std::path::{Path, PathBuf};
 
 use serde_json::{Map, Value};
 
+mod cli_gen;
 mod naming;
 mod schema;
 
@@ -63,6 +64,9 @@ fn main() {
         println!("{module:>8}: {ops:>3} endpoints -> {}", rel(&dest, &root));
     }
     println!("\ntotal endpoints generated: {total_ops}");
+
+    // CLI descriptor table + docs reference (same source of truth).
+    cli_gen::generate(&root);
 }
 
 /// Generate the full `generated.rs` source for one platform.
@@ -115,14 +119,9 @@ fn generate_platform(module: &str, handle: &str, spec: &Value) -> (String, usize
             if path.contains("/health") {
                 continue;
             }
-            if let Some(m) = generate_operation(
-                module,
-                path,
-                verb,
-                op,
-                &mut ctx,
-                &mut used_method_names,
-            ) {
+            if let Some(m) =
+                generate_operation(module, path, verb, op, &mut ctx, &mut used_method_names)
+            {
                 methods.push(m);
                 ops += 1;
             }
@@ -136,7 +135,9 @@ fn generate_platform(module: &str, handle: &str, spec: &Value) -> (String, usize
         spec_stem_for(module)
     ));
     out.push_str("#![allow(clippy::all)]\n");
-    out.push_str("#![allow(dead_code, unused_imports, unused_variables, non_snake_case, rustdoc::all)]\n\n");
+    out.push_str(
+        "#![allow(dead_code, unused_imports, unused_variables, non_snake_case, rustdoc::all)]\n\n",
+    );
     out.push_str("use serde::{Deserialize, Serialize};\n");
     out.push_str("use std::collections::HashMap;\n");
     out.push_str("use serde_json::Value;\n");
@@ -146,9 +147,13 @@ fn generate_platform(module: &str, handle: &str, spec: &Value) -> (String, usize
         "/// Handle for the `{module}` platform. Obtain via [`crate::ScrapeBadger::{module}`].\n"
     ));
     out.push_str("#[derive(Clone)]\n");
-    out.push_str(&format!("pub struct {handle} {{\n    client: Client,\n}}\n\n"));
+    out.push_str(&format!(
+        "pub struct {handle} {{\n    client: Client,\n}}\n\n"
+    ));
     out.push_str(&format!("impl {handle} {{\n"));
-    out.push_str("    pub(crate) fn new(client: Client) -> Self {\n        Self { client }\n    }\n\n");
+    out.push_str(
+        "    pub(crate) fn new(client: Client) -> Self {\n        Self { client }\n    }\n\n",
+    );
     out.push_str("    /// Access the underlying transport client.\n");
     out.push_str("    pub fn client(&self) -> &Client {\n        &self.client\n    }\n\n");
     for m in &methods {
@@ -276,11 +281,7 @@ fn generate_operation(
             m.push_str(&format!("    /// {}\n", line.trim()));
         }
     }
-    m.push_str(&format!(
-        "    /// `{} {}`\n",
-        verb.to_uppercase(),
-        path
-    ));
+    m.push_str(&format!("    /// `{} {}`\n", verb.to_uppercase(), path));
 
     // Signature.
     let mut args = String::from("&self");
@@ -328,7 +329,9 @@ fn generate_operation(
                 f.ident, f.orig
             ));
         }
-        m.push_str("        let body = if body.is_empty() { None } else { Some(Value::Object(body)) };\n");
+        m.push_str(
+            "        let body = if body.is_empty() { None } else { Some(Value::Object(body)) };\n",
+        );
     }
 
     let method_const = match verb {

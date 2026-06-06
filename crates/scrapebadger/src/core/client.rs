@@ -49,7 +49,11 @@ impl Client {
         query: &[(String, String)],
         body: Option<Value>,
     ) -> Result<T> {
-        let url = format!("{}{}", self.inner.config.base_url.trim_end_matches('/'), path);
+        let url = format!(
+            "{}{}",
+            self.inner.config.base_url.trim_end_matches('/'),
+            path
+        );
         let max_retries = self.inner.config.max_retries;
 
         let mut attempt: u32 = 0;
@@ -86,7 +90,9 @@ impl Client {
             // Retry 502/503/504 with exponential backoff.
             if matches!(
                 status,
-                StatusCode::BAD_GATEWAY | StatusCode::SERVICE_UNAVAILABLE | StatusCode::GATEWAY_TIMEOUT
+                StatusCode::BAD_GATEWAY
+                    | StatusCode::SERVICE_UNAVAILABLE
+                    | StatusCode::GATEWAY_TIMEOUT
             ) && attempt < max_retries
             {
                 backoff(attempt).await;
@@ -108,7 +114,10 @@ impl Client {
                 return serde_json::from_slice::<T>(slice).map_err(|e| {
                     Error::Decode(format!(
                         "{e}; body: {}",
-                        String::from_utf8_lossy(&bytes).chars().take(500).collect::<String>()
+                        String::from_utf8_lossy(&bytes)
+                            .chars()
+                            .take(500)
+                            .collect::<String>()
                     ))
                 });
             }

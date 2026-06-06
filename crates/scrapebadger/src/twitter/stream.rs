@@ -190,6 +190,9 @@ mod tests {
             "wss://scrapebadger.com/v1/twitter/stream?api_key=sb_live_abc123"
         );
         let url = websocket_url("http://localhost:8080/", "k e y");
-        assert_eq!(url, "ws://localhost:8080/v1/twitter/stream?api_key=k%20e%20y");
+        assert_eq!(
+            url,
+            "ws://localhost:8080/v1/twitter/stream?api_key=k%20e%20y"
+        );
     }
 }
