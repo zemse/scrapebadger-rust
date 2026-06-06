@@ -21,10 +21,15 @@ and remaining polish.
 
 ## CLI (`feature = "cli"`)
 - [x] `raw` command (covers all endpoints)
-- [x] Typed conveniences: account, scrape, flights, google-search, amazon-search,
-      amazon-product, twitter-search, reddit-post
 - [x] Global config file for API key (`config set-key|path|show`, chmod 600)
-- [ ] Fully-generated typed subcommand tree for every endpoint
+- [x] Fully-generated nested subcommand tree for every endpoint (137) — see
+      [NESTED_CLI.md](NESTED_CLI.md); table in `cli/generated.rs`, built by `xtask gen`
+- [x] `<platform> --help` lists all commands at once; `--help-all` dumps the tree
+- [x] Output: `-o json|jsonl|raw`, `--select`, `--all` (best-effort pagination)
+- [x] `--explain` / `--curl`; typed `--flags` + `--body` for POST/PATCH
+- [x] `commands`, `completions <shell>`, `man <dir>` discovery aids
+- [x] Removed the 8 flat shortcuts (clean break, v0.2.0 — mapping in CHANGELOG.md)
+- [ ] Optional: crate-root README landing page on docs.rs; CI `docs/CLI.md` staleness check
 
 ## Endpoints by platform
 
