@@ -111,7 +111,13 @@ Docs: <https://docs.scrapebadger.com/twitter-streams/overview> ·
 `scrapebadger <command>` — typed conveniences (`account`, `scrape`, `flights`,
 `google-search`, `amazon-search`, `amazon-product`, `twitter-search`,
 `reddit-post`) plus `raw --method <M> <path> [-q k=v]… [-d <json>]` which reaches
-**any** of the 137 endpoints. Reads `SCRAPEBADGER_API_KEY`, prints pretty JSON.
+**any** of the 137 endpoints, and prints pretty JSON.
+
+API key resolution order: `--api-key` > `SCRAPEBADGER_API_KEY` env > global config
+file. Manage the stored key with `scrapebadger config set-key <KEY>` (written to
+`$XDG_CONFIG_HOME/scrapebadger/config.json`, default `~/.config/...`, `chmod 600`),
+`config path`, and `config show` (masked). The library stays pure (explicit key or
+env only); the config-file fallback lives in the CLI.
 CLI command reference: <https://docs.scrapebadger.com/cli/commands>
 
 ## Other SDKs / integrations

@@ -1,11 +1,15 @@
 //! `scrapebadger` command-line interface.
 //!
-//! Reads the API key from `--api-key` or the `SCRAPEBADGER_API_KEY` env var and
+//! Resolves the API key from (in order) `--api-key`, the `SCRAPEBADGER_API_KEY`
+//! env var, then the global config file (`scrapebadger config set-key …`), and
 //! prints pretty-printed JSON to stdout. The `raw` subcommand can reach every
 //! one of the API's endpoints; the named subcommands are typed conveniences
 //! for the most common ones.
 
-use anyhow::{Context, Result};
+use std::fs;
+use std::path::PathBuf;
+
+use anyhow::{anyhow, Context, Result};
 use clap::{Args, Parser, Subcommand};
 use scrapebadger::core::Method;
 use scrapebadger::ScrapeBadger;
@@ -54,6 +58,28 @@ enum Command {
 
     /// Low-level request to any endpoint (covers the full API surface).
     Raw(RawArgs),
+
+    /// Manage the global config (stored API key).
+    Config(ConfigArgs),
+}
+
+#[derive(Args)]
+struct ConfigArgs {
+    #[command(subcommand)]
+    command: ConfigCmd,
+}
+
+#[derive(Subcommand)]
+enum ConfigCmd {
+    /// Store an API key in the global config file.
+    SetKey {
+        /// The API key (e.g. sb_live_…). Read from stdin if omitted.
+        key: Option<String>,
+    },
+    /// Print the config file path.
+    Path,
+    /// Show the current config (API key masked).
+    Show,
 }
 
 #[derive(Args)]
@@ -110,13 +136,20 @@ async fn main() {
 async fn run() -> Result<()> {
     let cli = Cli::parse();
 
+    // Config management runs without needing a resolved key.
+    if let Command::Config(args) = &cli.command {
+        return handle_config(&args.command);
+    }
+
+    // Resolution order: --api-key / env (both surface via cli.api_key) > config file.
+    let key = cli.api_key.clone().or_else(load_config_key);
     let mut builder = ScrapeBadger::builder();
-    if let Some(key) = cli.api_key {
+    if let Some(key) = key {
         builder = builder.api_key(key);
     }
-    let client = builder
-        .build()
-        .context("failed to build client (set SCRAPEBADGER_API_KEY or pass --api-key)")?;
+    let client = builder.build().context(
+        "no API key found: pass --api-key, set SCRAPEBADGER_API_KEY, or run `scrapebadger config set-key <KEY>`",
+    )?;
 
     let value: serde_json::Value = match cli.command {
         Command::Account => {
@@ -189,8 +222,90 @@ async fn run() -> Result<()> {
             };
             client.client().send(method, &a.path, &query, body).await?
         }
+        // Handled before the client is built.
+        Command::Config(_) => unreachable!("config is handled before client setup"),
     };
 
     println!("{}", serde_json::to_string_pretty(&value)?);
+    Ok(())
+}
+
+/// Path to the global config file (`$XDG_CONFIG_HOME/scrapebadger/config.json`,
+/// falling back to `~/.config/scrapebadger/config.json`).
+fn config_path() -> Result<PathBuf> {
+    let base = std::env::var_os("XDG_CONFIG_HOME")
+        .filter(|s| !s.is_empty())
+        .map(PathBuf::from)
+        .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))
+        .ok_or_else(|| anyhow!("cannot determine config directory (set HOME or XDG_CONFIG_HOME)"))?;
+    Ok(base.join("scrapebadger").join("config.json"))
+}
+
+/// Load the stored API key from the global config file, if present.
+fn load_config_key() -> Option<String> {
+    let path = config_path().ok()?;
+    let text = fs::read_to_string(path).ok()?;
+    let value: serde_json::Value = serde_json::from_str(&text).ok()?;
+    value
+        .get("api_key")
+        .and_then(|v| v.as_str())
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
+}
+
+/// Persist an API key to the global config file with `0600` permissions (unix).
+fn save_config_key(key: &str) -> Result<PathBuf> {
+    let path = config_path()?;
+    if let Some(dir) = path.parent() {
+        fs::create_dir_all(dir).with_context(|| format!("creating {}", dir.display()))?;
+    }
+    // Merge into any existing config rather than clobbering other keys.
+    let mut value: serde_json::Value = fs::read_to_string(&path)
+        .ok()
+        .and_then(|t| serde_json::from_str(&t).ok())
+        .unwrap_or_else(|| serde_json::json!({}));
+    value["api_key"] = serde_json::Value::String(key.to_string());
+    fs::write(&path, serde_json::to_string_pretty(&value)?)
+        .with_context(|| format!("writing {}", path.display()))?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        fs::set_permissions(&path, fs::Permissions::from_mode(0o600))?;
+    }
+    Ok(path)
+}
+
+fn mask(key: &str) -> String {
+    match key.len() {
+        0 => "(empty)".to_string(),
+        1..=12 => "*".repeat(key.len()),
+        n => format!("{}…{} ({n} chars)", &key[..8], &key[n - 4..]),
+    }
+}
+
+fn handle_config(cmd: &ConfigCmd) -> Result<()> {
+    match cmd {
+        ConfigCmd::SetKey { key } => {
+            let key = match key {
+                Some(k) => k.trim().to_string(),
+                None => {
+                    use std::io::Read;
+                    let mut buf = String::new();
+                    std::io::stdin().read_to_string(&mut buf)?;
+                    buf.trim().to_string()
+                }
+            };
+            if key.is_empty() {
+                return Err(anyhow!("no key provided"));
+            }
+            let path = save_config_key(&key)?;
+            println!("Stored API key ({}) in {}", mask(&key), path.display());
+        }
+        ConfigCmd::Path => println!("{}", config_path()?.display()),
+        ConfigCmd::Show => match load_config_key() {
+            Some(k) => println!("api_key = {}", mask(&k)),
+            None => println!("no API key stored (run `scrapebadger config set-key <KEY>`)"),
+        },
+    }
     Ok(())
 }

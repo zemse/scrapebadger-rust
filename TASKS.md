@@ -23,6 +23,7 @@ and remaining polish.
 - [x] `raw` command (covers all endpoints)
 - [x] Typed conveniences: account, scrape, flights, google-search, amazon-search,
       amazon-product, twitter-search, reddit-post
+- [x] Global config file for API key (`config set-key|path|show`, chmod 600)
 - [ ] Fully-generated typed subcommand tree for every endpoint
 
 ## Endpoints by platform
