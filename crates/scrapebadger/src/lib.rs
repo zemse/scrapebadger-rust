@@ -46,6 +46,13 @@ pub mod twitter;
 pub mod vinted;
 pub mod web;
 
+/// Full `scrapebadger` **CLI** command reference — every endpoint as a nested
+/// subcommand. Generated from `specs/*.json` (the same source as this SDK), so
+/// it never drifts. This module has no code; it exists to render the CLI tree
+/// on docs.rs alongside the library API.
+#[doc = include_str!("../docs/CLI.md")]
+pub mod cli_reference {}
+
 pub use crate::core::{Config, Error, Result, DEFAULT_BASE_URL};
 
 use crate::core::{resolve_api_key, Client, Config as CoreConfig};
