@@ -116,7 +116,8 @@ impl SchemaCtx {
         // Nullable via anyOf/oneOf.
         for key in ["anyOf", "oneOf"] {
             if let Some(branches) = schema.get(key).and_then(Value::as_array) {
-                let non_null: Vec<&Value> = branches.iter().filter(|b| !is_null_schema(b)).collect();
+                let non_null: Vec<&Value> =
+                    branches.iter().filter(|b| !is_null_schema(b)).collect();
                 match non_null.len() {
                     0 => return "Value".to_string(),
                     1 => {
@@ -131,7 +132,9 @@ impl SchemaCtx {
         // Nullable via type array, e.g. ["string","null"].
         if let Some(types) = schema.get("type").and_then(Value::as_array) {
             let nullable = types.iter().any(|t| t.as_str() == Some("null"));
-            let base = types.iter().find_map(|t| t.as_str().filter(|s| *s != "null"));
+            let base = types
+                .iter()
+                .find_map(|t| t.as_str().filter(|s| *s != "null"));
             let inner = match base {
                 Some(t) => self.scalar_or_complex(t, schema, hint),
                 None => "Value".to_string(),
@@ -140,7 +143,10 @@ impl SchemaCtx {
         }
 
         // Nullable via OpenAPI 3.0 `nullable: true`.
-        let nullable = schema.get("nullable").and_then(Value::as_bool).unwrap_or(false);
+        let nullable = schema
+            .get("nullable")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
 
         let ty = match schema.get("type").and_then(Value::as_str) {
             Some(t) => self.scalar_or_complex(t, schema, hint),
@@ -270,14 +276,12 @@ impl SchemaCtx {
             Some(r) => r,
             None => return "Value".to_string(),
         };
-        let schema = ["200", "201", "2XX", "default"]
-            .iter()
-            .find_map(|code| {
-                responses
-                    .get(*code)
-                    .and_then(|r| r.pointer("/content/application~1json/schema"))
-                    .cloned()
-            });
+        let schema = ["200", "201", "2XX", "default"].iter().find_map(|code| {
+            responses
+                .get(*code)
+                .and_then(|r| r.pointer("/content/application~1json/schema"))
+                .cloned()
+        });
         match schema {
             Some(s) => self.rust_type(&s, hint),
             None => "Value".to_string(),

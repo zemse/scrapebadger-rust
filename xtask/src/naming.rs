@@ -6,8 +6,8 @@ const KEYWORDS: &[&str] = &[
     "as", "break", "const", "continue", "crate", "dyn", "else", "enum", "extern", "false", "fn",
     "for", "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref",
     "return", "self", "Self", "static", "struct", "super", "trait", "true", "type", "unsafe",
-    "use", "where", "while", "async", "await", "abstract", "become", "box", "do", "final",
-    "macro", "override", "priv", "typeof", "unsized", "virtual", "yield", "try", "union",
+    "use", "where", "while", "async", "await", "abstract", "become", "box", "do", "final", "macro",
+    "override", "priv", "typeof", "unsized", "virtual", "yield", "try", "union",
 ];
 
 /// Platforms whose name appears redundantly inside operationIds; stripped from
@@ -42,7 +42,12 @@ pub fn sanitize_ident(s: &str) -> String {
     if id.is_empty() {
         id = "field".to_string();
     }
-    if id.chars().next().map(|c| c.is_ascii_digit()).unwrap_or(false) {
+    if id
+        .chars()
+        .next()
+        .map(|c| c.is_ascii_digit())
+        .unwrap_or(false)
+    {
         id = format!("n{id}");
     }
     if KEYWORDS.contains(&id.as_str()) {
@@ -75,9 +80,7 @@ pub fn method_name(op_id: &str, path: &str, module: &str) -> String {
     let snake = to_snake(&base);
     let stripped: Vec<&str> = snake
         .split('_')
-        .filter(|seg| {
-            !(seg.is_empty() || STRIP_TOKENS.contains(&module) && *seg == module)
-        })
+        .filter(|seg| !(seg.is_empty() || STRIP_TOKENS.contains(&module) && *seg == module))
         .collect();
     let mut name = stripped.join("_");
     if name.is_empty() {

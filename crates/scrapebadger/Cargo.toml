@@ -1,6 +1,6 @@
 [package]
 name = "scrapebadger"
-version = "0.1.0"
+version = "0.2.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -36,7 +36,7 @@ required-features = ["cli"]
 [features]
 default = ["cli", "stream"]
 # CLI binary (clap + tokio runtime + anyhow).
-cli = ["dep:clap", "dep:anyhow", "tokio/rt-multi-thread", "tokio/macros"]
+cli = ["dep:clap", "dep:clap_complete", "dep:clap_mangen", "dep:anyhow", "tokio/rt-multi-thread", "tokio/macros"]
 # Twitter real-time streaming over WebSocket + webhook signature verification.
 stream = ["dep:tokio-tungstenite", "dep:hmac", "dep:sha2", "dep:hex", "dep:futures-util"]
 
@@ -58,6 +58,8 @@ hex = { version = "0.4", optional = true }
 
 # cli feature
 clap = { version = "4", features = ["derive", "env"], optional = true }
+clap_complete = { version = "4", optional = true }
+clap_mangen = { version = "0.2", optional = true }
 anyhow = { version = "1", optional = true }
 
 [dev-dependencies]

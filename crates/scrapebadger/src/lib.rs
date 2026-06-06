@@ -53,6 +53,11 @@ pub mod web;
 #[doc = include_str!("../docs/CLI.md")]
 pub mod cli_reference {}
 
+/// Spec-generated CLI command tree (binary implementation detail).
+#[cfg(feature = "cli")]
+#[doc(hidden)]
+pub mod cli;
+
 pub use crate::core::{Config, Error, Result, DEFAULT_BASE_URL};
 
 use crate::core::{resolve_api_key, Client, Config as CoreConfig};
