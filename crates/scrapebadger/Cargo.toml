@@ -1,0 +1,58 @@
+[package]
+name = "scrapebadger"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Async Rust SDK and CLI for the ScrapeBadger web-scraping API (Amazon, Google, Twitter/X, Reddit, Vinted, Web Scraping)."
+readme = "README.md"
+keywords = ["scraping", "api", "twitter", "google", "amazon"]
+categories = ["api-bindings", "web-programming::http-client", "command-line-utilities"]
+include = [
+    "src/**/*.rs",
+    "README.md",
+    "LICENSE",
+]
+
+[lib]
+name = "scrapebadger"
+path = "src/lib.rs"
+
+[[bin]]
+name = "scrapebadger"
+path = "src/main.rs"
+required-features = ["cli"]
+
+[features]
+default = ["cli", "stream"]
+# CLI binary (clap + tokio runtime + anyhow).
+cli = ["dep:clap", "dep:anyhow", "tokio/rt-multi-thread", "tokio/macros"]
+# Twitter real-time streaming over WebSocket + webhook signature verification.
+stream = ["dep:tokio-tungstenite", "dep:hmac", "dep:sha2", "dep:hex", "dep:futures-util"]
+
+[dependencies]
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "gzip"] }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = "2"
+futures-core = "0.3"
+async-stream = "0.3"
+
+# stream feature
+tokio-tungstenite = { version = "0.24", default-features = false, features = ["rustls-tls-webpki-roots", "connect"], optional = true }
+futures-util = { version = "0.3", optional = true }
+hmac = { version = "0.12", optional = true }
+sha2 = { version = "0.10", optional = true }
+hex = { version = "0.4", optional = true }
+
+# cli feature
+clap = { version = "4", features = ["derive", "env"], optional = true }
+anyhow = { version = "1", optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+futures-util = "0.3"
