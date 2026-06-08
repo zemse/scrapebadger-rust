@@ -158,6 +158,52 @@ pub struct DetectProtectionResponse {
     pub extra: HashMap<String, Value>,
 }
 
+/// Scraping engine tier to use.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
+pub enum ScrapeUrlEngine {
+    /// `auto`
+    #[serde(rename = "auto")]
+    Auto,
+    /// `browser`
+    #[serde(rename = "browser")]
+    Browser,
+}
+
+impl std::fmt::Display for ScrapeUrlEngine {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            ScrapeUrlEngine::Auto => "auto",
+            ScrapeUrlEngine::Browser => "browser",
+        })
+    }
+}
+
+/// Output format for the scraped content.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
+pub enum ScrapeUrlFormat {
+    /// `html`
+    #[serde(rename = "html")]
+    Html,
+    /// `markdown`
+    #[serde(rename = "markdown")]
+    Markdown,
+    /// `text`
+    #[serde(rename = "text")]
+    Text,
+}
+
+impl std::fmt::Display for ScrapeUrlFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            ScrapeUrlFormat::Html => "html",
+            ScrapeUrlFormat::Markdown => "markdown",
+            ScrapeUrlFormat::Text => "text",
+        })
+    }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScrapeUrlResponse {
@@ -239,13 +285,13 @@ pub struct ScrapeUrlParams {
     pub custom_headers: Option<HashMap<String, Value>>,
     /// Scraping engine tier to use.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub engine: Option<String>,
+    pub engine: Option<ScrapeUrlEngine>,
     /// Allow auto-escalation to stronger engines.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub escalate: Option<bool>,
     /// Output format for the scraped content.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+    pub format: Option<ScrapeUrlFormat>,
     /// Browser actions to perform before extracting.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub js_scenario: Option<Vec<HashMap<String, Value>>>,

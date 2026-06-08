@@ -265,7 +265,10 @@ fn generate_operation(
         let resolved = ctx.resolve(&schema);
         if let Some(props) = resolved.get("properties").and_then(Value::as_object) {
             for (pname, psch) in props {
-                let ty = ctx.rust_type(psch, &format!("{pascal}{}", naming::to_pascal(pname)));
+                // Body inputs get the same fixed-value enum treatment as query
+                // params; everything else maps through the normal type machinery.
+                let ty =
+                    ctx.body_param_type(psch, &format!("{pascal}{}", naming::to_pascal(pname)));
                 let (ident, rename) = sanitize_field(pname);
                 let desc = psch
                     .get("description")

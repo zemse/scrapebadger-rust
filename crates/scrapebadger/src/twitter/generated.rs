@@ -2281,6 +2281,48 @@ pub struct TweetsResponse {
     pub extra: HashMap<String, Value>,
 }
 
+/// Set rule status. Use "paused" to stop polling and "active" to resume.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
+pub enum UpdateFilterRuleStatus {
+    /// `active`
+    #[serde(rename = "active")]
+    Active,
+    /// `paused`
+    #[serde(rename = "paused")]
+    Paused,
+}
+
+impl std::fmt::Display for UpdateFilterRuleStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            UpdateFilterRuleStatus::Active => "active",
+            UpdateFilterRuleStatus::Paused => "paused",
+        })
+    }
+}
+
+/// Set monitor status. Use "paused" to stop monitoring and "active" to resume.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
+pub enum UpdateStreamMonitorStatus {
+    /// `active`
+    #[serde(rename = "active")]
+    Active,
+    /// `paused`
+    #[serde(rename = "paused")]
+    Paused,
+}
+
+impl std::fmt::Display for UpdateStreamMonitorStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            UpdateStreamMonitorStatus::Active => "active",
+            UpdateStreamMonitorStatus::Paused => "paused",
+        })
+    }
+}
+
 /// URL entity in a tweet or user profile.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
@@ -2646,7 +2688,7 @@ pub struct UpdateFilterRuleParams {
     pub query: Option<String>,
     /// Set rule status. Use "paused" to stop polling and "active" to resume.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<UpdateFilterRuleStatus>,
     /// Updated label for the filter rule.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
@@ -2736,7 +2778,7 @@ pub struct UpdateStreamMonitorParams {
     pub name: Option<String>,
     /// Set monitor status. Use "paused" to stop monitoring and "active" to resume.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<UpdateStreamMonitorStatus>,
     /// Updated list of Twitter usernames to monitor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usernames: Option<Vec<String>>,

@@ -11,9 +11,10 @@
   engineered from live samples; tolerant of missing/null/unknown fields. **Breaking**
   for code that treated Reddit responses as `Value`. Reddit's mixed `edited`
   field (bool or timestamp) is modeled as an untagged `Edited` enum.
-- Typed enums for fixed-value query parameters (28 across the API, e.g.
-  `FlightsSearchStops`, `JobsSearchJobType`). Each `Display`s/serializes to its
-  wire value, so `*Params` fields like `stops: Option<FlightsSearchStops>`
+- Typed enums for fixed-value parameters — both query and request-body inputs
+  (32 across the API, e.g. `FlightsSearchStops`, `JobsSearchJobType`,
+  `ScrapeUrlFormat`, `UpdateStreamMonitorStatus`). Each `Display`s/serializes to
+  its wire value, so `*Params` fields like `stops: Option<FlightsSearchStops>`
   replace the old `Option<String>`. **Breaking** for code that passed these as
   strings. Response/model fields stay `String` so unknown future values still
   deserialize.
