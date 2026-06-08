@@ -1,10 +1,23 @@
 # Changelog
 
-## 0.2.0 — unreleased
+## 0.2.0 — 2026-06-09
+
+First release published to crates.io. (0.1.0 was developed but never published,
+so this is the initial public version; the entries below record the full set of
+changes since the internal 0.1.0.)
 
 ### SDK
 
+**Fixed**
+- Vinted `search_brands` now sends the `keyword` query param (was `query`). The
+  live API requires `keyword`; the vendored spec was stale. **Breaking**:
+  `vinted::SearchBrandsParams::query` is now `::keyword`.
+
 **Added**
+- Twitter stream delivery-log endpoints (`list_stream_delivery_logs`,
+  `get_filter_rule_delivery_logs`) gained the optional `author_username`,
+  `delivery_status`, and `sort` (`asc`/`desc`, typed enum) query params that the
+  live API supports.
 - Typed Reddit response models (`reddit::models`): the 20 Reddit endpoints now
   return typed structs (`PostsResponse`, `RedditPost`, `RedditComment`,
   `RedditSubreddit`, `RedditUser`, …) instead of `serde_json::Value`. Reverse-
