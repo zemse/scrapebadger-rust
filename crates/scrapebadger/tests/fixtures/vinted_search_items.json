@@ -1,0 +1,121 @@
+{
+  "items": [
+    {
+      "id": 0,
+      "title": "x",
+      "price": {
+        "amount": "x",
+        "currency_code": "x"
+      },
+      "brand_title": "x",
+      "size_title": "x",
+      "status": "x",
+      "url": "x",
+      "path": "x",
+      "is_visible": false,
+      "promoted": false,
+      "favourite_count": 0,
+      "view_count": 0,
+      "service_fee": "x",
+      "total_item_price": "x",
+      "content_source": "x",
+      "user": {
+        "id": 0,
+        "login": "x",
+        "photo_url": "x",
+        "business": false
+      },
+      "photo": {
+        "id": 0,
+        "url": "x",
+        "dominant_color": "x",
+        "is_main": false,
+        "width": 0,
+        "height": 0,
+        "full_size_url": "x"
+      },
+      "photos": [
+        {
+          "id": 0,
+          "url": "x",
+          "dominant_color": "x",
+          "is_main": false,
+          "width": 0,
+          "height": 0,
+          "full_size_url": "x"
+        },
+        {
+          "id": 0,
+          "url": "x",
+          "dominant_color": "x",
+          "is_main": false,
+          "width": 0,
+          "height": 0,
+          "full_size_url": "x"
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "title": "x",
+      "price": {
+        "amount": "x",
+        "currency_code": "x"
+      },
+      "brand_title": "x",
+      "size_title": "x",
+      "status": "x",
+      "url": "x",
+      "path": "x",
+      "is_visible": false,
+      "promoted": false,
+      "favourite_count": 0,
+      "view_count": 0,
+      "service_fee": "x",
+      "total_item_price": "x",
+      "content_source": "x",
+      "user": {
+        "id": 0,
+        "login": "x",
+        "photo_url": "x",
+        "business": false
+      },
+      "photo": {
+        "id": 0,
+        "url": "x",
+        "dominant_color": "x",
+        "is_main": false,
+        "width": 0,
+        "height": 0,
+        "full_size_url": "x"
+      },
+      "photos": [
+        {
+          "id": 0,
+          "url": "x",
+          "dominant_color": "x",
+          "is_main": false,
+          "width": 0,
+          "height": 0,
+          "full_size_url": "x"
+        },
+        {
+          "id": 0,
+          "url": "x",
+          "dominant_color": "x",
+          "is_main": false,
+          "width": 0,
+          "height": 0,
+          "full_size_url": "x"
+        }
+      ]
+    }
+  ],
+  "pagination": {
+    "current_page": 0,
+    "total_pages": 0,
+    "total_entries": 0,
+    "per_page": 0
+  },
+  "market": "x"
+}

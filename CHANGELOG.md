@@ -31,6 +31,9 @@
   and verifies each response deserializes into its typed model, classifying
   Pass / TYPE-failure / api-error and chaining real ids. Run with
   `cargo run --example conformance` (needs `SCRAPEBADGER_API_KEY`).
+- Offline conformance test (`tests/conformance_offline.rs`) over 20 committed,
+  type-preserving-sanitized response fixtures — runs in CI with no key as a
+  permanent regression guard for the typed models.
 
 ### Robustness & forward-compat
 

@@ -1,0 +1,27 @@
+{
+  "rules": [
+    {
+      "priority": 0,
+      "short_name": "x",
+      "description": "x",
+      "description_html": "x",
+      "violation_reason": "x",
+      "created_utc": 0,
+      "kind": "x"
+    },
+    {
+      "priority": 0,
+      "short_name": "x",
+      "description": "x",
+      "description_html": "x",
+      "violation_reason": "x",
+      "created_utc": 0,
+      "kind": "x"
+    }
+  ],
+  "subreddit": "x",
+  "site_rules": [
+    "x",
+    "x"
+  ]
+}

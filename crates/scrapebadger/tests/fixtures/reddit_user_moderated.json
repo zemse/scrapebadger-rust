@@ -1,0 +1,45 @@
+{
+  "subreddits": [
+    {
+      "fullname": "x",
+      "sr": "x",
+      "name": "x",
+      "display_name_prefixed": "x",
+      "sr_display_name_prefixed": "x",
+      "title": "x",
+      "url": "x",
+      "subscribers": 0,
+      "subreddit_type": "x",
+      "over_18": false,
+      "community_icon": "x",
+      "icon_img": "x",
+      "banner_img": null,
+      "primary_color": "x",
+      "key_color": "x",
+      "created_utc": 0,
+      "created_at": "x",
+      "mod_permissions": []
+    },
+    {
+      "fullname": "x",
+      "sr": "x",
+      "name": "x",
+      "display_name_prefixed": "x",
+      "sr_display_name_prefixed": "x",
+      "title": "x",
+      "url": "x",
+      "subscribers": 0,
+      "subreddit_type": "x",
+      "over_18": false,
+      "community_icon": "x",
+      "icon_img": "x",
+      "banner_img": null,
+      "primary_color": "x",
+      "key_color": "x",
+      "created_utc": 0,
+      "created_at": "x",
+      "mod_permissions": []
+    }
+  ],
+  "username": "x"
+}
