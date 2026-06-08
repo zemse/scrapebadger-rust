@@ -687,7 +687,7 @@ async fn main() {
     r.run(
         "vinted.search_brands",
         c.vinted().search_brands(vinted::SearchBrandsParams {
-            query: Some("nike".into()),
+            keyword: Some("nike".into()),
             ..d()
         }),
     )
