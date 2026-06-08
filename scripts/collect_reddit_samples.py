@@ -29,8 +29,12 @@ OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
 SUBREDDIT = "rust"
 USERNAME = "spez"
 DOMAIN = "github.com"
-WIKI_PAGE = "index"
+WIKI_PAGE = "config/sidebar"
 QUERY = "rust"
+
+
+REQUEST_DELAY = float(os.environ.get("REDDIT_SAMPLE_DELAY", "2.0"))
+MAX_429_RETRIES = 6
 
 
 def get(path, query=None):
@@ -38,8 +42,24 @@ def get(path, query=None):
     if query:
         url += "?" + urllib.parse.urlencode(query)
     req = urllib.request.Request(url, headers={"x-api-key": KEY, "accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    attempt = 0
+    while True:
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < MAX_429_RETRIES:
+                ra = e.headers.get("Retry-After")
+                wait = int(ra) if (ra and ra.isdigit()) else min(2 ** attempt, 30)
+                print(f"     429; waiting {wait}s (retry {attempt + 1}/{MAX_429_RETRIES})")
+                time.sleep(wait)
+                attempt += 1
+                continue
+            raise
+
+
+def exists(name):
+    return os.path.exists(os.path.join(OUT, name + ".json"))
 
 
 def save(name, data):
@@ -90,12 +110,17 @@ def main():
         ("user_moderated", f"/v1/reddit/users/{USERNAME}/moderated", None),
         ("user_trophies", f"/v1/reddit/users/{USERNAME}/trophies", None),
         ("domain_posts", f"/v1/reddit/domains/{DOMAIN}/posts", None),
-        ("search_posts", "/v1/reddit/search/posts", {"query": QUERY}),
-        ("search_subreddits", "/v1/reddit/search/subreddits", {"query": QUERY}),
-        ("search_users", "/v1/reddit/search/users", {"query": QUERY}),
+        ("search_posts", "/v1/reddit/search/posts", {"q": QUERY}),
+        ("search_subreddits", "/v1/reddit/search/subreddits", {"q": QUERY}),
+        ("search_users", "/v1/reddit/search/users", {"q": QUERY}),
     ]
 
     for name, path, query in jobs:
+        if name == "subreddit_posts" and exists(name):
+            sub_posts = json.load(open(os.path.join(OUT, name + ".json")))
+        if exists(name):
+            print(f"  skip {name} (exists)")
+            continue
         try:
             data = get(path, query)
             save(name, data)
@@ -105,7 +130,7 @@ def main():
             print(f"  !! {name}: HTTP {e.code} {e.reason}")
         except Exception as e:  # noqa: BLE001
             print(f"  !! {name}: {e}")
-        time.sleep(0.3)
+        time.sleep(REQUEST_DELAY)
 
     # Post-scoped endpoints need a real post id.
     pid = first_post_id(sub_posts) if sub_posts else None
@@ -118,13 +143,16 @@ def main():
         ("post_comments", f"/v1/reddit/posts/{pid}/comments"),
         ("post_duplicates", f"/v1/reddit/posts/{pid}/duplicates"),
     ]:
+        if exists(name):
+            print(f"  skip {name} (exists)")
+            continue
         try:
             save(name, get(path))
         except urllib.error.HTTPError as e:
             print(f"  !! {name}: HTTP {e.code} {e.reason}")
         except Exception as e:  # noqa: BLE001
             print(f"  !! {name}: {e}")
-        time.sleep(0.3)
+        time.sleep(REQUEST_DELAY)
 
     print(f"\nDone. Samples in {OUT}/  — re-run safe.")
 

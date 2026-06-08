@@ -194,5 +194,7 @@ and remaining polish.
       — Twitter cursor endpoints in `twitter/pagination.rs`
 - [x] Generate enums for fixed-value query params (28 enums; inputs only — model
       fields stay `String` for forward-compat). See `xtask/src/schema.rs`.
-- [ ] Typed Reddit response models (reverse-engineer from live samples; spec is untyped)
+- [x] Typed Reddit response models (`reddit/models.rs`, reverse-engineered from
+      live samples via `scripts/collect_reddit_samples.py`; wired through the
+      generator's `response_override`)
 - [ ] Publish to crates.io (`scrapebadger` — name is available)

@@ -71,7 +71,10 @@ the generator normalizes:
 
 - **4 nullable encodings** (`nullable:true`, `anyOf:[T,null]`, `type:[T,"null"]`,
   `oneOf:[$ref,null]`) → `Option<T>`.
-- **Untyped Reddit 200 bodies** → `serde_json::Value`.
+- **Untyped Reddit 200 bodies** → hand-written typed models in
+  `reddit/models.rs`, reverse-engineered from live samples and wired in via a
+  `response_override` map in the generator (untyped bodies elsewhere still fall
+  back to `serde_json::Value`).
 - **Anonymous inline objects** (Amazon/Vinted) → synthesized struct names.
 - **FastAPI operationIds** (`flights_search_api_v1_flights_search_get`) → clean
   method names derived from the path/prefix; redundant platform tokens stripped.
@@ -211,7 +214,10 @@ Products, reviews, offers, sellers, deals, and catalog across 20 marketplaces.
 
 ### Reddit
 
-Posts, comments, subreddits, users, and wiki content. Responses are `serde_json::Value` (upstream spec is untyped).
+Posts, comments, subreddits, users, and wiki content. The upstream spec is
+untyped, so responses use hand-written typed models in `reddit/models.rs`
+(reverse-engineered from live samples; tolerant of missing/null/unknown fields
+via `Option`/`#[serde(default)]`/`extra` catch-alls).
 
 | Method | HTTP | Path | Docs |
 |---|---|---|---|

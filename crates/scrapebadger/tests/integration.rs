@@ -59,7 +59,7 @@ async fn reddit_subreddit() {
         .get_subreddit("rust", Default::default())
         .await
         .expect("reddit get_subreddit");
-    println!("subreddit: {sub}");
+    println!("subreddit: {sub:?}");
 }
 
 #[tokio::test]
