@@ -1090,6 +1090,27 @@ impl Twitter {
 
 // ===== Models =====
 
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AdvancedSearchTweetsQueryType {
+    /// `Top`
+    Top,
+    /// `Latest`
+    Latest,
+    /// `Media`
+    Media,
+}
+
+impl std::fmt::Display for AdvancedSearchTweetsQueryType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            AdvancedSearchTweetsQueryType::Top => "Top",
+            AdvancedSearchTweetsQueryType::Latest => "Latest",
+            AdvancedSearchTweetsQueryType::Media => "Media",
+        })
+    }
+}
+
 /// Twitter Article (long-form post) data.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
@@ -1340,6 +1361,27 @@ pub struct FilterRuleResponse {
     pub webhook_url: Option<String>,
 }
 
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum GetCommunityTweetsTweetType {
+    /// `Top`
+    Top,
+    /// `Latest`
+    Latest,
+    /// `Media`
+    Media,
+}
+
+impl std::fmt::Display for GetCommunityTweetsTweetType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            GetCommunityTweetsTweetType::Top => "Top",
+            GetCommunityTweetsTweetType::Latest => "Latest",
+            GetCommunityTweetsTweetType::Media => "Media",
+        })
+    }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetFilterRuleDeliveryLogsResponse {
@@ -1368,6 +1410,38 @@ pub struct GetFilterRulePricingTiersResponseTiersItem {
     pub max_interval_seconds: Option<f64>,
     /// Human-readable tier name.
     pub tier_label: Option<String>,
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum GetTrendsCategory {
+    /// `trending`
+    #[serde(rename = "trending")]
+    Trending,
+    /// `for-you`
+    #[serde(rename = "for-you")]
+    ForYou,
+    /// `news`
+    #[serde(rename = "news")]
+    News,
+    /// `sports`
+    #[serde(rename = "sports")]
+    Sports,
+    /// `entertainment`
+    #[serde(rename = "entertainment")]
+    Entertainment,
+}
+
+impl std::fmt::Display for GetTrendsCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            GetTrendsCategory::Trending => "trending",
+            GetTrendsCategory::ForYou => "for-you",
+            GetTrendsCategory::News => "news",
+            GetTrendsCategory::Sports => "sports",
+            GetTrendsCategory::Entertainment => "entertainment",
+        })
+    }
 }
 
 /// Hashtag entity in a tweet.
@@ -1416,6 +1490,26 @@ pub struct ListFilterRulesResponse {
     pub total: Option<i64>,
 }
 
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ListFilterRulesStatus {
+    /// `active`
+    #[serde(rename = "active")]
+    Active,
+    /// `paused`
+    #[serde(rename = "paused")]
+    Paused,
+}
+
+impl std::fmt::Display for ListFilterRulesStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            ListFilterRulesStatus::Active => "active",
+            ListFilterRulesStatus::Paused => "paused",
+        })
+    }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ListStreamBillingLogsResponse {
@@ -1450,6 +1544,26 @@ pub struct ListStreamMonitorsResponse {
     pub page_size: Option<i64>,
     /// Total number of monitors.
     pub total: Option<i64>,
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ListStreamMonitorsStatus {
+    /// `active`
+    #[serde(rename = "active")]
+    Active,
+    /// `paused`
+    #[serde(rename = "paused")]
+    Paused,
+}
+
+impl std::fmt::Display for ListStreamMonitorsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            ListStreamMonitorsStatus::Active => "active",
+            ListStreamMonitorsStatus::Paused => "paused",
+        })
+    }
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -1981,7 +2095,7 @@ pub struct GetCommunityDetailParams {}
 pub struct GetCommunityTweetsParams {
     /// Type of tweets to return from the community.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tweet_type: Option<String>,
+    pub tweet_type: Option<GetCommunityTweetsTweetType>,
     /// Pagination cursor for fetching the next page of results.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cursor: Option<String>,
@@ -2061,7 +2175,7 @@ pub struct ListFilterRulesParams {
     pub page_size: Option<i64>,
     /// Filter rules by status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<ListFilterRulesStatus>,
 }
 
 /// Parameters for [`CreateFilterRuleParams`]. All fields optional; required ones are noted per method.
@@ -2169,7 +2283,7 @@ pub struct ListStreamMonitorsParams {
     pub page_size: Option<i64>,
     /// Filter monitors by status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<ListStreamMonitorsStatus>,
 }
 
 /// Parameters for [`CreateStreamMonitorParams`]. All fields optional; required ones are noted per method.
@@ -2262,7 +2376,7 @@ pub struct DeleteStreamWebhookParams {}
 pub struct GetTrendsParams {
     /// Category to filter trends by.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
+    pub category: Option<GetTrendsCategory>,
     /// Number of trends to return.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
@@ -2288,7 +2402,7 @@ pub struct AdvancedSearchTweetsParams {
     pub query: Option<String>,
     /// Type of search results to return.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub query_type: Option<String>,
+    pub query_type: Option<AdvancedSearchTweetsQueryType>,
     /// Number of tweets to return per page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,

@@ -1143,6 +1143,86 @@ pub struct FlightPriceInsights {
     pub typical_price_range: Option<Vec<f64>>,
 }
 
+/// Max stops filter
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum FlightsSearchStops {
+    /// `any`
+    #[serde(rename = "any")]
+    Any,
+    /// `nonstop`
+    #[serde(rename = "nonstop")]
+    Nonstop,
+    /// `one_stop`
+    #[serde(rename = "one_stop")]
+    OneStop,
+    /// `two_stops`
+    #[serde(rename = "two_stops")]
+    TwoStops,
+}
+
+impl std::fmt::Display for FlightsSearchStops {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            FlightsSearchStops::Any => "any",
+            FlightsSearchStops::Nonstop => "nonstop",
+            FlightsSearchStops::OneStop => "one_stop",
+            FlightsSearchStops::TwoStops => "two_stops",
+        })
+    }
+}
+
+/// Cabin class
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum FlightsSearchTravelClass {
+    /// `economy`
+    #[serde(rename = "economy")]
+    Economy,
+    /// `premium_economy`
+    #[serde(rename = "premium_economy")]
+    PremiumEconomy,
+    /// `business`
+    #[serde(rename = "business")]
+    Business,
+    /// `first`
+    #[serde(rename = "first")]
+    First,
+}
+
+impl std::fmt::Display for FlightsSearchTravelClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            FlightsSearchTravelClass::Economy => "economy",
+            FlightsSearchTravelClass::PremiumEconomy => "premium_economy",
+            FlightsSearchTravelClass::Business => "business",
+            FlightsSearchTravelClass::First => "first",
+        })
+    }
+}
+
+/// Trip type: round_trip | one_way | multi_city
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum FlightsSearchTripType {
+    /// `one_way`
+    #[serde(rename = "one_way")]
+    OneWay,
+    /// `round_trip`
+    #[serde(rename = "round_trip")]
+    RoundTrip,
+    /// `multi_city`
+    #[serde(rename = "multi_city")]
+    MultiCity,
+}
+
+impl std::fmt::Display for FlightsSearchTripType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            FlightsSearchTripType::OneWay => "one_way",
+            FlightsSearchTripType::RoundTrip => "round_trip",
+            FlightsSearchTripType::MultiCity => "multi_city",
+        })
+    }
+}
+
 /// Response for GET /api/v1/flights/search.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
@@ -1387,6 +1467,110 @@ pub struct JobSalary {
     pub max: Option<String>,
     pub min: Option<String>,
     pub period: Option<String>,
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum JobsSearchDatePosted {
+    /// `today`
+    #[serde(rename = "today")]
+    Today,
+    /// `3days`
+    #[serde(rename = "3days")]
+    V3days,
+    /// `week`
+    #[serde(rename = "week")]
+    Week,
+    /// `month`
+    #[serde(rename = "month")]
+    Month,
+}
+
+impl std::fmt::Display for JobsSearchDatePosted {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            JobsSearchDatePosted::Today => "today",
+            JobsSearchDatePosted::V3days => "3days",
+            JobsSearchDatePosted::Week => "week",
+            JobsSearchDatePosted::Month => "month",
+        })
+    }
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum JobsSearchJobType {
+    /// `FULLTIME`
+    #[serde(rename = "FULLTIME")]
+    Fulltime,
+    /// `PARTTIME`
+    #[serde(rename = "PARTTIME")]
+    Parttime,
+    /// `CONTRACTOR`
+    #[serde(rename = "CONTRACTOR")]
+    Contractor,
+    /// `INTERN`
+    #[serde(rename = "INTERN")]
+    Intern,
+}
+
+impl std::fmt::Display for JobsSearchJobType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            JobsSearchJobType::Fulltime => "FULLTIME",
+            JobsSearchJobType::Parttime => "PARTTIME",
+            JobsSearchJobType::Contractor => "CONTRACTOR",
+            JobsSearchJobType::Intern => "INTERN",
+        })
+    }
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum JobsSearchLtype {
+    /// `remote`
+    #[serde(rename = "remote")]
+    Remote,
+    /// `hybrid`
+    #[serde(rename = "hybrid")]
+    Hybrid,
+    /// `onsite`
+    #[serde(rename = "onsite")]
+    Onsite,
+    /// `work_from_home`
+    #[serde(rename = "work_from_home")]
+    WorkFromHome,
+}
+
+impl std::fmt::Display for JobsSearchLtype {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            JobsSearchLtype::Remote => "remote",
+            JobsSearchLtype::Hybrid => "hybrid",
+            JobsSearchLtype::Onsite => "onsite",
+            JobsSearchLtype::WorkFromHome => "work_from_home",
+        })
+    }
+}
+
+/// Data source. ``rpc`` (default, ~300 ms) replays Google's own ``r06xKb`` batchexecute RPC on the Google Careers portal — clean JSON, 20 roles per page, scope = Google's internal openings. ``serp`` uses the public Jobs search vertical (``udm=8``, SERP-embedded, 3rd-party aggregator) and costs more latency because Google gates it behind JS.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum JobsSearchMode {
+    /// `rpc`
+    #[serde(rename = "rpc")]
+    Rpc,
+    /// `serp`
+    #[serde(rename = "serp")]
+    Serp,
+}
+
+impl std::fmt::Display for JobsSearchMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            JobsSearchMode::Rpc => "rpc",
+            JobsSearchMode::Serp => "serp",
+        })
+    }
 }
 
 /// Response for GET /api/v1/jobs/search.
@@ -1646,6 +1830,34 @@ pub struct MapsReviewsResponse {
     pub topics: Vec<MapsReviewTopic>,
 }
 
+/// Sort order
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum MapsReviewsSortBy {
+    /// `qualityScore`
+    #[serde(rename = "qualityScore")]
+    QualityScore,
+    /// `newestFirst`
+    #[serde(rename = "newestFirst")]
+    NewestFirst,
+    /// `ratingHigh`
+    #[serde(rename = "ratingHigh")]
+    RatingHigh,
+    /// `ratingLow`
+    #[serde(rename = "ratingLow")]
+    RatingLow,
+}
+
+impl std::fmt::Display for MapsReviewsSortBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            MapsReviewsSortBy::QualityScore => "qualityScore",
+            MapsReviewsSortBy::NewestFirst => "newestFirst",
+            MapsReviewsSortBy::RatingHigh => "ratingHigh",
+            MapsReviewsSortBy::RatingLow => "ratingLow",
+        })
+    }
+}
+
 /// Response for GET /api/v1/maps/search.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
@@ -1675,6 +1887,46 @@ pub struct NewsArticle {
     pub source: Option<NewsSource>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+}
+
+/// Topic name
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum NewsByTopicTopic {
+    /// `WORLD`
+    #[serde(rename = "WORLD")]
+    World,
+    /// `BUSINESS`
+    #[serde(rename = "BUSINESS")]
+    Business,
+    /// `TECHNOLOGY`
+    #[serde(rename = "TECHNOLOGY")]
+    Technology,
+    /// `ENTERTAINMENT`
+    #[serde(rename = "ENTERTAINMENT")]
+    Entertainment,
+    /// `SPORTS`
+    #[serde(rename = "SPORTS")]
+    Sports,
+    /// `SCIENCE`
+    #[serde(rename = "SCIENCE")]
+    Science,
+    /// `HEALTH`
+    #[serde(rename = "HEALTH")]
+    Health,
+}
+
+impl std::fmt::Display for NewsByTopicTopic {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            NewsByTopicTopic::World => "WORLD",
+            NewsByTopicTopic::Business => "BUSINESS",
+            NewsByTopicTopic::Technology => "TECHNOLOGY",
+            NewsByTopicTopic::Entertainment => "ENTERTAINMENT",
+            NewsByTopicTopic::Sports => "SPORTS",
+            NewsByTopicTopic::Science => "SCIENCE",
+            NewsByTopicTopic::Health => "HEALTH",
+        })
+    }
 }
 
 /// A related story within a news cluster.
@@ -2068,6 +2320,126 @@ pub struct SearchInformation {
     pub url: Option<String>,
 }
 
+/// Response mode. **full** (default): complete SERP with all blocks (organic, ads, knowledge graph, local pack, AI overview, news, related questions, etc). **fast**: lite endpoint via `gbv=1` that returns ONLY organic results + related searches in ~0.6-1s cold (vs 1.5-2s full). Use when you only need organic results and can skip rich features.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SearchMode {
+    /// `full`
+    #[serde(rename = "full")]
+    Full,
+    /// `fast`
+    #[serde(rename = "fast")]
+    Fast,
+}
+
+impl std::fmt::Display for SearchMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SearchMode::Full => "full",
+            SearchMode::Fast => "fast",
+        })
+    }
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SearchPatentsLanguage {
+    /// `ENGLISH`
+    #[serde(rename = "ENGLISH")]
+    English,
+    /// `GERMAN`
+    #[serde(rename = "GERMAN")]
+    German,
+    /// `CHINESE`
+    #[serde(rename = "CHINESE")]
+    Chinese,
+    /// `FRENCH`
+    #[serde(rename = "FRENCH")]
+    French,
+    /// `JAPANESE`
+    #[serde(rename = "JAPANESE")]
+    Japanese,
+    /// `KOREAN`
+    #[serde(rename = "KOREAN")]
+    Korean,
+    /// `SPANISH`
+    #[serde(rename = "SPANISH")]
+    Spanish,
+}
+
+impl std::fmt::Display for SearchPatentsLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SearchPatentsLanguage::English => "ENGLISH",
+            SearchPatentsLanguage::German => "GERMAN",
+            SearchPatentsLanguage::Chinese => "CHINESE",
+            SearchPatentsLanguage::French => "FRENCH",
+            SearchPatentsLanguage::Japanese => "JAPANESE",
+            SearchPatentsLanguage::Korean => "KOREAN",
+            SearchPatentsLanguage::Spanish => "SPANISH",
+        })
+    }
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SearchPatentsPatentType {
+    /// `PATENT`
+    #[serde(rename = "PATENT")]
+    Patent,
+    /// `DESIGN`
+    #[serde(rename = "DESIGN")]
+    Design,
+}
+
+impl std::fmt::Display for SearchPatentsPatentType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SearchPatentsPatentType::Patent => "PATENT",
+            SearchPatentsPatentType::Design => "DESIGN",
+        })
+    }
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SearchPatentsSort {
+    /// `new`
+    #[serde(rename = "new")]
+    New,
+    /// `old`
+    #[serde(rename = "old")]
+    Old,
+}
+
+impl std::fmt::Display for SearchPatentsSort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SearchPatentsSort::New => "new",
+            SearchPatentsSort::Old => "old",
+        })
+    }
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SearchPatentsStatus {
+    /// `GRANT`
+    #[serde(rename = "GRANT")]
+    Grant,
+    /// `APPLICATION`
+    #[serde(rename = "APPLICATION")]
+    Application,
+}
+
+impl std::fmt::Display for SearchPatentsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SearchPatentsStatus::Grant => "GRANT",
+            SearchPatentsStatus::Application => "APPLICATION",
+        })
+    }
+}
+
 /// Response for GET /api/v1/shopping/product/click.
 ///
 /// Returns the direct merchant URL for a given product title by using
@@ -2275,6 +2647,38 @@ pub struct TrendsRegionInterest {
     pub value: Option<i64>,
 }
 
+/// Region granularity. `auto` (default) uses Google's widget default, which is `COUNTRY` for worldwide queries and `REGION` (state/province) for single-country queries. Overriding to `COUNTRY` when `geo` is set returns HTTP 400 from Google — use `REGION`, `DMA`, or `CITY` in that case.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TrendsRegionsResolution {
+    /// `COUNTRY`
+    #[serde(rename = "COUNTRY")]
+    Country,
+    /// `REGION`
+    #[serde(rename = "REGION")]
+    Region,
+    /// `DMA`
+    #[serde(rename = "DMA")]
+    Dma,
+    /// `CITY`
+    #[serde(rename = "CITY")]
+    City,
+    /// `auto`
+    #[serde(rename = "auto")]
+    Auto,
+}
+
+impl std::fmt::Display for TrendsRegionsResolution {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            TrendsRegionsResolution::Country => "COUNTRY",
+            TrendsRegionsResolution::Region => "REGION",
+            TrendsRegionsResolution::Dma => "DMA",
+            TrendsRegionsResolution::City => "CITY",
+            TrendsRegionsResolution::Auto => "auto",
+        })
+    }
+}
+
 /// Response for GET /api/v1/trends/regions.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
@@ -2303,6 +2707,38 @@ pub struct TrendsRelatedResponse {
     pub rising_topics: Vec<TrendsRelatedItem>,
     pub top_queries: Vec<TrendsRelatedItem>,
     pub top_topics: Vec<TrendsRelatedItem>,
+}
+
+/// Dispatch on: TIMESERIES (interest over time), GEO_MAP (compared breakdown, multi-query), GEO_MAP_0 (interest by region, single query), RELATED_TOPICS (top + rising topics), RELATED_QUERIES (top + rising queries).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TrendsSearchDataType {
+    /// `TIMESERIES`
+    #[serde(rename = "TIMESERIES")]
+    Timeseries,
+    /// `GEO_MAP`
+    #[serde(rename = "GEO_MAP")]
+    GeoMap,
+    /// `GEO_MAP_0`
+    #[serde(rename = "GEO_MAP_0")]
+    GeoMap0,
+    /// `RELATED_TOPICS`
+    #[serde(rename = "RELATED_TOPICS")]
+    RelatedTopics,
+    /// `RELATED_QUERIES`
+    #[serde(rename = "RELATED_QUERIES")]
+    RelatedQueries,
+}
+
+impl std::fmt::Display for TrendsSearchDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            TrendsSearchDataType::Timeseries => "TIMESERIES",
+            TrendsSearchDataType::GeoMap => "GEO_MAP",
+            TrendsSearchDataType::GeoMap0 => "GEO_MAP_0",
+            TrendsSearchDataType::RelatedTopics => "RELATED_TOPICS",
+            TrendsSearchDataType::RelatedQueries => "RELATED_QUERIES",
+        })
+    }
 }
 
 /// Unified response for GET /api/v1/trends/search.
@@ -2357,6 +2793,54 @@ pub struct TrendsTrendingItem {
     pub articles: Vec<TrendsTrendingArticle>,
     pub title: Option<String>,
     pub traffic: Option<String>,
+}
+
+/// Sort order. ``relevance`` (default) keeps Google's ordering; ``search_volume`` orders by parsed traffic descending; ``title`` sorts alphabetically; ``recency`` falls back to relevance when the feed omits publication timestamps.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TrendsTrendingNowSort {
+    /// `relevance`
+    #[serde(rename = "relevance")]
+    Relevance,
+    /// `search_volume`
+    #[serde(rename = "search_volume")]
+    SearchVolume,
+    /// `title`
+    #[serde(rename = "title")]
+    Title,
+    /// `recency`
+    #[serde(rename = "recency")]
+    Recency,
+}
+
+impl std::fmt::Display for TrendsTrendingNowSort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            TrendsTrendingNowSort::Relevance => "relevance",
+            TrendsTrendingNowSort::SearchVolume => "search_volume",
+            TrendsTrendingNowSort::Title => "title",
+            TrendsTrendingNowSort::Recency => "recency",
+        })
+    }
+}
+
+/// Trend state. ``active`` keeps only entries with a non-zero search volume (still surging); ``all`` (default) returns every entry including ended ones.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TrendsTrendingNowStatus {
+    /// `all`
+    #[serde(rename = "all")]
+    All,
+    /// `active`
+    #[serde(rename = "active")]
+    Active,
+}
+
+impl std::fmt::Display for TrendsTrendingNowStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            TrendsTrendingNowStatus::All => "all",
+            TrendsTrendingNowStatus::Active => "active",
+        })
+    }
 }
 
 /// Response for GET /api/v1/trends/trending.
@@ -2458,7 +2942,7 @@ pub struct FlightsSearchParams {
     pub return_date: Option<String>,
     /// Trip type: round_trip | one_way | multi_city
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trip_type: Option<String>,
+    pub trip_type: Option<FlightsSearchTripType>,
     /// Adult passengers
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adults: Option<i64>,
@@ -2471,7 +2955,7 @@ pub struct FlightsSearchParams {
     pub infants_on_lap: Option<i64>,
     /// Cabin class
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub travel_class: Option<String>,
+    pub travel_class: Option<FlightsSearchTravelClass>,
     /// ISO-4217 currency code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
@@ -2483,7 +2967,7 @@ pub struct FlightsSearchParams {
     pub hl: Option<String>,
     /// Max stops filter
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub stops: Option<String>,
+    pub stops: Option<FlightsSearchStops>,
     /// Max price filter
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_price: Option<i64>,
@@ -2613,13 +3097,13 @@ pub struct JobsSearchParams {
     pub domain: Option<String>,
     /// Employment type — translated into a `chips` filter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub job_type: Option<String>,
+    pub job_type: Option<JobsSearchJobType>,
     /// Posted-date window — translated into a `chips` filter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub date_posted: Option<String>,
+    pub date_posted: Option<JobsSearchDatePosted>,
     /// Work arrangement — maps onto Google's remote/hybrid/onsite chips.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ltype: Option<String>,
+    pub ltype: Option<JobsSearchLtype>,
     /// Raw Google chip-filter string (comma-separated). Merged with any structured filters (`job_type`, `date_posted`, `ltype`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chips: Option<String>,
@@ -2637,7 +3121,7 @@ pub struct JobsSearchParams {
     pub next_page_token: Option<String>,
     /// Data source. ``rpc`` (default, ~300 ms) replays Google's own ``r06xKb`` batchexecute RPC on the Google Careers portal — clean JSON, 20 roles per page, scope = Google's internal openings. ``serp`` uses the public Jobs search vertical (``udm=8``, SERP-embedded, 3rd-party aggregator) and costs more latency because Google gates it behind JS.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<String>,
+    pub mode: Option<JobsSearchMode>,
 }
 
 /// Parameters for [`SearchLensParams`]. All fields optional; required ones are noted per method.
@@ -2739,7 +3223,7 @@ pub struct MapsReviewsParams {
     pub data_id: Option<String>,
     /// Sort order
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_by: Option<String>,
+    pub sort_by: Option<MapsReviewsSortBy>,
     /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
@@ -2799,7 +3283,7 @@ pub struct SearchNewsParams {
 pub struct NewsByTopicParams {
     /// Topic name
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub topic: Option<String>,
+    pub topic: Option<NewsByTopicTopic>,
     /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
@@ -2845,7 +3329,7 @@ pub struct SearchPatentsParams {
     pub num: Option<i64>,
     /// Sort order
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<String>,
+    pub sort: Option<SearchPatentsSort>,
     /// Inventor name(s)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inventor: Option<String>,
@@ -2857,11 +3341,11 @@ pub struct SearchPatentsParams {
     pub country: Option<String>,
     /// Patent language
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub language: Option<String>,
+    pub language: Option<SearchPatentsLanguage>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<SearchPatentsStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub patent_type: Option<String>,
+    pub patent_type: Option<SearchPatentsPatentType>,
     /// Before date (YYYYMMDD)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub before: Option<String>,
@@ -3052,7 +3536,7 @@ pub struct SearchParams {
     pub ai_overview: Option<bool>,
     /// Response mode. **full** (default): complete SERP with all blocks (organic, ads, knowledge graph, local pack, AI overview, news, related questions, etc). **fast**: lite endpoint via `gbv=1` that returns ONLY organic results + related searches in ~0.6-1s cold (vs 1.5-2s full). Use when you only need organic results and can skip rich features.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<String>,
+    pub mode: Option<SearchMode>,
 }
 
 /// Parameters for [`ShoppingProductParams`]. All fields optional; required ones are noted per method.
@@ -3192,7 +3676,7 @@ pub struct TrendsRegionsParams {
     pub date: Option<String>,
     /// Region granularity. `auto` (default) uses Google's widget default, which is `COUNTRY` for worldwide queries and `REGION` (state/province) for single-country queries. Overriding to `COUNTRY` when `geo` is set returns HTTP 400 from Google — use `REGION`, `DMA`, or `CITY` in that case.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub resolution: Option<String>,
+    pub resolution: Option<TrendsRegionsResolution>,
 }
 
 /// Parameters for [`TrendsRelatedParams`]. All fields optional; required ones are noted per method.
@@ -3215,7 +3699,7 @@ pub struct TrendsSearchParams {
     pub q: Option<String>,
     /// Dispatch on: TIMESERIES (interest over time), GEO_MAP (compared breakdown, multi-query), GEO_MAP_0 (interest by region, single query), RELATED_TOPICS (top + rising topics), RELATED_QUERIES (top + rising queries).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub data_type: Option<String>,
+    pub data_type: Option<TrendsSearchDataType>,
     /// Country / region code (e.g. US, GB, US-CA).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub geo: Option<String>,
@@ -3266,10 +3750,10 @@ pub struct TrendsTrendingNowParams {
     pub category: Option<String>,
     /// Trend state. ``active`` keeps only entries with a non-zero search volume (still surging); ``all`` (default) returns every entry including ended ones.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<TrendsTrendingNowStatus>,
     /// Sort order. ``relevance`` (default) keeps Google's ordering; ``search_volume`` orders by parsed traffic descending; ``title`` sorts alphabetically; ``recency`` falls back to relevance when the feed omits publication timestamps.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<String>,
+    pub sort: Option<TrendsTrendingNowSort>,
     /// Language code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,

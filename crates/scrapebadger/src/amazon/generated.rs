@@ -343,6 +343,38 @@ pub struct BrowseCategoryResponse {
     pub results: Vec<SearchResult>,
 }
 
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum BrowseCategorySortBy {
+    /// `relevance`
+    #[serde(rename = "relevance")]
+    Relevance,
+    /// `price_low_to_high`
+    #[serde(rename = "price_low_to_high")]
+    PriceLowToHigh,
+    /// `price_high_to_low`
+    #[serde(rename = "price_high_to_low")]
+    PriceHighToLow,
+    /// `avg_review`
+    #[serde(rename = "avg_review")]
+    AvgReview,
+    /// `newest`
+    #[serde(rename = "newest")]
+    Newest,
+}
+
+impl std::fmt::Display for BrowseCategorySortBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            BrowseCategorySortBy::Relevance => "relevance",
+            BrowseCategorySortBy::PriceLowToHigh => "price_low_to_high",
+            BrowseCategorySortBy::PriceHighToLow => "price_high_to_low",
+            BrowseCategorySortBy::AvgReview => "avg_review",
+            BrowseCategorySortBy::Newest => "newest",
+        })
+    }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Deal {
@@ -422,6 +454,66 @@ pub struct GetReviewsResponseRatingBreakdown {
     pub one_star: Option<i64>,
     pub three_star: Option<i64>,
     pub two_star: Option<i64>,
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum GetReviewsSortBy {
+    /// `helpful`
+    #[serde(rename = "helpful")]
+    Helpful,
+    /// `recent`
+    #[serde(rename = "recent")]
+    Recent,
+}
+
+impl std::fmt::Display for GetReviewsSortBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            GetReviewsSortBy::Helpful => "helpful",
+            GetReviewsSortBy::Recent => "recent",
+        })
+    }
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum GetReviewsStar {
+    /// `one_star`
+    #[serde(rename = "one_star")]
+    OneStar,
+    /// `two_star`
+    #[serde(rename = "two_star")]
+    TwoStar,
+    /// `three_star`
+    #[serde(rename = "three_star")]
+    ThreeStar,
+    /// `four_star`
+    #[serde(rename = "four_star")]
+    FourStar,
+    /// `five_star`
+    #[serde(rename = "five_star")]
+    FiveStar,
+    /// `positive`
+    #[serde(rename = "positive")]
+    Positive,
+    /// `critical`
+    #[serde(rename = "critical")]
+    Critical,
+}
+
+impl std::fmt::Display for GetReviewsStar {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            GetReviewsStar::OneStar => "one_star",
+            GetReviewsStar::TwoStar => "two_star",
+            GetReviewsStar::ThreeStar => "three_star",
+            GetReviewsStar::FourStar => "four_star",
+            GetReviewsStar::FiveStar => "five_star",
+            GetReviewsStar::Positive => "positive",
+            GetReviewsStar::Critical => "critical",
+        })
+    }
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -628,6 +720,38 @@ pub struct SearchProductsResponse {
     pub results: Vec<SearchResult>,
 }
 
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SearchProductsSortBy {
+    /// `relevance`
+    #[serde(rename = "relevance")]
+    Relevance,
+    /// `price_low_to_high`
+    #[serde(rename = "price_low_to_high")]
+    PriceLowToHigh,
+    /// `price_high_to_low`
+    #[serde(rename = "price_high_to_low")]
+    PriceHighToLow,
+    /// `avg_review`
+    #[serde(rename = "avg_review")]
+    AvgReview,
+    /// `newest`
+    #[serde(rename = "newest")]
+    Newest,
+}
+
+impl std::fmt::Display for SearchProductsSortBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SearchProductsSortBy::Relevance => "relevance",
+            SearchProductsSortBy::PriceLowToHigh => "price_low_to_high",
+            SearchProductsSortBy::PriceHighToLow => "price_high_to_low",
+            SearchProductsSortBy::AvgReview => "avg_review",
+            SearchProductsSortBy::Newest => "newest",
+        })
+    }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SearchResult {
@@ -728,7 +852,7 @@ pub struct BrowseCategoryParams {
     pub page: Option<i64>,
     /// Sort order for results.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_by: Option<String>,
+    pub sort_by: Option<BrowseCategorySortBy>,
 }
 
 /// Parameters for [`GetDealsParams`]. All fields optional; required ones are noted per method.
@@ -799,10 +923,10 @@ pub struct GetReviewsParams {
     pub page: Option<i64>,
     /// Sort order for reviews.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_by: Option<String>,
+    pub sort_by: Option<GetReviewsSortBy>,
     /// Filter reviews by star rating or sentiment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub star: Option<String>,
+    pub star: Option<GetReviewsStar>,
     /// Only return reviews from verified purchases.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_only: Option<bool>,
@@ -825,7 +949,7 @@ pub struct SearchProductsParams {
     pub page: Option<i64>,
     /// Sort order for results.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_by: Option<String>,
+    pub sort_by: Option<SearchProductsSortBy>,
     /// Department/category alias to scope the search (the i= parameter).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub category: Option<String>,

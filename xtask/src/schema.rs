@@ -247,7 +247,12 @@ impl SchemaCtx {
     }
 
     /// Scalar Rust type for a query parameter, plus whether it is an array.
-    pub fn query_param_type(&self, schema: &Value) -> (String, bool) {
+    ///
+    /// String parameters with a fixed `enum` value-set are surfaced as generated
+    /// Rust enums (named after `hint`) for type safety; everything else maps to a
+    /// scalar. Enums are generated only for *query inputs* — never response or
+    /// model fields, where an unrecognized future value must still deserialize.
+    pub fn query_param_type(&mut self, schema: &Value, hint: &str) -> (String, bool) {
         let schema = self.resolve(schema);
         // dig through anyOf nullable
         let effective = unwrap_anyof_nullable(&schema);
@@ -255,8 +260,16 @@ impl SchemaCtx {
         if t.and_then(Value::as_str) == Some("array") {
             let items = effective.get("items").cloned().unwrap_or(Value::Null);
             let items = unwrap_anyof_nullable(&items);
+            if let Some(values) = string_enum_values(&items) {
+                let doc = items.get("description").and_then(Value::as_str);
+                return (self.emit_param_enum(hint, &values, doc), true);
+            }
             let elem = scalar_name(items.get("type").and_then(Value::as_str));
             return (elem, true);
+        }
+        if let Some(values) = string_enum_values(&effective) {
+            let doc = effective.get("description").and_then(Value::as_str);
+            return (self.emit_param_enum(hint, &values, doc), false);
         }
         // type may be array like ["string","null"]
         let scalar = match t {
@@ -268,6 +281,77 @@ impl SchemaCtx {
             _ => "String".to_string(),
         };
         (scalar, false)
+    }
+
+    /// Pick a type name not already taken by a model/enum, suffixing `2`, `3`, …
+    /// on collision so generated enum names never clash.
+    fn unique_type_name(&self, base: &str) -> String {
+        let taken = |n: &str| self.known.contains(n) || self.model_defs.contains_key(n);
+        if !taken(base) {
+            return base.to_string();
+        }
+        let mut i = 2;
+        loop {
+            let cand = format!("{base}{i}");
+            if !taken(&cand) {
+                return cand;
+            }
+            i += 1;
+        }
+    }
+
+    /// Emit a `#[derive(...)]` enum for a fixed string value-set and return its
+    /// type name. Each variant serializes to (and `Display`s as) its wire value.
+    fn emit_param_enum(&mut self, hint: &str, values: &[String], doc: Option<&str>) -> String {
+        let name = self.unique_type_name(&sanitize_type(hint));
+        // Reserve the name immediately so concurrent collisions can't reuse it.
+        self.known.insert(name.clone());
+
+        // Unique variant identifiers (preserve wire value via serde rename).
+        let mut seen: BTreeSet<String> = BTreeSet::new();
+        let mut variants: Vec<(String, String)> = Vec::new();
+        for v in values {
+            let mut ident = variant_ident(v);
+            if seen.contains(&ident) {
+                let mut i = 2;
+                while seen.contains(&format!("{ident}{i}")) {
+                    i += 1;
+                }
+                ident = format!("{ident}{i}");
+            }
+            seen.insert(ident.clone());
+            variants.push((ident, v.clone()));
+        }
+
+        let mut s = String::new();
+        match doc {
+            Some(d) => {
+                for line in d.lines().take(2) {
+                    s.push_str(&format!("/// {}\n", line.trim()));
+                }
+            }
+            None => s.push_str("/// Allowed values for a fixed-value query parameter.\n"),
+        }
+        s.push_str("#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]\n");
+        s.push_str(&format!("pub enum {name} {{\n"));
+        for (ident, wire) in &variants {
+            s.push_str(&format!("    /// `{wire}`\n"));
+            if ident != wire {
+                s.push_str(&format!("    #[serde(rename = \"{wire}\")]\n"));
+            }
+            s.push_str(&format!("    {ident},\n"));
+        }
+        s.push_str("}\n\n");
+        s.push_str(&format!("impl std::fmt::Display for {name} {{\n"));
+        s.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {\n");
+        s.push_str("        f.write_str(match self {\n");
+        for (ident, wire) in &variants {
+            s.push_str(&format!("            {name}::{ident} => \"{wire}\",\n"));
+        }
+        s.push_str("        })\n    }\n}");
+
+        self.model_defs.insert(name.clone(), s);
+        name
     }
 
     /// Resolve the success-response Rust type for an operation.
@@ -332,6 +416,51 @@ fn unwrap_anyof_nullable(schema: &Value) -> Value {
         }
     }
     schema.clone()
+}
+
+/// Extract a fixed string `enum` value-set from a schema, if it is one.
+///
+/// Returns `Some(values)` only when every `enum` entry is a string and the
+/// schema is string-typed (or untyped). Integer/other enums are left as scalars.
+fn string_enum_values(schema: &Value) -> Option<Vec<String>> {
+    let en = schema.get("enum")?.as_array()?;
+    let is_string = schema
+        .get("type")
+        .and_then(Value::as_str)
+        .map(|t| t == "string")
+        .unwrap_or(true);
+    if !is_string {
+        return None;
+    }
+    let vals: Vec<String> = en
+        .iter()
+        .filter_map(|v| v.as_str().map(String::from))
+        .collect();
+    if !vals.is_empty() && vals.len() == en.len() {
+        Some(vals)
+    } else {
+        None
+    }
+}
+
+/// A valid PascalCase enum-variant identifier for a wire value.
+fn variant_ident(v: &str) -> String {
+    let mut id = to_pascal(v);
+    if id.is_empty() {
+        id = "Empty".to_string();
+    }
+    if id
+        .chars()
+        .next()
+        .map(|c| c.is_ascii_digit())
+        .unwrap_or(false)
+    {
+        id = format!("V{id}");
+    }
+    if id == "Self" {
+        id = "SelfValue".to_string();
+    }
+    id
 }
 
 fn scalar_name(t: Option<&str>) -> String {
