@@ -324,6 +324,34 @@ pub struct SearchBrandsResponseBrandsItem {
     pub title: Option<String>,
 }
 
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SearchItemsOrder {
+    /// `relevance`
+    #[serde(rename = "relevance")]
+    Relevance,
+    /// `price_low_to_high`
+    #[serde(rename = "price_low_to_high")]
+    PriceLowToHigh,
+    /// `price_high_to_low`
+    #[serde(rename = "price_high_to_low")]
+    PriceHighToLow,
+    /// `newest_first`
+    #[serde(rename = "newest_first")]
+    NewestFirst,
+}
+
+impl std::fmt::Display for SearchItemsOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SearchItemsOrder::Relevance => "relevance",
+            SearchItemsOrder::PriceLowToHigh => "price_low_to_high",
+            SearchItemsOrder::PriceHighToLow => "price_high_to_low",
+            SearchItemsOrder::NewestFirst => "newest_first",
+        })
+    }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SearchItemsResponse {
@@ -451,7 +479,7 @@ pub struct SearchItemsParams {
     pub status_ids: Option<String>,
     /// Sort order for results.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub order: Option<String>,
+    pub order: Option<SearchItemsOrder>,
 }
 
 /// Parameters for [`ListStatusesParams`]. All fields optional; required ones are noted per method.

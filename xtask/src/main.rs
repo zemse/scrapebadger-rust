@@ -237,7 +237,8 @@ fn generate_operation(
             match loc {
                 "path" => path_params.push(naming::sanitize_ident(pname)),
                 "query" => {
-                    let (ty, is_array) = ctx.query_param_type(&schema);
+                    let enum_hint = format!("{pascal}{}", naming::to_pascal(pname));
+                    let (ty, is_array) = ctx.query_param_type(&schema, &enum_hint);
                     let (ident, rename) = sanitize_field(pname);
                     query_fields.push(ParamField {
                         orig: pname.to_string(),

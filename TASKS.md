@@ -192,6 +192,7 @@ and remaining polish.
       — `Twitter::stream_events_reconnecting()`
 - [x] Per-platform pagination convenience methods (`*_stream`)
       — Twitter cursor endpoints in `twitter/pagination.rs`
+- [x] Generate enums for fixed-value query params (28 enums; inputs only — model
+      fields stay `String` for forward-compat). See `xtask/src/schema.rs`.
 - [ ] Typed Reddit response models (reverse-engineer from live samples; spec is untyped)
-- [ ] Generate enums for fixed-value params (currently `String`)
 - [ ] Publish to crates.io (`scrapebadger` — name is available)

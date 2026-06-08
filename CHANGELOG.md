@@ -5,6 +5,12 @@
 ### SDK
 
 **Added**
+- Typed enums for fixed-value query parameters (28 across the API, e.g.
+  `FlightsSearchStops`, `JobsSearchJobType`). Each `Display`s/serializes to its
+  wire value, so `*Params` fields like `stops: Option<FlightsSearchStops>`
+  replace the old `Option<String>`. **Breaking** for code that passed these as
+  strings. Response/model fields stay `String` so unknown future values still
+  deserialize.
 - Twitter pagination adapters: `*_stream` methods (e.g.
   `advanced_search_tweets_stream`, `get_user_followers_stream`) that follow
   `next_cursor` and yield individual items as a `Stream`.
