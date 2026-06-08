@@ -147,6 +147,9 @@ pub struct DetectProtectionResponse {
     pub is_blocked: Option<bool>,
     pub recommendation: Option<String>,
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -174,6 +177,9 @@ pub struct ScrapeUrlResponse {
     pub success: Option<bool>,
     pub url: Option<String>,
     pub video_url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Parameters for [`DetectProtectionParams`]. All fields optional; required ones are noted per method.

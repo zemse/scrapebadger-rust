@@ -226,6 +226,7 @@ impl SchemaCtx {
         body.push_str("#[serde(default)]\n");
         body.push_str(&format!("pub struct {name} {{\n"));
 
+        let mut idents: BTreeSet<String> = BTreeSet::new();
         for (pname, psch) in props {
             let field_hint = format!("{name}{}", to_pascal(pname));
             let raw = self.rust_type(psch, &field_hint);
@@ -240,6 +241,19 @@ impl SchemaCtx {
                 body.push_str(&format!("    #[serde(rename = \"{}\")]\n", pname));
             }
             body.push_str(&format!("    pub {ident}: {ty},\n"));
+            idents.insert(ident);
+        }
+
+        // Lossless forward-compat: capture any response fields not in the spec
+        // into a flattened catch-all instead of silently dropping them. Pick a
+        // field name that does not collide with a modeled field.
+        if let Some(catch_all) = ["extra", "extra_fields", "additional_fields"]
+            .into_iter()
+            .find(|c| !idents.contains(*c))
+        {
+            body.push_str("    /// Fields present in the response but not in the spec.\n");
+            body.push_str("    #[serde(flatten)]\n");
+            body.push_str(&format!("    pub {catch_all}: HashMap<String, Value>,\n"));
         }
         body.push('}');
 
@@ -333,6 +347,8 @@ impl SchemaCtx {
             None => s.push_str("/// Allowed values for a fixed-value query parameter.\n"),
         }
         s.push_str("#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]\n");
+        // Forward-compat: the API may add values; downstream matches need a wildcard.
+        s.push_str("#[non_exhaustive]\n");
         s.push_str(&format!("pub enum {name} {{\n"));
         for (ident, wire) in &variants {
             s.push_str(&format!("    /// `{wire}`\n"));

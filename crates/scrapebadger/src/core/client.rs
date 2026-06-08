@@ -106,6 +106,17 @@ impl Client {
                 .and_then(|h| h.to_str().ok())
                 .and_then(|s| s.trim().parse::<u64>().ok());
 
+            // Retry 429 (rate limited): wait the server-provided `Retry-After`
+            // when present (capped), otherwise fall back to exponential backoff.
+            if status == StatusCode::TOO_MANY_REQUESTS && attempt < max_retries {
+                let secs = retry_after
+                    .map(|s| s.min(MAX_RETRY_AFTER_SECS))
+                    .unwrap_or_else(|| backoff_secs(attempt));
+                tokio::time::sleep(Duration::from_secs(secs)).await;
+                attempt += 1;
+                continue;
+            }
+
             let bytes = response.bytes().await?;
 
             if status.is_success() {
@@ -166,10 +177,18 @@ fn extract_message(body: &Value) -> Option<String> {
     None
 }
 
-/// Exponential backoff: 1s, 2s, 4s, 8s, ... capped at 30s.
+/// Upper bound on how long we'll honor a `Retry-After` before a 429 retry, so a
+/// hostile/huge header value can't stall a request indefinitely.
+const MAX_RETRY_AFTER_SECS: u64 = 60;
+
+/// Exponential backoff schedule: 1s, 2s, 4s, 8s, … capped at 30s.
+fn backoff_secs(attempt: u32) -> u64 {
+    1u64.checked_shl(attempt).unwrap_or(u64::MAX).min(30)
+}
+
+/// Sleep for the exponential backoff delay for `attempt`.
 async fn backoff(attempt: u32) {
-    let secs = 1u64.checked_shl(attempt).unwrap_or(u64::MAX).min(30);
-    tokio::time::sleep(Duration::from_secs(secs)).await;
+    tokio::time::sleep(Duration::from_secs(backoff_secs(attempt))).await;
 }
 
 /// Resolve an API key from an explicit value or the environment.
@@ -182,3 +201,21 @@ pub(crate) fn resolve_api_key(explicit: Option<String>) -> Result<String> {
 
 #[allow(dead_code)]
 pub(crate) const _DEFAULT_BASE_URL: &str = DEFAULT_BASE_URL;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn backoff_schedule_is_capped() {
+        assert_eq!(backoff_secs(0), 1);
+        assert_eq!(backoff_secs(3), 8);
+        assert_eq!(backoff_secs(5), 30); // 32 -> capped
+        assert_eq!(backoff_secs(100), 30); // shift overflow -> capped
+    }
+
+    #[test]
+    fn resolve_api_key_prefers_explicit() {
+        assert_eq!(resolve_api_key(Some("k".into())).unwrap(), "k");
+    }
+}

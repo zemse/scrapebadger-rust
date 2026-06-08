@@ -25,6 +25,17 @@
 - Live integration tests behind `SCRAPEBADGER_API_KEY` (ignored by default);
   run with `cargo test --test integration -- --ignored`.
 
+### Robustness & forward-compat
+
+- The client now retries `429 Too Many Requests`, honoring the server's
+  `Retry-After` (capped at 60s) and otherwise using exponential backoff.
+- Generated response structs capture unknown fields in a `#[serde(flatten)]`
+  catch-all (`extra`) instead of silently dropping them — responses are now
+  lossless against spec drift.
+- Generated query-param enums and the `Error` enum are `#[non_exhaustive]`, so
+  the API adding a value/variant later is not a breaking change. **Breaking** for
+  exhaustive `match` on `Error` (add a `_ =>` arm).
+
 ### Tooling
 
 - `cargo run -p xtask -- gen` now runs `rustfmt` over its output, so generated

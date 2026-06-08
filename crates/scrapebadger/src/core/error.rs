@@ -10,6 +10,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// [`Error::Api`] with the raw status and decoded JSON body so callers never
 /// lose information.
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum Error {
     /// No API key was supplied and `SCRAPEBADGER_API_KEY` was not set.
     #[error("missing API key: pass one to ScrapeBadger::new or set SCRAPEBADGER_API_KEY")]

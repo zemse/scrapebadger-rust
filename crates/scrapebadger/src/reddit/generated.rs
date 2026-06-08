@@ -421,6 +421,9 @@ impl Reddit {
 #[serde(default)]
 pub struct HttpValidationError {
     pub detail: Vec<ValidationError>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -432,6 +435,9 @@ pub struct ValidationError {
     pub msg: Option<String>,
     #[serde(rename = "type")]
     pub type_: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Parameters for [`GetDomainPostsParams`]. All fields optional; required ones are noted per method.
