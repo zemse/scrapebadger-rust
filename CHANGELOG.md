@@ -17,9 +17,11 @@
   replace the old `Option<String>`. **Breaking** for code that passed these as
   strings. Response/model fields stay `String` so unknown future values still
   deserialize.
-- Twitter pagination adapters: `*_stream` methods (e.g.
-  `advanced_search_tweets_stream`, `get_user_followers_stream`) that follow
-  `next_cursor` and yield individual items as a `Stream`.
+- Pagination `*_stream` adapters across platforms — Twitter (`next_cursor`),
+  Reddit (`after`), and Amazon/Vinted (page numbers) — that follow pagination
+  automatically and yield individual items as a `Stream` (e.g.
+  `advanced_search_tweets_stream`, `get_subreddit_posts_stream`,
+  `search_products_stream`, `search_items_stream`).
 - `Twitter::stream_events_reconnecting()` — an endless WebSocket event stream
   that reconnects with exponential backoff (1s→30s, reset on success).
 - Live integration tests behind `SCRAPEBADGER_API_KEY` (ignored by default);
