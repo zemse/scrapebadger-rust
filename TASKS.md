@@ -29,7 +29,8 @@ and remaining polish.
 - [x] `--explain` / `--curl`; typed `--flags` + `--body` for POST/PATCH
 - [x] `commands`, `completions <shell>`, `man <dir>` discovery aids
 - [x] Removed the 8 flat shortcuts (clean break, v0.2.0 — mapping in CHANGELOG.md)
-- [ ] Optional: crate-root README landing page on docs.rs; CI `docs/CLI.md` staleness check
+- [x] CI `docs/CLI.md` + generated-code staleness check (`.github/workflows/ci.yml`,
+      `codegen-fresh` job); `xtask gen` now rustfmt's its output so it stays clean
 
 ## Endpoints by platform
 
@@ -185,9 +186,12 @@ and remaining polish.
 - [x] `web.scrape_url()` — POST `/v1/web/scrape`
 
 ## Future enhancements
+- [x] Live integration tests behind `SCRAPEBADGER_API_KEY` (ignored by default)
+      — `crates/scrapebadger/tests/integration.rs`
+- [x] Auto-reconnect helper for WebSocket streams
+      — `Twitter::stream_events_reconnecting()`
+- [x] Per-platform pagination convenience methods (`*_stream`)
+      — Twitter cursor endpoints in `twitter/pagination.rs`
 - [ ] Typed Reddit response models (reverse-engineer from live samples; spec is untyped)
 - [ ] Generate enums for fixed-value params (currently `String`)
-- [ ] Live integration tests behind `SCRAPEBADGER_API_KEY` (ignored by default)
-- [ ] Auto-reconnect helper for WebSocket streams
-- [ ] Per-platform pagination convenience methods (`*_stream`)
 - [ ] Publish to crates.io (`scrapebadger` — name is available)

@@ -101,6 +101,71 @@ impl Twitter {
             }
         })
     }
+
+    /// Like [`stream_events`](Self::stream_events) but transparently reconnects
+    /// with exponential backoff whenever the connection drops or errors,
+    /// producing a single endless [`Stream`] suitable for long-lived consumers.
+    ///
+    /// Behaviour:
+    /// * On a clean server close or a mid-stream error, it waits with backoff
+    ///   (1s, 2s, 4s, … capped at 30s) and reconnects. The backoff resets after
+    ///   each successful connection.
+    /// * Connection and stream errors are still yielded as `Err(_)` items so the
+    ///   consumer stays informed; the stream then keeps trying. This means it
+    ///   never ends on its own — to stop (e.g. after persistent auth failures),
+    ///   `break` out of the loop and drop the stream.
+    ///
+    /// ```no_run
+    /// # async fn demo(twitter: scrapebadger::Twitter) -> scrapebadger::Result<()> {
+    /// use futures_util::StreamExt;
+    /// let mut events = Box::pin(twitter.stream_events_reconnecting());
+    /// while let Some(event) = events.next().await {
+    ///     match event {
+    ///         Ok(ev) => println!("@{:?}", ev.author_username),
+    ///         Err(e) => eprintln!("stream error, reconnecting: {e}"),
+    ///     }
+    /// }
+    /// # Ok(()) }
+    /// ```
+    pub fn stream_events_reconnecting(&self) -> impl Stream<Item = Result<TweetEvent>> {
+        let twitter = self.clone();
+        async_stream::stream! {
+            let mut attempt: u32 = 0;
+            loop {
+                match twitter.stream_events().await {
+                    Ok(stream) => {
+                        attempt = 0;
+                        futures_util::pin_mut!(stream);
+                        while let Some(item) = stream.next().await {
+                            let is_err = item.is_err();
+                            yield item;
+                            // A mid-stream error means the connection is likely
+                            // dead; drop it and reconnect after backoff.
+                            if is_err {
+                                break;
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        yield Err(e);
+                    }
+                }
+                reconnect_delay(attempt).await;
+                attempt = attempt.saturating_add(1);
+            }
+        }
+    }
+}
+
+/// Backoff before the next reconnection attempt: 1s, 2s, 4s, … capped at 30s.
+async fn reconnect_delay(attempt: u32) {
+    let secs = reconnect_backoff_secs(attempt);
+    tokio::time::sleep(std::time::Duration::from_secs(secs)).await;
+}
+
+/// Pure backoff schedule used by [`reconnect_delay`] (separated for testing).
+fn reconnect_backoff_secs(attempt: u32) -> u64 {
+    1u64.checked_shl(attempt).unwrap_or(u64::MAX).min(30)
 }
 
 /// Build the WebSocket URL from the configured base URL and API key.
@@ -180,6 +245,16 @@ mod tests {
         assert!(verify_webhook_signature(secret, body, &sig));
         assert!(!verify_webhook_signature("wrong-secret", body, &sig));
         assert!(!verify_webhook_signature(secret, b"tampered", &sig));
+    }
+
+    #[test]
+    fn reconnect_backoff_is_capped() {
+        assert_eq!(reconnect_backoff_secs(0), 1);
+        assert_eq!(reconnect_backoff_secs(1), 2);
+        assert_eq!(reconnect_backoff_secs(2), 4);
+        assert_eq!(reconnect_backoff_secs(4), 16);
+        assert_eq!(reconnect_backoff_secs(5), 30); // 32 -> capped
+        assert_eq!(reconnect_backoff_secs(100), 30); // shift overflow -> capped
     }
 
     #[test]

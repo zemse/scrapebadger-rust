@@ -451,7 +451,9 @@ fn render_docs(eps: &[Ep]) -> String {
         "All **{}** endpoints as nested subcommands, generated from `specs/*.json` — the same source as the SDK. The general shape is:\n\n",
         eps.len()
     ));
-    s.push_str("```text\nscrapebadger PLATFORM GROUP [SUBGROUP] ACTION [IDS...] [--flags]\n```\n\n");
+    s.push_str(
+        "```text\nscrapebadger PLATFORM GROUP [SUBGROUP] ACTION [IDS...] [--flags]\n```\n\n",
+    );
     s.push_str("An `<arg>` below is a required positional; run `scrapebadger <command> --help` for full per-flag help, or `scrapebadger <platform> --help` to list every command for that platform at once.\n");
     for (key, title) in titles {
         let mut group: Vec<&Ep> = eps.iter().filter(|e| e.platform == *key).collect();
