@@ -109,10 +109,12 @@ impl Client {
             // Retry 429 (rate limited): wait the server-provided `Retry-After`
             // when present (capped), otherwise fall back to exponential backoff.
             if status == StatusCode::TOO_MANY_REQUESTS && attempt < max_retries {
-                let secs = retry_after
-                    .map(|s| s.min(MAX_RETRY_AFTER_SECS))
-                    .unwrap_or_else(|| backoff_secs(attempt));
-                tokio::time::sleep(Duration::from_secs(secs)).await;
+                // Honor an explicit Retry-After exactly; otherwise jittered backoff.
+                let delay = match retry_after {
+                    Some(s) => Duration::from_secs(s.min(MAX_RETRY_AFTER_SECS)),
+                    None => jitter(backoff_secs(attempt)),
+                };
+                tokio::time::sleep(delay).await;
                 attempt += 1;
                 continue;
             }
@@ -186,9 +188,24 @@ fn backoff_secs(attempt: u32) -> u64 {
     1u64.checked_shl(attempt).unwrap_or(u64::MAX).min(30)
 }
 
-/// Sleep for the exponential backoff delay for `attempt`.
+/// Sleep for the (jittered) exponential backoff delay for `attempt`.
 async fn backoff(attempt: u32) {
-    tokio::time::sleep(Duration::from_secs(backoff_secs(attempt))).await;
+    tokio::time::sleep(jitter(backoff_secs(attempt))).await;
+}
+
+/// Apply "equal jitter" to a base backoff: half the base plus a random fraction
+/// of the other half, so concurrent clients don't retry in lockstep. Entropy is
+/// drawn from the wall clock to avoid a `rand` dependency.
+pub(crate) fn jitter(base_secs: u64) -> Duration {
+    if base_secs == 0 {
+        return Duration::ZERO;
+    }
+    let nanos = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.subsec_nanos())
+        .unwrap_or(0);
+    let frac = (nanos % 1_000_000) as f64 / 1_000_000.0; // 0.0..1.0
+    Duration::from_secs_f64(base_secs as f64 * (0.5 + 0.5 * frac))
 }
 
 /// Resolve an API key from an explicit value or the environment.
@@ -217,5 +234,15 @@ mod tests {
     #[test]
     fn resolve_api_key_prefers_explicit() {
         assert_eq!(resolve_api_key(Some("k".into())).unwrap(), "k");
+    }
+
+    #[test]
+    fn jitter_stays_within_equal_jitter_bounds() {
+        assert_eq!(jitter(0), Duration::ZERO);
+        for _ in 0..50 {
+            let d = jitter(8).as_secs_f64();
+            // equal jitter: between base/2 and base.
+            assert!((4.0..=8.0).contains(&d), "out of bounds: {d}");
+        }
     }
 }
