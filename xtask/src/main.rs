@@ -47,6 +47,7 @@ fn main() {
     let out_dir = root.join("crates/scrapebadger/src");
 
     let mut total_ops = 0usize;
+    let mut written: Vec<PathBuf> = Vec::new();
     for (stem, module, handle) in PLATFORMS {
         let spec_path = specs_dir.join(format!("{stem}.json"));
         let spec: Value = serde_json::from_slice(
@@ -62,11 +63,31 @@ fn main() {
         let dest = dir.join("generated.rs");
         std::fs::write(&dest, code).unwrap();
         println!("{module:>8}: {ops:>3} endpoints -> {}", rel(&dest, &root));
+        written.push(dest);
     }
     println!("\ntotal endpoints generated: {total_ops}");
 
     // CLI descriptor table + docs reference (same source of truth).
     cli_gen::generate(&root);
+    written.push(out_dir.join("cli/generated.rs"));
+
+    // Format the emitted Rust so committed output is rustfmt-clean (keeps the
+    // `cargo fmt --check` CI gate green; markdown docs are left untouched).
+    rustfmt(&written);
+}
+
+/// Run `rustfmt` over the generated `.rs` files. A missing `rustfmt` is a hard
+/// error: unformatted output would fail CI, so the generator must not emit it.
+fn rustfmt(files: &[PathBuf]) {
+    use std::process::Command;
+    let status = Command::new("rustfmt")
+        .arg("--edition")
+        .arg("2021")
+        .args(files)
+        .status()
+        .expect("run rustfmt (is the `rustfmt` component installed?)");
+    assert!(status.success(), "rustfmt failed on generated output");
+    println!("rustfmt: formatted {} generated file(s)", files.len());
 }
 
 /// Generate the full `generated.rs` source for one platform.

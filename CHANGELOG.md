@@ -2,6 +2,25 @@
 
 ## 0.2.0 — unreleased
 
+### SDK
+
+**Added**
+- Twitter pagination adapters: `*_stream` methods (e.g.
+  `advanced_search_tweets_stream`, `get_user_followers_stream`) that follow
+  `next_cursor` and yield individual items as a `Stream`.
+- `Twitter::stream_events_reconnecting()` — an endless WebSocket event stream
+  that reconnects with exponential backoff (1s→30s, reset on success).
+- Live integration tests behind `SCRAPEBADGER_API_KEY` (ignored by default);
+  run with `cargo test --test integration -- --ignored`.
+
+### Tooling
+
+- `cargo run -p xtask -- gen` now runs `rustfmt` over its output, so generated
+  code is format-clean.
+- GitHub Actions CI: fmt / clippy / build / test / feature-matrix, plus a
+  `codegen-fresh` job that regenerates from `specs/` and fails on any drift in
+  the checked-in generated code or `docs/CLI.md`.
+
 ### CLI: full nested command tree (breaking)
 
 The CLI is now **fully nested** — every one of the 137 endpoints is a

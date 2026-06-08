@@ -11,7 +11,7 @@ One crate ships a library and a binary, both named `scrapebadger`.
 
 ```toml
 [dependencies]
-scrapebadger = "0.1"
+scrapebadger = "0.2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -56,6 +56,24 @@ Every endpoint is `client.<platform>().<method>(<path args…>, params)`. Inputs
 
 `account()` · `amazon()` · `google()` · `reddit()` · `twitter()` · `vinted()` · `web()`
 
+### Pagination
+
+Generic helpers in `core::pagination` turn any "fetch one page" closure into a
+flat `Stream`. Twitter's cursor-paginated endpoints also have ready-made
+`*_stream` adapters that follow `next_cursor` for you:
+
+```rust
+use futures_util::StreamExt;
+
+# async fn demo(client: scrapebadger::ScrapeBadger) -> scrapebadger::Result<()> {
+let stream = client.twitter().get_user_followers_stream("elonmusk", Default::default());
+futures_util::pin_mut!(stream);
+while let Some(user) = stream.next().await {
+    let _user = user?; // one UserData per follower, across all pages
+}
+# Ok(()) }
+```
+
 ### Real-time Twitter Streams (`feature = "stream"`, on by default)
 
 ```rust
@@ -69,6 +87,9 @@ while let Some(event) = events.next().await {
 }
 # Ok(()) }
 ```
+
+For long-lived consumers, `client.twitter().stream_events_reconnecting()` returns
+an endless stream that reconnects with exponential backoff on drop/error.
 
 Verify webhook callbacks with
 `scrapebadger::twitter::stream::verify_webhook_signature(secret, body, header)`.
