@@ -12,3 +12,6 @@ pub use generated::*;
 
 pub mod models;
 pub use models::*;
+
+/// Hand-written `*_stream` pagination adapters (methods on [`Reddit`]).
+mod pagination;

@@ -4,3 +4,6 @@
 
 mod generated;
 pub use generated::*;
+
+/// Hand-written `*_stream` pagination adapters (methods on [`Amazon`]).
+mod pagination;

@@ -215,8 +215,8 @@ and remaining polish.
 ## Robustness & ergonomics
 - [ ] Retry `429` honoring `Retry-After` (client currently retries only
       502/503/504 + transient; we hit 429s in practice — see sample collection).
-- [ ] Cross-platform pagination `*_stream` (Reddit `after`-cursor now that it's
-      typed; Amazon/Vinted page-number via `page_stream`).
+- [x] Cross-platform pagination `*_stream` — Reddit (`after`) in
+      `reddit/pagination.rs`; Amazon/Vinted (page) in `*/pagination.rs`.
 - [ ] `#[non_exhaustive]` on generated enums (and `Error`) so adding a
       variant/field later isn't a breaking change.
 - [ ] Enums for fixed-value **body** params (inputs only; currently query-only).

@@ -59,8 +59,9 @@ Every endpoint is `client.<platform>().<method>(<path args…>, params)`. Inputs
 ### Pagination
 
 Generic helpers in `core::pagination` turn any "fetch one page" closure into a
-flat `Stream`. Twitter's cursor-paginated endpoints also have ready-made
-`*_stream` adapters that follow `next_cursor` for you:
+flat `Stream`. Cursor- and page-paginated endpoints also have ready-made
+`*_stream` adapters that follow the pagination for you — Twitter (`next_cursor`),
+Reddit (`after`), and Amazon/Vinted (page numbers):
 
 ```rust
 use futures_util::StreamExt;
