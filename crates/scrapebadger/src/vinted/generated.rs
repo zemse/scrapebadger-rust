@@ -36,7 +36,7 @@ impl Vinted {
     pub async fn search_brands(&self, params: SearchBrandsParams) -> Result<SearchBrandsResponse> {
         let path = "/v1/vinted/brands".to_string();
         let mut q = QueryParams::new();
-        q.opt("query", params.query.as_ref());
+        q.opt("keyword", params.keyword.as_ref());
         q.opt("market", params.market.as_ref());
         let query = q.into_pairs();
         let body = None;
@@ -538,7 +538,7 @@ pub struct VintedUserSummaryPhoto {
 pub struct SearchBrandsParams {
     /// Brand name to search for. Partial matches are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub query: Option<String>,
+    pub keyword: Option<String>,
     /// Vinted market to search brands in.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub market: Option<String>,

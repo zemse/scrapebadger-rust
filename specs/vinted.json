@@ -468,7 +468,7 @@
         "description": "Search for Vinted brand IDs by name.",
         "parameters": [
           {
-            "name": "query",
+            "name": "keyword",
             "in": "query",
             "required": true,
             "schema": {

@@ -229,4 +229,15 @@ and remaining polish.
 - [x] Enums for fixed-value **body** params (web scrape `format`/`engine`,
       stream `status`) — query + body now both typed (32 enums).
 - [x] Backoff **jitter** (equal jitter) on client retries + WS reconnect.
-- [ ] Investigate `vinted.search_brands` `keyword` vs spec's `query` param.
+- [x] Investigate `vinted.search_brands` `keyword` vs spec's `query` param —
+      **resolved**: the live OpenAPI (`/api/openapi.json`) is authoritative and
+      declares the param `keyword` (required); our vendored `specs/vinted.json`
+      was stale (`query`). Fixed the spec, regenerated (field + wire name now
+      `keyword`), updated `examples/conformance.rs`. Verified live:
+      `?keyword=nike` → 200 with brand data; `?query=nike` → 422
+      `{loc:["query","keyword"],msg:"Field required"}`.
+- [ ] **New drift found while investigating**: vendored `/v1/vinted/search`
+      lists `color_ids` + `status_ids` query params the live spec no longer has
+      (opposite direction — vendored has *extra*). Decide whether to drop them or
+      keep for forward-compat; consider re-vendoring all 7 specs from
+      `/api/openapi.json` and diffing for other drift.
