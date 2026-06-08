@@ -418,6 +418,9 @@ impl Twitter {
         let mut q = QueryParams::new();
         q.opt("page", params.page.as_ref());
         q.opt("page_size", params.page_size.as_ref());
+        q.opt("author_username", params.author_username.as_ref());
+        q.opt("delivery_status", params.delivery_status.as_ref());
+        q.opt("sort", params.sort.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
@@ -436,6 +439,9 @@ impl Twitter {
         q.opt("monitor_id", params.monitor_id.as_ref());
         q.opt("page", params.page.as_ref());
         q.opt("page_size", params.page_size.as_ref());
+        q.opt("author_username", params.author_username.as_ref());
+        q.opt("delivery_status", params.delivery_status.as_ref());
+        q.opt("sort", params.sort.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
@@ -1522,6 +1528,27 @@ pub struct GetFilterRuleDeliveryLogsResponse {
     pub extra: HashMap<String, Value>,
 }
 
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
+pub enum GetFilterRuleDeliveryLogsSort {
+    /// `asc`
+    #[serde(rename = "asc")]
+    Asc,
+    /// `desc`
+    #[serde(rename = "desc")]
+    Desc,
+}
+
+impl std::fmt::Display for GetFilterRuleDeliveryLogsSort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            GetFilterRuleDeliveryLogsSort::Asc => "asc",
+            GetFilterRuleDeliveryLogsSort::Desc => "desc",
+        })
+    }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetFilterRulePricingTiersResponse {
@@ -1705,6 +1732,27 @@ pub struct ListStreamDeliveryLogsResponse {
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
     pub extra: HashMap<String, Value>,
+}
+
+/// Allowed values for a fixed-value query parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
+pub enum ListStreamDeliveryLogsSort {
+    /// `asc`
+    #[serde(rename = "asc")]
+    Asc,
+    /// `desc`
+    #[serde(rename = "desc")]
+    Desc,
+}
+
+impl std::fmt::Display for ListStreamDeliveryLogsSort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            ListStreamDeliveryLogsSort::Asc => "asc",
+            ListStreamDeliveryLogsSort::Desc => "desc",
+        })
+    }
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -2713,6 +2761,15 @@ pub struct GetFilterRuleDeliveryLogsParams {
     /// Number of logs per page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page_size: Option<i64>,
+    /// Filter delivery logs by the tweet author's username.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub author_username: Option<String>,
+    /// Filter delivery logs by delivery status.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_status: Option<String>,
+    /// Sort order for delivery logs by time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sort: Option<GetFilterRuleDeliveryLogsSort>,
 }
 
 /// Parameters for [`ListStreamDeliveryLogsParams`]. All fields optional; required ones are noted per method.
@@ -2727,6 +2784,15 @@ pub struct ListStreamDeliveryLogsParams {
     /// Number of logs per page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page_size: Option<i64>,
+    /// Filter delivery logs by the tweet author's username.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub author_username: Option<String>,
+    /// Filter delivery logs by delivery status.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_status: Option<String>,
+    /// Sort order for delivery logs by time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sort: Option<ListStreamDeliveryLogsSort>,
 }
 
 /// Parameters for [`ListStreamMonitorsParams`]. All fields optional; required ones are noted per method.

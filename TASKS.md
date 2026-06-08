@@ -236,8 +236,16 @@ and remaining polish.
       `keyword`), updated `examples/conformance.rs`. Verified live:
       `?keyword=nike` → 200 with brand data; `?query=nike` → 422
       `{loc:["query","keyword"],msg:"Field required"}`.
-- [ ] **New drift found while investigating**: vendored `/v1/vinted/search`
-      lists `color_ids` + `status_ids` query params the live spec no longer has
-      (opposite direction — vendored has *extra*). Decide whether to drop them or
-      keep for forward-compat; consider re-vendoring all 7 specs from
-      `/api/openapi.json` and diffing for other drift.
+- [x] **Spec drift audit** — diffed all 7 vendored specs against the live
+      Portal OpenAPI (`/api/openapi.json`). Findings:
+      - Twitter delivery-logs (`/stream/logs` + `/stream/filter-rules/{rule_id}/logs`):
+        live exposes 3 optional query params we lacked — `author_username`,
+        `delivery_status`, `sort` (enum asc/desc). **Added** to the spec +
+        regenerated (additive, non-breaking; `sort` is a typed enum).
+      - Google (39 paths): the Portal OpenAPI does **not** cover the separate
+        "ScrapeBadger Google Scraper" service, so those can't be validated against
+        it — no separate Google OpenAPI URL found. Left as-is.
+- [ ] Decide on vendored `/v1/vinted/search` `color_ids` + `status_ids` — the
+      live Portal spec no longer lists them (vendored has *extra*). Drop them
+      (breaking) or keep for forward-compat? Not yet verified against the live
+      endpoint.
