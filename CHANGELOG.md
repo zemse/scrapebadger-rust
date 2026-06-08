@@ -35,6 +35,8 @@
 
 - The client now retries `429 Too Many Requests`, honoring the server's
   `Retry-After` (capped at 60s) and otherwise using exponential backoff.
+- Retry/reconnect backoff now includes "equal jitter" (client retries and the
+  WebSocket auto-reconnect) so concurrent clients don't retry in lockstep.
 - Generated response structs capture unknown fields in a `#[serde(flatten)]`
   catch-all (`extra`) instead of silently dropping them — responses are now
   lossless against spec drift.

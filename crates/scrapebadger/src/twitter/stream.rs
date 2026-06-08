@@ -159,8 +159,7 @@ impl Twitter {
 
 /// Backoff before the next reconnection attempt: 1s, 2s, 4s, … capped at 30s.
 async fn reconnect_delay(attempt: u32) {
-    let secs = reconnect_backoff_secs(attempt);
-    tokio::time::sleep(std::time::Duration::from_secs(secs)).await;
+    tokio::time::sleep(crate::core::jitter(reconnect_backoff_secs(attempt))).await;
 }
 
 /// Pure backoff schedule used by [`reconnect_delay`] (separated for testing).

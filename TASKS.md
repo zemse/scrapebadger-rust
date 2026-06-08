@@ -226,5 +226,5 @@ and remaining polish.
 - [x] `#[non_exhaustive]` on generated enums (and `Error`) so adding a
       variant/field later isn't a breaking change.
 - [ ] Enums for fixed-value **body** params (inputs only; currently query-only).
-- [ ] Add backoff **jitter** to client + WS reconnect (avoid thundering herd).
+- [x] Backoff **jitter** (equal jitter) on client retries + WS reconnect.
 - [ ] Investigate `vinted.search_brands` `keyword` vs spec's `query` param.
