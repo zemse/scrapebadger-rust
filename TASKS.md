@@ -243,9 +243,21 @@ and remaining polish.
         `delivery_status`, `sort` (enum asc/desc). **Added** to the spec +
         regenerated (additive, non-breaking; `sort` is a typed enum).
       - Google (39 paths): the Portal OpenAPI does **not** cover the separate
-        "ScrapeBadger Google Scraper" service, so those can't be validated against
-        it — no separate Google OpenAPI URL found. Left as-is.
-- [ ] Decide on vendored `/v1/vinted/search` `color_ids` + `status_ids` — the
-      live Portal spec no longer lists them (vendored has *extra*). Drop them
-      (breaking) or keep for forward-compat? Not yet verified against the live
-      endpoint.
+        "ScrapeBadger Google Scraper" service — see the resolved item below.
+- [x] Resolve vendored `/v1/vinted/search` `color_ids` + `status_ids` — **keep
+      them**. Verified live: both are real, working filters (the live Portal spec
+      just under-documents them). `status_ids=6` returns only "Neuf avec
+      étiquette" items, `status_ids=4` only "Satisfaisant"; `color_ids=1` vs `=7`
+      return different item sets and a bogus `color_ids=999` returns 0. Our
+      vendored spec is *more complete* than live here — no change needed.
+- [x] Locate a Google Scraper OpenAPI — **none is published**. The live service
+      is a dynamic dispatcher (`GET /api/v1/<scraper>` → "Scraper 'X' is not
+      configured" for unknowns); `/api/v1/{openapi.json,docs,redoc}` all 404. The
+      docs site only has prose pages (`docs.scrapebadger.com/google/overview.md`,
+      `…/shopping-click-enrichment.md`) — unlike the other 6 platforms, Google has
+      **no** structured `/api-reference/endpoint/google/*` (OpenAPI-backed) pages.
+      So `specs/google.json` is hand-authored/reverse-engineered with no upstream
+      to diff against; the only Google drift-check is the live conformance suite.
+- [ ] (follow-up) Extend the live conformance suite to exercise more Google
+      endpoints — it's the *only* drift-check Google has. Many currently 404
+      "not configured" on the key; revisit now that credits are funded.
