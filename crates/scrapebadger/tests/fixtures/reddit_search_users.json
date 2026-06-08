@@ -1,0 +1,83 @@
+{
+  "users": [
+    {
+      "id": "x",
+      "name": "x",
+      "display_name_prefixed": "x",
+      "link_karma": 0,
+      "comment_karma": 0,
+      "awardee_karma": 0,
+      "awarder_karma": 0,
+      "total_karma": 0,
+      "created_utc": 0,
+      "created_at": "x",
+      "is_gold": false,
+      "is_employee": false,
+      "is_mod": false,
+      "is_friend": false,
+      "verified": false,
+      "has_verified_email": false,
+      "hide_from_robots": false,
+      "accept_followers": false,
+      "icon_img": "x",
+      "snoovatar_img": "x",
+      "subreddit": {
+        "display_name": "x",
+        "display_name_prefixed": "x",
+        "title": "x",
+        "public_description": "x",
+        "subscribers": 0,
+        "url": "x",
+        "subreddit_type": "x",
+        "over_18": false,
+        "icon_img": "x",
+        "banner_img": null,
+        "community_icon": null,
+        "primary_color": null
+      }
+    },
+    {
+      "id": "x",
+      "name": "x",
+      "display_name_prefixed": "x",
+      "link_karma": 0,
+      "comment_karma": 0,
+      "awardee_karma": 0,
+      "awarder_karma": 0,
+      "total_karma": 0,
+      "created_utc": 0,
+      "created_at": "x",
+      "is_gold": false,
+      "is_employee": false,
+      "is_mod": false,
+      "is_friend": false,
+      "verified": false,
+      "has_verified_email": false,
+      "hide_from_robots": false,
+      "accept_followers": false,
+      "icon_img": "x",
+      "snoovatar_img": "x",
+      "subreddit": {
+        "display_name": "x",
+        "display_name_prefixed": "x",
+        "title": "x",
+        "public_description": "x",
+        "subscribers": 0,
+        "url": "x",
+        "subreddit_type": "x",
+        "over_18": false,
+        "icon_img": "x",
+        "banner_img": null,
+        "community_icon": null,
+        "primary_color": null
+      }
+    }
+  ],
+  "pagination": {
+    "after": "x",
+    "before": null,
+    "count": 0,
+    "limit": 0
+  },
+  "query": "x"
+}

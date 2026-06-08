@@ -213,9 +213,10 @@ and remaining polish.
         are available.
       - Note: `vinted.search_brands` wants a `keyword` query param but the spec
         declares `query` — a spec/param mismatch to investigate.
-- [ ] Commit **sanitized response fixtures** captured by the collector so the
-      conformance suite also runs offline in CI (permanent regression guard,
-      no key needed).
+- [x] Commit **sanitized response fixtures** (`tests/fixtures/`, 20 files via
+      `scripts/make_fixtures.py`) + offline test `tests/conformance_offline.rs`
+      — runs in CI with no key. (Google/some endpoints unavailable on test key;
+      extend fixtures when reachable.)
 
 ## Robustness & ergonomics
 - [x] Retry `429` honoring `Retry-After` (capped 60s) + exponential backoff.

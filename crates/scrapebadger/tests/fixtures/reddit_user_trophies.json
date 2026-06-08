@@ -1,0 +1,27 @@
+{
+  "trophies": [
+    {
+      "id": null,
+      "award_id": null,
+      "name": "x",
+      "description": null,
+      "icon_url": "x",
+      "icon_40": "x",
+      "icon_70": "x",
+      "url": null,
+      "granted_at": 0
+    },
+    {
+      "id": "x",
+      "award_id": "x",
+      "name": "x",
+      "description": "x",
+      "icon_url": "x",
+      "icon_40": "x",
+      "icon_70": "x",
+      "url": "x",
+      "granted_at": 0
+    }
+  ],
+  "username": "x"
+}

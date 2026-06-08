@@ -1,0 +1,20 @@
+{
+  "markets": [
+    {
+      "code": "x",
+      "domain": "x",
+      "country": "x",
+      "currency": "x",
+      "locale": "x",
+      "name": "x"
+    },
+    {
+      "code": "x",
+      "domain": "x",
+      "country": "x",
+      "currency": "x",
+      "locale": "x",
+      "name": "x"
+    }
+  ]
+}

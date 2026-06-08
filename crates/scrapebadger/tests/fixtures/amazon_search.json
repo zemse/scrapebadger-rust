@@ -1,0 +1,61 @@
+{
+  "query": "x",
+  "domain": "x",
+  "results": [
+    {
+      "position": 0,
+      "asin": "x",
+      "title": "x",
+      "link": "x",
+      "image": "x",
+      "price": {
+        "value": 0,
+        "currency": "x",
+        "symbol": "x",
+        "raw": "x"
+      },
+      "list_price": null,
+      "unit_price": null,
+      "rating": 0,
+      "ratings_total": 0,
+      "is_prime": false,
+      "is_sponsored": false,
+      "is_amazons_choice": false,
+      "is_best_seller": false,
+      "bought_past_month": "x",
+      "coupon": null,
+      "availability": "x"
+    },
+    {
+      "position": 0,
+      "asin": "x",
+      "title": "x",
+      "link": "x",
+      "image": "x",
+      "price": {
+        "value": 0,
+        "currency": "x",
+        "symbol": "x",
+        "raw": "x"
+      },
+      "list_price": null,
+      "unit_price": null,
+      "rating": 0,
+      "ratings_total": 0,
+      "is_prime": false,
+      "is_sponsored": false,
+      "is_amazons_choice": false,
+      "is_best_seller": false,
+      "bought_past_month": "x",
+      "coupon": null,
+      "availability": "x"
+    }
+  ],
+  "pagination": {
+    "current_page": 0,
+    "total_pages": 0,
+    "total_results": 0
+  },
+  "scraped_utc": 0,
+  "scraped_at": "x"
+}
