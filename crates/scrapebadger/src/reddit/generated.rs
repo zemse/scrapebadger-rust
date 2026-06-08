@@ -37,7 +37,7 @@ impl Reddit {
         &self,
         domain: impl AsRef<str>,
         params: GetDomainPostsParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::PostsResponse> {
         let path = format!(
             "/v1/reddit/domains/{domain}/posts",
             domain = domain.as_ref()
@@ -56,7 +56,10 @@ impl Reddit {
     ///
     /// Get trending posts from Reddit's front page.
     /// `GET /v1/reddit/posts/trending`
-    pub async fn get_trending_posts(&self, params: GetTrendingPostsParams) -> Result<Value> {
+    pub async fn get_trending_posts(
+        &self,
+        params: GetTrendingPostsParams,
+    ) -> Result<crate::reddit::models::PostsResponse> {
         let path = "/v1/reddit/posts/trending".to_string();
         let mut q = QueryParams::new();
         q.opt("sort", params.sort.as_ref());
@@ -72,7 +75,11 @@ impl Reddit {
     ///
     /// Get detailed information about a Reddit post.
     /// `GET /v1/reddit/posts/{post_id}`
-    pub async fn get_post(&self, post_id: impl AsRef<str>, params: GetPostParams) -> Result<Value> {
+    pub async fn get_post(
+        &self,
+        post_id: impl AsRef<str>,
+        params: GetPostParams,
+    ) -> Result<crate::reddit::models::PostResponse> {
         let path = format!("/v1/reddit/posts/{post_id}", post_id = post_id.as_ref());
         let query: Vec<(String, String)> = Vec::new();
         let body = None;
@@ -87,7 +94,7 @@ impl Reddit {
         &self,
         post_id: impl AsRef<str>,
         params: GetPostCommentsParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::PostCommentsResponse> {
         let path = format!(
             "/v1/reddit/posts/{post_id}/comments",
             post_id = post_id.as_ref()
@@ -109,7 +116,7 @@ impl Reddit {
         &self,
         post_id: impl AsRef<str>,
         params: GetPostDuplicatesParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::PostDuplicatesResponse> {
         let path = format!(
             "/v1/reddit/posts/{post_id}/duplicates",
             post_id = post_id.as_ref()
@@ -126,7 +133,10 @@ impl Reddit {
     ///
     /// Search Reddit posts globally or within a subreddit.
     /// `GET /v1/reddit/search/posts`
-    pub async fn search_posts(&self, params: SearchPostsParams) -> Result<Value> {
+    pub async fn search_posts(
+        &self,
+        params: SearchPostsParams,
+    ) -> Result<crate::reddit::models::PostsResponse> {
         let path = "/v1/reddit/search/posts".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
@@ -144,7 +154,10 @@ impl Reddit {
     ///
     /// Search for subreddits by keyword.
     /// `GET /v1/reddit/search/subreddits`
-    pub async fn search_subreddits(&self, params: SearchSubredditsParams) -> Result<Value> {
+    pub async fn search_subreddits(
+        &self,
+        params: SearchSubredditsParams,
+    ) -> Result<crate::reddit::models::SubredditsResponse> {
         let path = "/v1/reddit/search/subreddits".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
@@ -159,7 +172,10 @@ impl Reddit {
     ///
     /// Search for Reddit users.
     /// `GET /v1/reddit/search/users`
-    pub async fn search_users(&self, params: SearchUsersParams) -> Result<Value> {
+    pub async fn search_users(
+        &self,
+        params: SearchUsersParams,
+    ) -> Result<crate::reddit::models::UsersResponse> {
         let path = "/v1/reddit/search/users".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
@@ -174,7 +190,10 @@ impl Reddit {
     ///
     /// Get recently created subreddits.
     /// `GET /v1/reddit/subreddits/new`
-    pub async fn get_new_subreddits(&self, params: GetNewSubredditsParams) -> Result<Value> {
+    pub async fn get_new_subreddits(
+        &self,
+        params: GetNewSubredditsParams,
+    ) -> Result<crate::reddit::models::SubredditsResponse> {
         let path = "/v1/reddit/subreddits/new".to_string();
         let mut q = QueryParams::new();
         q.opt("limit", params.limit.as_ref());
@@ -191,7 +210,7 @@ impl Reddit {
     pub async fn get_popular_subreddits(
         &self,
         params: GetPopularSubredditsParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::SubredditsResponse> {
         let path = "/v1/reddit/subreddits/popular".to_string();
         let mut q = QueryParams::new();
         q.opt("limit", params.limit.as_ref());
@@ -209,7 +228,7 @@ impl Reddit {
         &self,
         subreddit: impl AsRef<str>,
         params: GetSubredditParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::SubredditResponse> {
         let path = format!(
             "/v1/reddit/subreddits/{subreddit}",
             subreddit = subreddit.as_ref()
@@ -227,7 +246,7 @@ impl Reddit {
         &self,
         subreddit: impl AsRef<str>,
         params: GetSubredditPostsParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::PostsResponse> {
         let path = format!(
             "/v1/reddit/subreddits/{subreddit}/posts",
             subreddit = subreddit.as_ref()
@@ -250,7 +269,7 @@ impl Reddit {
         &self,
         subreddit: impl AsRef<str>,
         params: GetSubredditRulesParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::SubredditRulesResponse> {
         let path = format!(
             "/v1/reddit/subreddits/{subreddit}/rules",
             subreddit = subreddit.as_ref()
@@ -268,7 +287,7 @@ impl Reddit {
         &self,
         subreddit: impl AsRef<str>,
         params: GetWikiPagesParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::WikiPagesResponse> {
         let path = format!(
             "/v1/reddit/subreddits/{subreddit}/wiki",
             subreddit = subreddit.as_ref()
@@ -287,7 +306,7 @@ impl Reddit {
         subreddit: impl AsRef<str>,
         page: impl AsRef<str>,
         params: GetWikiPageParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::WikiPageResponse> {
         let path = format!(
             "/v1/reddit/subreddits/{subreddit}/wiki/{page}",
             subreddit = subreddit.as_ref(),
@@ -306,7 +325,7 @@ impl Reddit {
         &self,
         username: impl AsRef<str>,
         params: GetUserParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::UserResponse> {
         let path = format!("/v1/reddit/users/{username}", username = username.as_ref());
         let query: Vec<(String, String)> = Vec::new();
         let body = None;
@@ -321,7 +340,7 @@ impl Reddit {
         &self,
         username: impl AsRef<str>,
         params: GetUserCommentsParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::UserCommentsResponse> {
         let path = format!(
             "/v1/reddit/users/{username}/comments",
             username = username.as_ref()
@@ -344,7 +363,7 @@ impl Reddit {
         &self,
         username: impl AsRef<str>,
         params: GetUserModeratedParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::UserModeratedResponse> {
         let path = format!(
             "/v1/reddit/users/{username}/moderated",
             username = username.as_ref()
@@ -362,7 +381,7 @@ impl Reddit {
         &self,
         username: impl AsRef<str>,
         params: GetUserPostsParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::PostsResponse> {
         let path = format!(
             "/v1/reddit/users/{username}/posts",
             username = username.as_ref()
@@ -385,7 +404,7 @@ impl Reddit {
         &self,
         username: impl AsRef<str>,
         params: GetUserTrophiesParams,
-    ) -> Result<Value> {
+    ) -> Result<crate::reddit::models::UserTrophiesResponse> {
         let path = format!(
             "/v1/reddit/users/{username}/trophies",
             username = username.as_ref()

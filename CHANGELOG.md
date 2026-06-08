@@ -5,6 +5,12 @@
 ### SDK
 
 **Added**
+- Typed Reddit response models (`reddit::models`): the 20 Reddit endpoints now
+  return typed structs (`PostsResponse`, `RedditPost`, `RedditComment`,
+  `RedditSubreddit`, `RedditUser`, …) instead of `serde_json::Value`. Reverse-
+  engineered from live samples; tolerant of missing/null/unknown fields. **Breaking**
+  for code that treated Reddit responses as `Value`. Reddit's mixed `edited`
+  field (bool or timestamp) is modeled as an untagged `Edited` enum.
 - Typed enums for fixed-value query parameters (28 across the API, e.g.
   `FlightsSearchStops`, `JobsSearchJobType`). Each `Display`s/serializes to its
   wire value, so `*Params` fields like `stops: Option<FlightsSearchStops>`
