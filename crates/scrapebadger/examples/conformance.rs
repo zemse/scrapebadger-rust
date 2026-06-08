@@ -44,6 +44,14 @@ impl Report {
     /// Await an endpoint call, classify the outcome, pace the next call, and
     /// return the success value (for id chaining).
     async fn run<T>(&mut self, label: &str, fut: impl Future<Output = Result<T>>) -> Option<T> {
+        // Optional `CONFORMANCE_FILTER` (comma-separated label prefixes) lets you
+        // exercise a subset — e.g. `CONFORMANCE_FILTER=google` to spend credits
+        // on just the Google endpoints. Unset = run everything.
+        if let Ok(f) = std::env::var("CONFORMANCE_FILTER") {
+            if !f.split(',').any(|p| label.starts_with(p.trim())) {
+                return None;
+            }
+        }
         let res = fut.await;
         match &res {
             Ok(_) => {
