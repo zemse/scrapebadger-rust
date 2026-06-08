@@ -197,4 +197,27 @@ and remaining polish.
 - [x] Typed Reddit response models (`reddit/models.rs`, reverse-engineered from
       live samples via `scripts/collect_reddit_samples.py`; wired through the
       generator's `response_override`)
-- [ ] Publish to crates.io (`scrapebadger` — name is available)
+- [ ] Publish to crates.io (`scrapebadger` — name is available) — **on hold**
+
+## Type correctness (live validation)
+- [ ] **Live type-conformance suite for all 137 endpoints.** Hit every endpoint
+      with representative inputs, deserialize the real response into its
+      generated/typed model, and assert zero deserialization errors. Generalize
+      the Reddit approach (`scripts/collect_reddit_samples.py`) to every
+      platform. Surface: (a) hard type mismatches (like Reddit's mixed `edited`
+      bool|timestamp), (b) fields landing in `extra`/dropped as unknown
+      (under-modeled — candidates to promote), (c) endpoints still returning
+      `serde_json::Value`. Gate live runs on `SCRAPEBADGER_API_KEY`.
+- [ ] Commit **sanitized response fixtures** captured by the collector so the
+      conformance suite also runs offline in CI (permanent regression guard,
+      no key needed).
+
+## Robustness & ergonomics
+- [ ] Retry `429` honoring `Retry-After` (client currently retries only
+      502/503/504 + transient; we hit 429s in practice — see sample collection).
+- [ ] Cross-platform pagination `*_stream` (Reddit `after`-cursor now that it's
+      typed; Amazon/Vinted page-number via `page_stream`).
+- [ ] `#[non_exhaustive]` on generated enums (and `Error`) so adding a
+      variant/field later isn't a breaking change.
+- [ ] Enums for fixed-value **body** params (inputs only; currently query-only).
+- [ ] Add backoff **jitter** to client + WS reconnect (avoid thundering herd).
