@@ -198,6 +198,9 @@ pub struct GetItemDetailResponse {
     pub user: Option<VintedUserSummary>,
     /// Number of views.
     pub view_count: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -210,6 +213,9 @@ pub struct GetUserItemsResponse {
     pub per_page: Option<i64>,
     /// Total number of items listed by this user.
     pub total_entries: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -241,6 +247,9 @@ pub struct GetUserProfileResponse {
     pub login: Option<String>,
     /// Profile photo.
     pub photo: Option<GetUserProfileResponsePhoto>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Profile photo.
@@ -250,12 +259,18 @@ pub struct GetUserProfileResponsePhoto {
     pub height: Option<i64>,
     pub url: Option<String>,
     pub width: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ListColorsResponse {
     pub colors: Vec<ListColorsResponseColorsItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -267,12 +282,18 @@ pub struct ListColorsResponseColorsItem {
     pub id: Option<i64>,
     /// Localized color name.
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ListMarketsResponse {
     pub markets: Vec<ListMarketsResponseMarketsItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -286,12 +307,18 @@ pub struct ListMarketsResponseMarketsItem {
     pub domain: Option<String>,
     /// Country name.
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ListStatusesResponse {
     pub statuses: Vec<ListStatusesResponseStatusesItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -301,12 +328,18 @@ pub struct ListStatusesResponseStatusesItem {
     pub id: Option<i64>,
     /// Localized condition label.
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SearchBrandsResponse {
     pub brands: Vec<SearchBrandsResponseBrandsItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -322,10 +355,14 @@ pub struct SearchBrandsResponseBrandsItem {
     pub slug: Option<String>,
     /// Brand name.
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchItemsOrder {
     /// `relevance`
     #[serde(rename = "relevance")]
@@ -362,6 +399,9 @@ pub struct SearchItemsResponse {
     pub per_page: Option<i64>,
     /// Total number of matching items across all pages.
     pub total_entries: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -385,6 +425,9 @@ pub struct VintedItemSummary {
     /// Full URL to the Vinted listing.
     pub url: Option<String>,
     pub user: Option<VintedUserSummary>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -396,6 +439,9 @@ pub struct VintedPhoto {
     pub url: Option<String>,
     /// Width in pixels.
     pub width: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -408,12 +454,18 @@ pub struct VintedUserSummary {
     /// Username.
     pub login: Option<String>,
     pub photo: Option<VintedUserSummaryPhoto>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct VintedUserSummaryPhoto {
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Parameters for [`SearchBrandsParams`]. All fields optional; required ones are noted per method.

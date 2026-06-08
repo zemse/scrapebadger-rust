@@ -61,6 +61,9 @@ pub struct GetAccountInfoResponse {
     pub tier: Option<String>,
     /// Sum of PAYG + subscription credits
     pub total_credits_balance: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Active subscription details, or null if PAYG-only
@@ -88,6 +91,9 @@ pub struct GetAccountInfoResponseSubscription {
     /// Display name of the plan
     pub plan_title: Option<String>,
     pub status: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Parameters for [`GetAccountInfoParams`]. All fields optional; required ones are noted per method.

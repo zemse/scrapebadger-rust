@@ -1092,6 +1092,7 @@ impl Twitter {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum AdvancedSearchTweetsQueryType {
     /// `Top`
     Top,
@@ -1131,6 +1132,9 @@ pub struct ArticleData {
     pub text: Option<String>,
     /// Title of the article.
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Paginated list of articles.
@@ -1141,6 +1145,9 @@ pub struct ArticlesResponse {
     pub data: Option<Vec<ArticleData>>,
     /// Cursor for fetching the next page. Null if no more results.
     pub next_cursor: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Billing log entry for a stream monitor credit deduction.
@@ -1163,6 +1170,9 @@ pub struct BillingLogResponse {
     pub rate_applied: Option<f64>,
     /// Pricing tier label applied.
     pub tier_label: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Live video broadcast data.
@@ -1187,6 +1197,9 @@ pub struct BroadcastData {
     pub total_viewers: Option<i64>,
     /// Video width in pixels.
     pub width: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Paginated list of communities.
@@ -1197,6 +1210,9 @@ pub struct CommunitiesResponse {
     pub data: Option<Vec<CommunityData>>,
     /// Cursor for fetching the next page. Null if no more results.
     pub next_cursor: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Community banner image information.
@@ -1209,6 +1225,9 @@ pub struct CommunityBanner {
     pub url: Option<String>,
     /// Width of the banner in pixels.
     pub width: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Comprehensive Twitter community data.
@@ -1253,6 +1272,9 @@ pub struct CommunityData {
     pub role: Option<String>,
     /// Community rules.
     pub rules: Option<Vec<CommunityRule>>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Community note (fact-check) data.
@@ -1267,6 +1289,9 @@ pub struct CommunityNoteData {
     pub status: Option<String>,
     /// Text content of the community note.
     pub text: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// List of community notes for a tweet.
@@ -1275,6 +1300,9 @@ pub struct CommunityNoteData {
 pub struct CommunityNotesResponse {
     /// Array of community note objects.
     pub data: Option<Vec<CommunityNoteData>>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A community rule.
@@ -1285,6 +1313,9 @@ pub struct CommunityRule {
     pub description: Option<String>,
     /// Name/title of the rule.
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Error response returned for failed requests.
@@ -1293,6 +1324,9 @@ pub struct CommunityRule {
 pub struct ErrorResponse {
     /// Human-readable error message describing what went wrong.
     pub error: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Log entry for a tweet delivered by a filter rule.
@@ -1327,6 +1361,9 @@ pub struct FilterRuleDeliveryLogResponse {
     pub webhook_attempts: Option<i64>,
     /// HTTP status code returned by the webhook endpoint, if applicable.
     pub webhook_status_code: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Filter rule configuration and status.
@@ -1359,10 +1396,14 @@ pub struct FilterRuleResponse {
     pub webhook_secret_set: Option<bool>,
     /// HTTPS URL receiving webhook deliveries.
     pub webhook_url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum GetCommunityTweetsTweetType {
     /// `Top`
     Top,
@@ -1392,6 +1433,9 @@ pub struct GetFilterRuleDeliveryLogsResponse {
     pub page_size: Option<i64>,
     /// Total number of delivery logs.
     pub total: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -1399,6 +1443,9 @@ pub struct GetFilterRuleDeliveryLogsResponse {
 pub struct GetFilterRulePricingTiersResponse {
     /// List of pricing tiers ordered by interval.
     pub tiers: Vec<GetFilterRulePricingTiersResponseTiersItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -1410,10 +1457,14 @@ pub struct GetFilterRulePricingTiersResponseTiersItem {
     pub max_interval_seconds: Option<f64>,
     /// Human-readable tier name.
     pub tier_label: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum GetTrendsCategory {
     /// `trending`
     #[serde(rename = "trending")]
@@ -1452,6 +1503,9 @@ pub struct Hashtag {
     pub indices: Option<Vec<i64>>,
     /// The hashtag text (without the # symbol).
     pub text: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Twitter list metadata.
@@ -1476,6 +1530,9 @@ pub struct ListData {
     pub user_id: Option<String>,
     /// Username of the list owner.
     pub username: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -1488,10 +1545,14 @@ pub struct ListFilterRulesResponse {
     pub rules: Vec<FilterRuleResponse>,
     /// Total number of filter rules.
     pub total: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum ListFilterRulesStatus {
     /// `active`
     #[serde(rename = "active")]
@@ -1520,6 +1581,9 @@ pub struct ListStreamBillingLogsResponse {
     pub page_size: Option<i64>,
     /// Total number of billing logs.
     pub total: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -1532,6 +1596,9 @@ pub struct ListStreamDeliveryLogsResponse {
     pub page_size: Option<i64>,
     /// Total number of delivery logs.
     pub total: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -1544,10 +1611,14 @@ pub struct ListStreamMonitorsResponse {
     pub page_size: Option<i64>,
     /// Total number of monitors.
     pub total: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum ListStreamMonitorsStatus {
     /// `active`
     #[serde(rename = "active")]
@@ -1572,6 +1643,9 @@ pub struct ListStreamWebhooksResponse {
     /// Total number of webhooks.
     pub total: Option<i64>,
     pub webhooks: Vec<WebhookListItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Media attachment in a tweet (photo, video, or animated GIF).
@@ -1597,6 +1671,9 @@ pub struct Media {
     pub view_count: Option<i64>,
     /// Width of the media in pixels.
     pub width: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Geographic place information attached to a tweet.
@@ -1615,6 +1692,9 @@ pub struct Place {
     pub name: Option<String>,
     /// Type of place.
     pub place_type: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Geographic place data.
@@ -1639,6 +1719,9 @@ pub struct PlaceData {
     pub place_type: Option<String>,
     /// Twitter URL for the place.
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Geographical bounding box coordinates.
@@ -1649,6 +1732,9 @@ pub struct PlaceDataBoundingBox {
     pub coordinates: Vec<Vec<Vec<f64>>>,
     #[serde(rename = "type")]
     pub type_: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Trending topics for a specific geographic location.
@@ -1663,6 +1749,9 @@ pub struct PlaceTrendsData {
     pub trends: Vec<TrendData>,
     /// Where On Earth ID of the location.
     pub woeid: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// List of geographic places.
@@ -1671,6 +1760,9 @@ pub struct PlaceTrendsData {
 pub struct PlacesResponse {
     /// Array of place objects.
     pub data: Option<Vec<PlaceData>>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Poll data in a tweet.
@@ -1687,6 +1779,9 @@ pub struct Poll {
     pub options: Vec<PollOption>,
     /// Current voting status.
     pub voting_status: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single poll option with its vote count.
@@ -1699,6 +1794,9 @@ pub struct PollOption {
     pub position: Option<i64>,
     /// Number of votes for this option.
     pub votes: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Twitter Space (audio room) data.
@@ -1733,6 +1831,9 @@ pub struct SpaceData {
     pub total_live_listeners: Option<i64>,
     /// Total number of users who participated.
     pub total_participated: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Stream monitor configuration and status.
@@ -1765,6 +1866,9 @@ pub struct StreamMonitorResponse {
     pub webhook_secret_set: Option<bool>,
     /// HTTPS URL receiving webhook deliveries.
     pub webhook_url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -1778,6 +1882,9 @@ pub struct TestStreamWebhookResponse {
     pub status_code: Option<i64>,
     /// Whether the webhook responded with a 2xx status code.
     pub success: Option<bool>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single trending topic.
@@ -1794,6 +1901,9 @@ pub struct TrendData {
     pub tweet_count: Option<i64>,
     /// Twitter search URL for this trend.
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// List of trending topics.
@@ -1802,6 +1912,9 @@ pub struct TrendData {
 pub struct TrendsResponse {
     /// Array of trend objects.
     pub data: Option<Vec<TrendData>>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Comprehensive tweet data including text, author info, engagement metrics, media, and metadata.
@@ -1888,6 +2001,9 @@ pub struct TweetData {
     pub username: Option<String>,
     /// Number of times this tweet has been viewed.
     pub view_count: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Log entry for a tweet delivered by a stream monitor.
@@ -1922,6 +2038,9 @@ pub struct TweetDeliveryLogResponse {
     pub webhook_attempts: Option<i64>,
     /// HTTP status code returned by the webhook endpoint, if applicable.
     pub webhook_status_code: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Paginated list of tweets.
@@ -1932,6 +2051,9 @@ pub struct TweetsResponse {
     pub data: Option<Vec<TweetData>>,
     /// Cursor for fetching the next page. Null if no more results.
     pub next_cursor: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// URL entity in a tweet or user profile.
@@ -1946,6 +2068,9 @@ pub struct Url {
     pub unwound_url: Option<String>,
     /// The shortened t.co URL.
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Comprehensive user profile data including bio, metrics, verification status, and account metadata.
@@ -2004,6 +2129,9 @@ pub struct UserData {
     pub verified: Option<bool>,
     /// Type of verification (e.g., Government, Business).
     pub verified_type: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// User mention entity in a tweet.
@@ -2018,6 +2146,9 @@ pub struct UserMention {
     pub name: Option<String>,
     /// Username of the mentioned user.
     pub username: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Paginated list of users.
@@ -2028,6 +2159,9 @@ pub struct UsersResponse {
     pub data: Option<Vec<UserData>>,
     /// Cursor for fetching the next page. Null if no more results.
     pub next_cursor: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -2039,6 +2173,9 @@ pub struct ValidateFilterRuleQueryResponse {
     pub query: Option<String>,
     /// Whether the query syntax is valid.
     pub valid: Option<bool>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Webhook endpoint summary for list responses.
@@ -2057,6 +2194,9 @@ pub struct WebhookListItem {
     pub secret_set: Option<bool>,
     /// HTTPS URL of the webhook endpoint.
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Webhook endpoint details. Only returned on creation; the secret is included in the response.
@@ -2073,6 +2213,9 @@ pub struct WebhookResponse {
     pub secret: Option<String>,
     /// HTTPS URL of the webhook endpoint.
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Parameters for [`SearchCommunitiesParams`]. All fields optional; required ones are noted per method.

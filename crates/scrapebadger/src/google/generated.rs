@@ -928,6 +928,9 @@ pub struct AdResult {
     pub link: Option<String>,
     pub position: Option<i64>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/ai-mode/search.
@@ -939,6 +942,9 @@ pub struct AiModeResponse {
     pub query: Option<String>,
     pub references: Vec<AiReference>,
     pub text_blocks: Vec<AiTextBlock>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Google AI Overview (AI-generated summary).
@@ -953,6 +959,9 @@ pub struct AiOverview {
     pub page_token: Option<String>,
     pub references: Vec<AiOverviewReference>,
     pub text_blocks: Vec<AiOverviewTextBlock>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A list item within an AI Overview text block.
@@ -962,6 +971,9 @@ pub struct AiOverviewListItem {
     pub snippet: Option<String>,
     pub snippet_links: Vec<SnippetLink>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A source reference in AI Overview.
@@ -974,6 +986,9 @@ pub struct AiOverviewReference {
     pub snippet: Option<String>,
     pub source: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A typed content block within AI Overview.
@@ -987,6 +1002,9 @@ pub struct AiOverviewTextBlock {
     pub type_: Option<String>,
     pub video: Option<AiOverviewVideo>,
     pub video_links: Vec<AiOverviewVideo>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Video reference in AI Overview.
@@ -999,6 +1017,9 @@ pub struct AiOverviewVideo {
     pub link: Option<String>,
     pub source: Option<String>,
     pub thumbnail: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A reference cited in the AI response.
@@ -1009,6 +1030,9 @@ pub struct AiReference {
     pub snippet: Option<String>,
     pub source: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A block of AI-generated text.
@@ -1018,6 +1042,9 @@ pub struct AiTextBlock {
     pub snippet: Option<String>,
     #[serde(rename = "type")]
     pub type_: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/autocomplete/.
@@ -1028,6 +1055,9 @@ pub struct AutocompleteResponse {
     pub language: Option<String>,
     pub query: Option<String>,
     pub suggestions: Vec<AutocompleteSuggestion>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single autocomplete suggestion.
@@ -1036,6 +1066,9 @@ pub struct AutocompleteResponse {
 pub struct AutocompleteSuggestion {
     pub relevance: Option<i64>,
     pub value: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// One point in the citations-per-year chart.
@@ -1044,6 +1077,9 @@ pub struct AutocompleteSuggestion {
 pub struct CitationByYear {
     pub citations: Option<i64>,
     pub year: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/finance/quote.
@@ -1057,6 +1093,9 @@ pub struct FinanceQuoteResponse {
     pub stats: Option<FinanceStats>,
     pub stock: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Key financial statistics.
@@ -1068,6 +1107,9 @@ pub struct FinanceStats {
     pub pe_ratio: Option<String>,
     pub prev_close: Option<String>,
     pub year_range: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Airport metadata referenced in a search result.
@@ -1078,6 +1120,9 @@ pub struct FlightAirport {
     pub country: Option<String>,
     pub iata_code: Option<String>,
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A layover between two legs in a multi-segment itinerary.
@@ -1088,6 +1133,9 @@ pub struct FlightLayover {
     pub airport_name: Option<String>,
     pub duration_minutes: Option<i64>,
     pub overnight: Option<bool>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// One segment of a flight itinerary (e.g. SFO → LHR on a connection).
@@ -1110,6 +1158,9 @@ pub struct FlightLeg {
     pub flight_number: Option<String>,
     pub legroom: Option<String>,
     pub travel_class: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single end-to-end flight itinerary that appears in the results.
@@ -1129,6 +1180,9 @@ pub struct FlightOffer {
     pub price: Option<f64>,
     pub price_type: Option<String>,
     pub total_duration_minutes: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Typical price range insight for the searched route.
@@ -1141,10 +1195,14 @@ pub struct FlightPriceInsights {
     pub price_level: Option<String>,
     /// [min, max] typical price for this route
     pub typical_price_range: Option<Vec<f64>>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Max stops filter
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum FlightsSearchStops {
     /// `any`
     #[serde(rename = "any")]
@@ -1173,6 +1231,7 @@ impl std::fmt::Display for FlightsSearchStops {
 
 /// Cabin class
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum FlightsSearchTravelClass {
     /// `economy`
     #[serde(rename = "economy")]
@@ -1201,6 +1260,7 @@ impl std::fmt::Display for FlightsSearchTravelClass {
 
 /// Trip type: round_trip | one_way | multi_city
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum FlightsSearchTripType {
     /// `one_way`
     #[serde(rename = "one_way")]
@@ -1237,6 +1297,9 @@ pub struct GoogleFlightsResponse {
     pub price_insights: Option<FlightPriceInsights>,
     pub return_date: Option<String>,
     pub trip_type: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/local/search.
@@ -1245,6 +1308,9 @@ pub struct GoogleFlightsResponse {
 pub struct GoogleLocalResponse {
     pub local_results: Vec<LocalResult>,
     pub search_information: Option<SearchInformation>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/search.
@@ -1263,6 +1329,9 @@ pub struct GoogleSearchResponse {
     pub related_searches: Vec<RelatedSearch>,
     pub search_information: Option<SearchInformation>,
     pub shopping_results: Vec<ShoppingResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/shorts/search.
@@ -1271,6 +1340,9 @@ pub struct GoogleSearchResponse {
 pub struct GoogleShortsResponse {
     pub search_information: Option<SearchInformation>,
     pub short_videos_results: Vec<ShortVideoResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// GPS coordinates.
@@ -1279,6 +1351,9 @@ pub struct GoogleShortsResponse {
 pub struct GpsCoordinates {
     pub lat: Option<f64>,
     pub lng: Option<f64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/hotels/details.
@@ -1286,6 +1361,9 @@ pub struct GpsCoordinates {
 #[serde(default)]
 pub struct HotelDetailResponse {
     pub property: Option<HotelProperty>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A place near the hotel.
@@ -1295,6 +1373,9 @@ pub struct HotelNearbyPlace {
     pub duration: Option<String>,
     pub name: Option<String>,
     pub transport: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A hotel price from a specific source.
@@ -1306,6 +1387,9 @@ pub struct HotelPrice {
     pub link: Option<String>,
     pub price: Option<f64>,
     pub source: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A hotel search result.
@@ -1330,6 +1414,9 @@ pub struct HotelProperty {
     pub reviews_count: Option<i64>,
     pub thumbnail: Option<String>,
     pub total_rate: Option<HotelRate>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Hotel rate information.
@@ -1339,6 +1426,9 @@ pub struct HotelRate {
     pub currency: Option<String>,
     pub extracted: Option<f64>,
     pub lowest: Option<f64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/hotels/search.
@@ -1347,12 +1437,18 @@ pub struct HotelRate {
 pub struct HotelsSearchResponse {
     pub pagination: Option<Pagination>,
     pub properties: Vec<HotelProperty>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct HttpValidationError {
     pub detail: Vec<ValidationError>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single image search result.
@@ -1367,6 +1463,9 @@ pub struct ImageResult {
     pub source: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/images/search.
@@ -1377,6 +1476,9 @@ pub struct ImagesSearchResponse {
     pub language: Option<String>,
     pub query: Option<String>,
     pub results: Vec<ImageResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// An inline sitelink (e.g. Reddit post metadata).
@@ -1385,6 +1487,9 @@ pub struct ImagesSearchResponse {
 pub struct InlineSitelink {
     pub date: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Inline video result.
@@ -1398,6 +1503,9 @@ pub struct InlineVideo {
     pub source: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A job application link.
@@ -1407,6 +1515,9 @@ pub struct JobApplyOption {
     pub link: Option<String>,
     pub source: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A filter option for job search.
@@ -1415,6 +1526,9 @@ pub struct JobApplyOption {
 pub struct JobFilter {
     pub name: Option<String>,
     pub options: Vec<JobFilterOption>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single filter option value.
@@ -1423,6 +1537,9 @@ pub struct JobFilter {
 pub struct JobFilterOption {
     pub label: Option<String>,
     pub value: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Structured job highlights.
@@ -1432,6 +1549,9 @@ pub struct JobHighlights {
     pub benefits: Vec<String>,
     pub qualifications: Vec<String>,
     pub responsibilities: Vec<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single job listing.
@@ -1457,6 +1577,9 @@ pub struct JobResult {
     /// Source platform ("Talent.com", "Built In NYC", …) parsed from "via X".
     pub via: Option<String>,
     pub work_from_home: Option<bool>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Job salary information.
@@ -1467,10 +1590,14 @@ pub struct JobSalary {
     pub max: Option<String>,
     pub min: Option<String>,
     pub period: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum JobsSearchDatePosted {
     /// `today`
     #[serde(rename = "today")]
@@ -1499,6 +1626,7 @@ impl std::fmt::Display for JobsSearchDatePosted {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum JobsSearchJobType {
     /// `FULLTIME`
     #[serde(rename = "FULLTIME")]
@@ -1527,6 +1655,7 @@ impl std::fmt::Display for JobsSearchJobType {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum JobsSearchLtype {
     /// `remote`
     #[serde(rename = "remote")]
@@ -1555,6 +1684,7 @@ impl std::fmt::Display for JobsSearchLtype {
 
 /// Data source. ``rpc`` (default, ~300 ms) replays Google's own ``r06xKb`` batchexecute RPC on the Google Careers portal — clean JSON, 20 roles per page, scope = Google's internal openings. ``serp`` uses the public Jobs search vertical (``udm=8``, SERP-embedded, 3rd-party aggregator) and costs more latency because Google gates it behind JS.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum JobsSearchMode {
     /// `rpc`
     #[serde(rename = "rpc")]
@@ -1581,6 +1711,9 @@ pub struct JobsSearchResponse {
     pub jobs: Vec<JobResult>,
     pub jobs_results: Vec<JobResult>,
     pub pagination: Option<Pagination>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Knowledge Graph panel.
@@ -1594,6 +1727,9 @@ pub struct KnowledgeGraph {
     pub title: Option<String>,
     #[serde(rename = "type")]
     pub type_: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single visual search result.
@@ -1605,6 +1741,9 @@ pub struct LensResult {
     pub source: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/lens/search.
@@ -1613,6 +1752,9 @@ pub struct LensResult {
 pub struct LensSearchResponse {
     pub image_url: Option<String>,
     pub results: Vec<LensResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Local pack result.
@@ -1628,6 +1770,9 @@ pub struct LocalResult {
     pub title: Option<String>,
     #[serde(rename = "type")]
     pub type_: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Business identity shown alongside posts (matches shape).
@@ -1636,6 +1781,9 @@ pub struct LocalResult {
 pub struct MapsLocationDetails {
     pub logo: Option<String>,
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Location summary in review responses.
@@ -1646,6 +1794,9 @@ pub struct MapsLocationInfo {
     pub rating: Option<f64>,
     pub reviews_count: Option<i64>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Business owner response to a review.
@@ -1654,6 +1805,9 @@ pub struct MapsLocationInfo {
 pub struct MapsOwnerResponse {
     pub date: Option<String>,
     pub text: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A place photo.
@@ -1662,6 +1816,9 @@ pub struct MapsOwnerResponse {
 pub struct MapsPhoto {
     pub image: Option<String>,
     pub thumbnail: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A photo category.
@@ -1670,6 +1827,9 @@ pub struct MapsPhoto {
 pub struct MapsPhotoCategory {
     pub id: Option<String>,
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/maps/photos.
@@ -1679,6 +1839,9 @@ pub struct MapsPhotosResponse {
     pub categories: Vec<MapsPhotoCategory>,
     pub pagination: Option<Pagination>,
     pub photos: Vec<MapsPhoto>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Detailed place information.
@@ -1718,6 +1881,9 @@ pub struct MapsPlaceDetail {
     pub type_ids: Vec<String>,
     pub types: Vec<String>,
     pub website: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/maps/place.
@@ -1725,6 +1891,9 @@ pub struct MapsPlaceDetail {
 #[serde(default)]
 pub struct MapsPlaceResponse {
     pub place: Option<MapsPlaceDetail>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A place from Maps search results.
@@ -1760,6 +1929,9 @@ pub struct MapsPlaceResult {
     pub type_ids: Vec<String>,
     pub types: Vec<String>,
     pub website: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A business post or update.
@@ -1770,6 +1942,9 @@ pub struct MapsPost {
     pub description: Option<String>,
     pub image: Option<String>,
     pub link: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/maps/posts.
@@ -1783,6 +1958,9 @@ pub struct MapsPostsResponse {
     pub merchant_description: Option<String>,
     pub pagination: Option<Pagination>,
     pub post_data: Vec<MapsPost>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single place review.
@@ -1797,6 +1975,9 @@ pub struct MapsReview {
     pub response_from_owner: Option<MapsOwnerResponse>,
     pub text: Option<String>,
     pub user: Option<MapsReviewUser>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A review topic/keyword.
@@ -1806,6 +1987,9 @@ pub struct MapsReviewTopic {
     pub id: Option<String>,
     pub keyword: Option<String>,
     pub mentions: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// User who wrote a review.
@@ -1818,6 +2002,9 @@ pub struct MapsReviewUser {
     pub photos_count: Option<i64>,
     pub reviews_count: Option<i64>,
     pub thumbnail: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/maps/reviews.
@@ -1828,10 +2015,14 @@ pub struct MapsReviewsResponse {
     pub pagination: Option<Pagination>,
     pub reviews: Vec<MapsReview>,
     pub topics: Vec<MapsReviewTopic>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Sort order
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum MapsReviewsSortBy {
     /// `qualityScore`
     #[serde(rename = "qualityScore")]
@@ -1864,6 +2055,9 @@ impl std::fmt::Display for MapsReviewsSortBy {
 pub struct MapsSearchResponse {
     pub pagination: Option<Pagination>,
     pub results: Vec<MapsPlaceResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Service options for a business.
@@ -1874,6 +2068,9 @@ pub struct MapsServiceOptions {
     pub delivery: Option<bool>,
     pub dine_in: Option<bool>,
     pub takeout: Option<bool>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single news article.
@@ -1887,10 +2084,14 @@ pub struct NewsArticle {
     pub source: Option<NewsSource>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Topic name
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum NewsByTopicTopic {
     /// `WORLD`
     #[serde(rename = "WORLD")]
@@ -1937,6 +2138,9 @@ pub struct NewsRelatedStory {
     pub published_at: Option<String>,
     pub source: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Inline news/top stories result.
@@ -1948,6 +2152,9 @@ pub struct NewsResult {
     pub source: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/news/search.
@@ -1958,6 +2165,9 @@ pub struct NewsSearchResponse {
     pub country: Option<String>,
     pub language: Option<String>,
     pub query: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// News article source.
@@ -1967,6 +2177,9 @@ pub struct NewsSource {
     pub icon: Option<String>,
     pub name: Option<String>,
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/news/topics.
@@ -1977,6 +2190,9 @@ pub struct NewsTopicsResponse {
     pub country: Option<String>,
     pub language: Option<String>,
     pub topic: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/news/trending.
@@ -1986,6 +2202,9 @@ pub struct NewsTrendingResponse {
     pub articles: Vec<NewsArticle>,
     pub country: Option<String>,
     pub language: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single organic search result.
@@ -2005,6 +2224,9 @@ pub struct OrganicResult {
     pub snippet: Option<String>,
     pub source: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Pagination metadata.
@@ -2016,6 +2238,9 @@ pub struct Pagination {
     pub page_no: HashMap<String, String>,
     pub total_pages: Option<i64>,
     pub total_results: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A patent citation reference.
@@ -2026,6 +2251,9 @@ pub struct PatentCitation {
     pub filing_date: Option<String>,
     pub patent_id: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Detailed patent information from /xhr/result.
@@ -2056,6 +2284,9 @@ pub struct PatentDetail {
     pub snippet: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/patents/detail.
@@ -2063,6 +2294,9 @@ pub struct PatentDetail {
 #[serde(default)]
 pub struct PatentDetailResponse {
     pub patent: Option<PatentDetail>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Patent figure/drawing.
@@ -2071,6 +2305,9 @@ pub struct PatentDetailResponse {
 pub struct PatentFigure {
     pub thumbnail: Option<String>,
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single patent search result.
@@ -2093,6 +2330,9 @@ pub struct PatentResult {
     pub snippet: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/patents/search.
@@ -2103,6 +2343,9 @@ pub struct PatentSearchResponse {
     pub query: Option<String>,
     pub results: Vec<PatentResult>,
     pub total_results: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Price movement data.
@@ -2112,6 +2355,9 @@ pub struct PriceMovement {
     pub direction: Option<String>,
     pub percentage: Option<f64>,
     pub value: Option<f64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/products/detail.
@@ -2128,6 +2374,9 @@ pub struct ProductDetailResponse {
     pub sellers: Vec<ProductSeller>,
     pub specs: HashMap<String, String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A seller offering the product.
@@ -2138,6 +2387,9 @@ pub struct ProductSeller {
     pub name: Option<String>,
     pub price: Option<String>,
     pub shipping: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// People Also Ask question.
@@ -2151,6 +2403,9 @@ pub struct RelatedQuestion {
     pub snippet: Option<String>,
     pub source_logo: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Related search suggestion.
@@ -2159,6 +2414,9 @@ pub struct RelatedQuestion {
 pub struct RelatedSearch {
     pub link: Option<String>,
     pub query: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// One article row from the author profile's publication list.
@@ -2172,6 +2430,9 @@ pub struct ScholarAuthorArticle {
     pub publication: Option<String>,
     pub title: Option<String>,
     pub year: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/scholar/author/citation.
@@ -2181,6 +2442,9 @@ pub struct ScholarAuthorCitationResponse {
     pub author_id: Option<String>,
     pub citations_by_year: Vec<CitationByYear>,
     pub total_citations: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Header block of a Scholar author profile page.
@@ -2194,6 +2458,9 @@ pub struct ScholarAuthorInfo {
     pub interests: Vec<String>,
     pub name: Option<String>,
     pub thumbnail: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/scholar/author.
@@ -2204,6 +2471,9 @@ pub struct ScholarAuthorResponse {
     pub author: Option<ScholarAuthorInfo>,
     pub co_authors: Vec<ScholarCoAuthor>,
     pub stats: Option<ScholarAuthorStats>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Right-rail citation stats table.
@@ -2217,6 +2487,9 @@ pub struct ScholarAuthorStats {
     pub i10_index_all: Option<i64>,
     pub i10_index_since_year: Option<i64>,
     pub since_year: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single citation-style rendering (MLA, APA, Chicago, etc.).
@@ -2225,6 +2498,9 @@ pub struct ScholarAuthorStats {
 pub struct ScholarCitationFormat {
     pub citation: Option<String>,
     pub style: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Export link shown at the bottom of the cite dialog (BibTeX, RIS, ...).
@@ -2233,6 +2509,9 @@ pub struct ScholarCitationFormat {
 pub struct ScholarCitationLink {
     pub link: Option<String>,
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/scholar/cite.
@@ -2241,6 +2520,9 @@ pub struct ScholarCitationLink {
 pub struct ScholarCiteResponse {
     pub citations: Vec<ScholarCitationFormat>,
     pub links: Vec<ScholarCitationLink>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Co-author card shown on the author profile page.
@@ -2251,6 +2533,9 @@ pub struct ScholarCoAuthor {
     pub author_id: Option<String>,
     pub link: Option<String>,
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// One author card from the Scholar profile search page.
@@ -2267,6 +2552,9 @@ pub struct ScholarProfile {
     pub name: Option<String>,
     pub position: Option<i64>,
     pub thumbnail: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/scholar/profiles.
@@ -2280,6 +2568,9 @@ pub struct ScholarProfilesResponse {
     pub language: Option<String>,
     pub profiles: Vec<ScholarProfile>,
     pub query: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single scholarly article result.
@@ -2297,6 +2588,9 @@ pub struct ScholarResult {
     pub snippet: Option<String>,
     pub title: Option<String>,
     pub versions_count: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/scholar/search.
@@ -2307,6 +2601,9 @@ pub struct ScholarSearchResponse {
     pub query: Option<String>,
     pub results: Vec<ScholarResult>,
     pub total_results: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Metadata about the search query.
@@ -2318,10 +2615,14 @@ pub struct SearchInformation {
     pub time_taken: Option<f64>,
     pub total_results: Option<i64>,
     pub url: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response mode. **full** (default): complete SERP with all blocks (organic, ads, knowledge graph, local pack, AI overview, news, related questions, etc). **fast**: lite endpoint via `gbv=1` that returns ONLY organic results + related searches in ~0.6-1s cold (vs 1.5-2s full). Use when you only need organic results and can skip rich features.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchMode {
     /// `full`
     #[serde(rename = "full")]
@@ -2342,6 +2643,7 @@ impl std::fmt::Display for SearchMode {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchPatentsLanguage {
     /// `ENGLISH`
     #[serde(rename = "ENGLISH")]
@@ -2382,6 +2684,7 @@ impl std::fmt::Display for SearchPatentsLanguage {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchPatentsPatentType {
     /// `PATENT`
     #[serde(rename = "PATENT")]
@@ -2402,6 +2705,7 @@ impl std::fmt::Display for SearchPatentsPatentType {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchPatentsSort {
     /// `new`
     #[serde(rename = "new")]
@@ -2422,6 +2726,7 @@ impl std::fmt::Display for SearchPatentsSort {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchPatentsStatus {
     /// `GRANT`
     #[serde(rename = "GRANT")]
@@ -2451,6 +2756,9 @@ pub struct ShoppingClickResponse {
     pub product_id: Option<String>,
     pub source_query: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A shopping filter group.
@@ -2459,6 +2767,9 @@ pub struct ShoppingClickResponse {
 pub struct ShoppingFilter {
     pub name: Option<String>,
     pub options: Vec<ShoppingFilterOption>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single filter option.
@@ -2470,6 +2781,9 @@ pub struct ShoppingFilterOption {
     #[serde(rename = "type")]
     pub type_: Option<String>,
     pub value: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Product price.
@@ -2479,6 +2793,9 @@ pub struct ShoppingPrice {
     pub currency: Option<String>,
     pub extracted: Option<String>,
     pub value: Option<f64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Detailed product information.
@@ -2496,6 +2813,9 @@ pub struct ShoppingProductDetail {
     pub sellers: Vec<ShoppingSeller>,
     pub specs: HashMap<String, String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/shopping/product.
@@ -2503,6 +2823,9 @@ pub struct ShoppingProductDetail {
 #[serde(default)]
 pub struct ShoppingProductResponse {
     pub product: Option<ShoppingProductDetail>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single product from search results.
@@ -2529,6 +2852,9 @@ pub struct ShoppingProductResult {
     pub tag: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Inline shopping result.
@@ -2542,6 +2868,9 @@ pub struct ShoppingResult {
     pub source: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/shopping/search.
@@ -2552,6 +2881,9 @@ pub struct ShoppingSearchResponse {
     pub filters: Vec<ShoppingFilter>,
     pub pagination: Option<Pagination>,
     pub results: Vec<ShoppingProductResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A seller offering the product.
@@ -2568,6 +2900,9 @@ pub struct ShoppingSeller {
     pub shipping: Option<String>,
     pub tax: Option<String>,
     pub total_cost: Option<f64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single short-form video result surfaced in Google Shorts.
@@ -2587,6 +2922,9 @@ pub struct ShortVideoResult {
     pub title: Option<String>,
     pub video_id: Option<String>,
     pub views: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A sitelink within an organic result.
@@ -2596,6 +2934,9 @@ pub struct Sitelink {
     pub link: Option<String>,
     pub snippet: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Inline link within an AI Overview text block.
@@ -2604,6 +2945,9 @@ pub struct Sitelink {
 pub struct SnippetLink {
     pub link: Option<String>,
     pub link_text: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A categorized topic suggestion returned by the Trends autocomplete API.
@@ -2618,6 +2962,9 @@ pub struct TrendsAutocompleteItem {
     pub title: Option<String>,
     #[serde(rename = "type")]
     pub type_: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/trends/autocomplete.
@@ -2626,6 +2973,9 @@ pub struct TrendsAutocompleteItem {
 pub struct TrendsAutocompleteResponse {
     pub query: Option<String>,
     pub results: Vec<TrendsAutocompleteItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/trends/interest.
@@ -2635,6 +2985,9 @@ pub struct TrendsInterestResponse {
     pub averages: Vec<TrendsTimelineValue>,
     pub query: Option<String>,
     pub timeline: Vec<TrendsTimelinePoint>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Interest for a specific region.
@@ -2645,10 +2998,14 @@ pub struct TrendsRegionInterest {
     pub region: Option<String>,
     pub region_code: Option<String>,
     pub value: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Region granularity. `auto` (default) uses Google's widget default, which is `COUNTRY` for worldwide queries and `REGION` (state/province) for single-country queries. Overriding to `COUNTRY` when `geo` is set returns HTTP 400 from Google — use `REGION`, `DMA`, or `CITY` in that case.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum TrendsRegionsResolution {
     /// `COUNTRY`
     #[serde(rename = "COUNTRY")]
@@ -2685,6 +3042,9 @@ impl std::fmt::Display for TrendsRegionsResolution {
 pub struct TrendsRegionsResponse {
     pub query: Option<String>,
     pub regions: Vec<TrendsRegionInterest>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A related topic or query.
@@ -2696,6 +3056,9 @@ pub struct TrendsRelatedItem {
     pub topic_id: Option<String>,
     pub topic_type: Option<String>,
     pub value: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/trends/related.
@@ -2707,10 +3070,14 @@ pub struct TrendsRelatedResponse {
     pub rising_topics: Vec<TrendsRelatedItem>,
     pub top_queries: Vec<TrendsRelatedItem>,
     pub top_topics: Vec<TrendsRelatedItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Dispatch on: TIMESERIES (interest over time), GEO_MAP (compared breakdown, multi-query), GEO_MAP_0 (interest by region, single query), RELATED_TOPICS (top + rising topics), RELATED_QUERIES (top + rising queries).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum TrendsSearchDataType {
     /// `TIMESERIES`
     #[serde(rename = "TIMESERIES")]
@@ -2756,6 +3123,9 @@ pub struct TrendsSearchResponse {
     pub timeline: Vec<TrendsTimelinePoint>,
     pub top_queries: Vec<TrendsRelatedItem>,
     pub top_topics: Vec<TrendsRelatedItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single point in interest over time.
@@ -2765,6 +3135,9 @@ pub struct TrendsTimelinePoint {
     pub date: Option<String>,
     pub timestamp: Option<i64>,
     pub values: Vec<TrendsTimelineValue>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single value in a trends timeline point.
@@ -2774,6 +3147,9 @@ pub struct TrendsTimelineValue {
     pub extracted_value: Option<i64>,
     pub query: Option<String>,
     pub value: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// An article associated with a trending search.
@@ -2784,6 +3160,9 @@ pub struct TrendsTrendingArticle {
     pub source: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A trending search item.
@@ -2793,10 +3172,14 @@ pub struct TrendsTrendingItem {
     pub articles: Vec<TrendsTrendingArticle>,
     pub title: Option<String>,
     pub traffic: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Sort order. ``relevance`` (default) keeps Google's ordering; ``search_volume`` orders by parsed traffic descending; ``title`` sorts alphabetically; ``recency`` falls back to relevance when the feed omits publication timestamps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum TrendsTrendingNowSort {
     /// `relevance`
     #[serde(rename = "relevance")]
@@ -2825,6 +3208,7 @@ impl std::fmt::Display for TrendsTrendingNowSort {
 
 /// Trend state. ``active`` keeps only entries with a non-zero search volume (still surging); ``all`` (default) returns every entry including ended ones.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum TrendsTrendingNowStatus {
     /// `all`
     #[serde(rename = "all")]
@@ -2849,6 +3233,9 @@ impl std::fmt::Display for TrendsTrendingNowStatus {
 pub struct TrendsTrendingResponse {
     pub country: Option<String>,
     pub trending: Vec<TrendsTrendingItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -2860,6 +3247,9 @@ pub struct ValidationError {
     pub msg: Option<String>,
     #[serde(rename = "type")]
     pub type_: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// A single video search result.
@@ -2874,6 +3264,9 @@ pub struct VideoResult {
     pub source: Option<String>,
     pub thumbnail: Option<String>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Response for GET /api/v1/videos/search.
@@ -2884,6 +3277,9 @@ pub struct VideosSearchResponse {
     pub language: Option<String>,
     pub query: Option<String>,
     pub results: Vec<VideoResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Parameters for [`SearchAiModeParams`]. All fields optional; required ones are noted per method.

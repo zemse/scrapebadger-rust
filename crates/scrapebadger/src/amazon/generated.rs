@@ -299,6 +299,9 @@ pub struct AmazonPrice {
     pub symbol: Option<String>,
     /// Numeric price value.
     pub value: Option<f64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -307,6 +310,9 @@ pub struct AutocompleteResponse {
     pub domain: Option<String>,
     pub query: Option<String>,
     pub suggestions: Vec<AutocompleteResponseSuggestionsItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -316,6 +322,9 @@ pub struct AutocompleteResponseSuggestionsItem {
     pub alias: Option<String>,
     /// Suggested search phrase.
     pub value: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -332,6 +341,9 @@ pub struct Bestseller {
     pub rating: Option<f64>,
     pub ratings_total: Option<i64>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -341,10 +353,14 @@ pub struct BrowseCategoryResponse {
     pub node: Option<String>,
     pub pagination: Option<Pagination>,
     pub results: Vec<SearchResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum BrowseCategorySortBy {
     /// `relevance`
     #[serde(rename = "relevance")]
@@ -391,6 +407,9 @@ pub struct Deal {
     pub list_price: Option<AmazonPrice>,
     pub position: Option<i64>,
     pub title: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -399,6 +418,9 @@ pub struct GetBestsellersResponse {
     pub category: Option<String>,
     pub domain: Option<String>,
     pub results: Vec<Bestseller>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -407,6 +429,9 @@ pub struct GetDealsResponse {
     pub category: Option<String>,
     pub domain: Option<String>,
     pub results: Vec<Deal>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -415,6 +440,9 @@ pub struct GetNewReleasesResponse {
     pub category: Option<String>,
     pub domain: Option<String>,
     pub results: Vec<Bestseller>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -423,6 +451,9 @@ pub struct GetOffersResponse {
     pub asin: Option<String>,
     pub domain: Option<String>,
     pub offers: Vec<Offer>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -430,6 +461,9 @@ pub struct GetOffersResponse {
 pub struct GetProductResponse {
     pub domain: Option<String>,
     pub product: Option<Product>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -444,6 +478,9 @@ pub struct GetReviewsResponse {
     /// Total number of ratings for the product.
     pub ratings_total: Option<i64>,
     pub reviews: Vec<Review>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -454,10 +491,14 @@ pub struct GetReviewsResponseRatingBreakdown {
     pub one_star: Option<i64>,
     pub three_star: Option<i64>,
     pub two_star: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum GetReviewsSortBy {
     /// `helpful`
     #[serde(rename = "helpful")]
@@ -478,6 +519,7 @@ impl std::fmt::Display for GetReviewsSortBy {
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum GetReviewsStar {
     /// `one_star`
     #[serde(rename = "one_star")]
@@ -523,6 +565,9 @@ pub struct GetSellerFeedbackResponse {
     pub feedback: Vec<GetSellerFeedbackResponseFeedbackItem>,
     pub pagination: Option<Pagination>,
     pub seller_id: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -538,6 +583,9 @@ pub struct GetSellerFeedbackResponseFeedbackItem {
     pub rater: Option<String>,
     /// Star rating left by the buyer (1-5).
     pub rating: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -547,6 +595,9 @@ pub struct GetSellerProductsResponse {
     pub pagination: Option<Pagination>,
     pub results: Vec<SearchResult>,
     pub seller_id: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -554,6 +605,9 @@ pub struct GetSellerProductsResponse {
 pub struct GetSellerResponse {
     pub domain: Option<String>,
     pub seller: Option<Seller>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -561,6 +615,9 @@ pub struct GetSellerResponse {
 pub struct ListCategoriesResponse {
     pub categories: Vec<ListCategoriesResponseCategoriesItem>,
     pub domain: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -572,12 +629,18 @@ pub struct ListCategoriesResponseCategoriesItem {
     pub bestsellers_node: Option<String>,
     /// Human-readable department name.
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ListMarketsResponse {
     pub markets: Vec<ListMarketsResponseMarketsItem>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -595,6 +658,9 @@ pub struct ListMarketsResponseMarketsItem {
     pub language: Option<String>,
     /// Marketplace country name.
     pub name: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -613,6 +679,9 @@ pub struct Offer {
     pub price: Option<AmazonPrice>,
     /// Seller summary: name, id, link, rating, ratings_total, ratings_percentage_positive.
     pub seller: HashMap<String, Value>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -624,6 +693,9 @@ pub struct Pagination {
     pub total_pages: Option<i64>,
     /// Total number of results across all pages.
     pub total_results: Option<i64>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -685,6 +757,9 @@ pub struct Product {
     pub videos: Vec<String>,
     pub videos_count: Option<i64>,
     pub weight: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -707,6 +782,9 @@ pub struct Review {
     pub variant: Option<String>,
     pub verified_purchase: Option<bool>,
     pub vine_program: Option<bool>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -718,10 +796,14 @@ pub struct SearchProductsResponse {
     /// The search query that was executed.
     pub query: Option<String>,
     pub results: Vec<SearchResult>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Allowed values for a fixed-value query parameter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchProductsSortBy {
     /// `relevance`
     #[serde(rename = "relevance")]
@@ -787,6 +869,9 @@ pub struct SearchResult {
     pub title: Option<String>,
     /// Unit price string (e.g. "$0.50 / count").
     pub unit_price: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -803,6 +888,9 @@ pub struct Seller {
     pub ratings_percentage_positive: Option<i64>,
     pub ratings_total: Option<i64>,
     pub seller_id: Option<String>,
+    /// Fields present in the response but not in the spec.
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 /// Parameters for [`AutocompleteParams`]. All fields optional; required ones are noted per method.
