@@ -258,6 +258,14 @@ and remaining polish.
       **no** structured `/api-reference/endpoint/google/*` (OpenAPI-backed) pages.
       So `specs/google.json` is hand-authored/reverse-engineered with no upstream
       to diff against; the only Google drift-check is the live conformance suite.
-- [ ] (follow-up) Extend the live conformance suite to exercise more Google
-      endpoints — it's the *only* drift-check Google has. Many currently 404
-      "not configured" on the key; revisit now that credits are funded.
+- [x] Run the conformance suite against Google with the funded key — added a
+      `CONFORMANCE_FILTER` env (comma-separated label prefixes) to scope spend.
+      **Result: every Google endpoint 404s `"Scraper 'X' is not configured"`**,
+      and a direct `curl` to `/api/v1/search` does the same — so it's *not* a
+      client/credits issue: the Google Scraper add-on is **not provisioned on this
+      account** (tier `basic`, 66k credits available). The old "404 on the test
+      key" note was wrong — funding the key changed nothing.
+- [ ] **BLOCKED — Google conformance** can't run until the Google Scraper service
+      is enabled on the account (currently tier `basic`; all `/api/v1/*` →
+      404 "not configured"). Revisit if/when the Google add-on is provisioned;
+      run `CONFORMANCE_FILTER=google cargo run --example conformance` then.
