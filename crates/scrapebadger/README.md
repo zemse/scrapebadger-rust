@@ -141,9 +141,11 @@ scrapebadger raw --method POST /v1/web/scrape -d '{"url":"https://example.com"}'
 
 Typed models and per-endpoint methods are **generated from the vendored OpenAPI
 specs** (`specs/*.json`) by `cargo run -p xtask -- gen`; the ergonomic namespace
-layer and transport core are hand-written. See [`ARCHITECTURE.md`](../../ARCHITECTURE.md)
+layer and transport core are hand-written. See
+[`ARCHITECTURE.md`](https://github.com/zemse/scrapebadger-rust/blob/main/ARCHITECTURE.md)
 for the full design, codegen notes, and the complete endpoint reference, and
-[`TASKS.md`](../../TASKS.md) for build status.
+[`TASKS.md`](https://github.com/zemse/scrapebadger-rust/blob/main/TASKS.md) for
+build status.
 
 ## Configuration
 
