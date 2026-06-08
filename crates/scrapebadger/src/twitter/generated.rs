@@ -1117,20 +1117,28 @@ impl std::fmt::Display for AdvancedSearchTweetsQueryType {
 #[serde(default)]
 pub struct ArticleData {
     /// Numeric ID of the article author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_id: Option<String>,
     /// Display name of the article author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_name: Option<String>,
     /// Username of the article author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_username: Option<String>,
     /// URL of the article's cover image.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub cover_image_url: Option<String>,
     /// Timestamp when the article was published.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Unique article identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Full body text of the article.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub text: Option<String>,
     /// Title of the article.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1144,6 +1152,7 @@ pub struct ArticlesResponse {
     /// Array of article objects.
     pub data: Option<Vec<ArticleData>>,
     /// Cursor for fetching the next page. Null if no more results.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub next_cursor: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1155,20 +1164,28 @@ pub struct ArticlesResponse {
 #[serde(default)]
 pub struct BillingLogResponse {
     /// Timestamp of the billing event.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub billed_at: Option<String>,
     /// Total credits deducted in this billing cycle.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub credits_deducted: Option<f64>,
     /// Unique billing log identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// ID of the stream monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub monitor_id: Option<String>,
     /// Name of the stream monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub monitor_name: Option<String>,
     /// Number of monitored accounts at the time of billing.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub num_accounts: Option<i64>,
     /// Credit rate per account per day that was applied.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rate_applied: Option<f64>,
     /// Pricing tier label applied.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tier_label: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1180,22 +1197,31 @@ pub struct BillingLogResponse {
 #[serde(default)]
 pub struct BroadcastData {
     /// Timestamp when the broadcast was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Video height in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub height: Option<i64>,
     /// Unique broadcast identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Media key for the broadcast stream.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub media_key: Option<String>,
     /// Timestamp when the broadcast started.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub started_at: Option<String>,
     /// Current state of the broadcast (e.g., running, ended).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub state: Option<String>,
     /// Title of the broadcast.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Total number of viewers.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_viewers: Option<i64>,
     /// Video width in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub width: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1209,6 +1235,7 @@ pub struct CommunitiesResponse {
     /// Array of community objects.
     pub data: Option<Vec<CommunityData>>,
     /// Cursor for fetching the next page. Null if no more results.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub next_cursor: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1220,10 +1247,13 @@ pub struct CommunitiesResponse {
 #[serde(default)]
 pub struct CommunityBanner {
     /// Height of the banner in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub height: Option<i64>,
     /// URL of the banner image.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Width of the banner in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub width: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1235,40 +1265,57 @@ pub struct CommunityBanner {
 #[serde(default)]
 pub struct CommunityData {
     /// Numeric ID of the community admin.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub admin_id: Option<String>,
     /// Display name of the community admin.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub admin_name: Option<String>,
     /// Username of the community admin.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub admin_username: Option<String>,
     /// Community banner image.
     pub banner: Option<CommunityBanner>,
     /// Creation timestamp in milliseconds.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub created_at: Option<i64>,
     /// Creation date in ISO 8601 format.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at_datetime: Option<String>,
     /// Numeric ID of the community creator.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub creator_id: Option<String>,
     /// Display name of the community creator.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub creator_name: Option<String>,
     /// Username of the community creator.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub creator_username: Option<String>,
     /// Description of the community.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     /// Unique community identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Invites policy for the community.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub invites_policy: Option<String>,
     /// Whether the authenticated user is a member.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_member: Option<bool>,
     /// Whether the community is marked as NSFW.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_nsfw: Option<bool>,
     /// Join policy for the community.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub join_policy: Option<String>,
     /// Number of members.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub member_count: Option<i64>,
     /// Name of the community.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Role of the authenticated user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub role: Option<String>,
     /// Community rules.
     pub rules: Option<Vec<CommunityRule>>,
@@ -1282,12 +1329,16 @@ pub struct CommunityData {
 #[serde(default)]
 pub struct CommunityNoteData {
     /// Timestamp when the note was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Unique note identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Current status of the note.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub status: Option<String>,
     /// Text content of the community note.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub text: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1310,8 +1361,10 @@ pub struct CommunityNotesResponse {
 #[serde(default)]
 pub struct CommunityRule {
     /// Detailed description of the rule.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     /// Name/title of the rule.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1323,6 +1376,7 @@ pub struct CommunityRule {
 #[serde(default)]
 pub struct ErrorResponse {
     /// Human-readable error message describing what went wrong.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub error: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1334,32 +1388,46 @@ pub struct ErrorResponse {
 #[serde(default)]
 pub struct FilterRuleDeliveryLogResponse {
     /// Username of the tweet author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_username: Option<String>,
     /// Overall delivery status (e.g., "delivered", "failed", "pending").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub delivery_status: Option<String>,
     /// Timestamp when the tweet was detected by the filter rule.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub detected_at: Option<String>,
     /// Unique log entry identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Human-readable latency badge (e.g., "fast", "normal", "slow").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub latency_badge: Option<String>,
     /// Detection latency in milliseconds.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub latency_ms: Option<i64>,
     /// ID of the filter rule that matched the tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub rule_id: Option<String>,
     /// Tag label of the filter rule.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub rule_tag: Option<String>,
     /// ID of the matched tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_id: Option<String>,
     /// Timestamp when the tweet was originally published.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_published_at: Option<String>,
     /// Truncated preview of the tweet text.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_text_preview: Option<String>,
     /// Full URL to the tweet on Twitter/X.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_url: Option<String>,
     /// Number of webhook delivery attempts.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub webhook_attempts: Option<i64>,
     /// HTTP status code returned by the webhook endpoint, if applicable.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub webhook_status_code: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1371,30 +1439,43 @@ pub struct FilterRuleDeliveryLogResponse {
 #[serde(default)]
 pub struct FilterRuleResponse {
     /// Timestamp when the rule was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Credit cost per day for this rule at the current interval.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub credits_per_rule_per_day: Option<f64>,
     /// Unique filter rule identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Polling interval in seconds.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub interval_seconds: Option<f64>,
     /// Maximum number of tweets returned per poll cycle.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub max_results_per_poll: Option<i64>,
     /// Current pricing tier label based on interval.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pricing_tier: Option<String>,
     /// Twitter Advanced Search query.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     /// Current status of the rule. Suspended indicates the rule was auto-paused due to insufficient credits.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub status: Option<String>,
     /// Reason for the current status, if applicable.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub status_reason: Option<String>,
     /// Human-readable label for the rule.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tag: Option<String>,
     /// Timestamp when the rule was last updated.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub updated_at: Option<String>,
     /// Whether a webhook secret is configured. The actual secret is never returned.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub webhook_secret_set: Option<bool>,
     /// HTTPS URL receiving webhook deliveries.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub webhook_url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1428,10 +1509,13 @@ impl std::fmt::Display for GetCommunityTweetsTweetType {
 pub struct GetFilterRuleDeliveryLogsResponse {
     pub logs: Vec<FilterRuleDeliveryLogResponse>,
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page: Option<i64>,
     /// Number of items per page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page_size: Option<i64>,
     /// Total number of delivery logs.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1452,10 +1536,13 @@ pub struct GetFilterRulePricingTiersResponse {
 #[serde(default)]
 pub struct GetFilterRulePricingTiersResponseTiersItem {
     /// Credit cost per rule per day at this tier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub credits_per_rule_per_day: Option<f64>,
     /// Maximum polling interval for this tier in seconds.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub max_interval_seconds: Option<f64>,
     /// Human-readable tier name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tier_label: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1502,6 +1589,7 @@ pub struct Hashtag {
     /// Start and end positions of the hashtag in the tweet text.
     pub indices: Option<Vec<i64>>,
     /// The hashtag text (without the # symbol).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub text: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1513,22 +1601,31 @@ pub struct Hashtag {
 #[serde(default)]
 pub struct ListData {
     /// Timestamp when the list was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Description of the list.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     /// Unique list identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Number of members in the list.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub member_count: Option<i64>,
     /// Visibility mode of the list.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub mode: Option<String>,
     /// Name of the list.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Number of subscribers to the list.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub subscriber_count: Option<i64>,
     /// Numeric ID of the list owner.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub user_id: Option<String>,
     /// Username of the list owner.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub username: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1539,11 +1636,14 @@ pub struct ListData {
 #[serde(default)]
 pub struct ListFilterRulesResponse {
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page: Option<i64>,
     /// Number of items per page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page_size: Option<i64>,
     pub rules: Vec<FilterRuleResponse>,
     /// Total number of filter rules.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1576,10 +1676,13 @@ impl std::fmt::Display for ListFilterRulesStatus {
 pub struct ListStreamBillingLogsResponse {
     pub logs: Vec<BillingLogResponse>,
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page: Option<i64>,
     /// Number of items per page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page_size: Option<i64>,
     /// Total number of billing logs.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1591,10 +1694,13 @@ pub struct ListStreamBillingLogsResponse {
 pub struct ListStreamDeliveryLogsResponse {
     pub logs: Vec<TweetDeliveryLogResponse>,
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page: Option<i64>,
     /// Number of items per page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page_size: Option<i64>,
     /// Total number of delivery logs.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1606,10 +1712,13 @@ pub struct ListStreamDeliveryLogsResponse {
 pub struct ListStreamMonitorsResponse {
     pub monitors: Vec<StreamMonitorResponse>,
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page: Option<i64>,
     /// Number of items per page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page_size: Option<i64>,
     /// Total number of monitors.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1641,6 +1750,7 @@ impl std::fmt::Display for ListStreamMonitorsStatus {
 #[serde(default)]
 pub struct ListStreamWebhooksResponse {
     /// Total number of webhooks.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total: Option<i64>,
     pub webhooks: Vec<WebhookListItem>,
     /// Fields present in the response but not in the spec.
@@ -1653,23 +1763,32 @@ pub struct ListStreamWebhooksResponse {
 #[serde(default)]
 pub struct Media {
     /// Alt text description of the media.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub alt_text: Option<String>,
     /// Duration in milliseconds (for video/GIF).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub duration_ms: Option<i64>,
     /// Height of the media in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub height: Option<i64>,
     /// Unique identifier for the media.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub media_key: Option<String>,
     /// URL of the preview/thumbnail image.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub preview_image_url: Option<String>,
     /// Type of media.
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// URL of the media resource.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Number of views (for video).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub view_count: Option<i64>,
     /// Width of the media in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub width: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1681,16 +1800,22 @@ pub struct Media {
 #[serde(default)]
 pub struct Place {
     /// Country name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
     /// ISO country code.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country_code: Option<String>,
     /// Full human-readable place name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub full_name: Option<String>,
     /// Unique place identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Short place name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Type of place.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub place_type: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1706,18 +1831,25 @@ pub struct PlaceData {
     /// Geographical bounding box coordinates.
     pub bounding_box: Option<PlaceDataBoundingBox>,
     /// Country name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
     /// ISO country code.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country_code: Option<String>,
     /// Full place name including region.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub full_name: Option<String>,
     /// Unique place identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Place name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Type of place.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub place_type: Option<String>,
     /// Twitter URL for the place.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1731,6 +1863,7 @@ pub struct PlaceDataBoundingBox {
     /// Array of coordinate arrays defining the bounding box.
     pub coordinates: Vec<Vec<Vec<f64>>>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1742,12 +1875,15 @@ pub struct PlaceDataBoundingBox {
 #[serde(default)]
 pub struct PlaceTrendsData {
     /// Country name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
     /// Name of the location.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// List of trending topics at this location.
     pub trends: Vec<TrendData>,
     /// Where On Earth ID of the location.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub woeid: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1770,14 +1906,18 @@ pub struct PlacesResponse {
 #[serde(default)]
 pub struct Poll {
     /// Total duration of the poll in minutes.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub duration_minutes: Option<i64>,
     /// When the poll ends or ended.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub end_datetime: Option<String>,
     /// Unique poll identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Poll options with vote counts.
     pub options: Vec<PollOption>,
     /// Current voting status.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub voting_status: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1789,10 +1929,13 @@ pub struct Poll {
 #[serde(default)]
 pub struct PollOption {
     /// Text label of the poll option.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub label: Option<String>,
     /// Position of the option (1-indexed).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
     /// Number of votes for this option.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub votes: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1804,32 +1947,46 @@ pub struct PollOption {
 #[serde(default)]
 pub struct SpaceData {
     /// Timestamp when the Space was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Numeric ID of the Space creator.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub creator_id: Option<String>,
     /// Display name of the Space creator.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub creator_name: Option<String>,
     /// Username of the Space creator.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub creator_username: Option<String>,
     /// Timestamp when the Space ended.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub ended_at: Option<String>,
     /// Unique Space identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Whether the Space requires a ticket.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_ticketed: Option<bool>,
     /// Current number of participants.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub participant_count: Option<i64>,
     /// Scheduled start time for upcoming Spaces.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub scheduled_start: Option<String>,
     /// Timestamp when the Space started.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub started_at: Option<String>,
     /// Current state of the Space (e.g., live, scheduled, ended).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub state: Option<String>,
     /// Title of the Space.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Number of live listeners.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_live_listeners: Option<i64>,
     /// Total number of users who participated.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_participated: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1841,30 +1998,41 @@ pub struct SpaceData {
 #[serde(default)]
 pub struct StreamMonitorResponse {
     /// Timestamp when the monitor was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Credit cost per monitored account per day.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub credits_per_account_per_day: Option<f64>,
     /// Estimated total credit cost per day based on current account count.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub estimated_credits_per_day: Option<f64>,
     /// Tweet types being delivered. Null means all types.
     pub filter_types: Option<Vec<String>>,
     /// Unique stream monitor identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Human-readable name of the monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Current pricing tier label.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pricing_tier: Option<String>,
     /// Current status of the monitor. Suspended indicates the monitor was auto-paused due to insufficient credits.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub status: Option<String>,
     /// Reason for the current status, if applicable (e.g., "insufficient_credits").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub status_reason: Option<String>,
     /// Timestamp when the monitor was last updated.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub updated_at: Option<String>,
     /// List of monitored Twitter usernames.
     pub usernames: Vec<String>,
     /// Whether a webhook secret is configured. The actual secret is never returned.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub webhook_secret_set: Option<bool>,
     /// HTTPS URL receiving webhook deliveries.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub webhook_url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1875,12 +2043,16 @@ pub struct StreamMonitorResponse {
 #[serde(default)]
 pub struct TestStreamWebhookResponse {
     /// Error message if the webhook test failed.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub error: Option<String>,
     /// Response time in milliseconds.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub response_time_ms: Option<f64>,
     /// HTTP status code returned by the webhook endpoint.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub status_code: Option<i64>,
     /// Whether the webhook responded with a 2xx status code.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub success: Option<bool>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1892,14 +2064,19 @@ pub struct TestStreamWebhookResponse {
 #[serde(default)]
 pub struct TrendData {
     /// Contextual category of the trend (e.g., 'Entertainment', 'Sports').
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain_context: Option<String>,
     /// Name of the trending topic or hashtag.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Search query string for this trend.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     /// Approximate number of tweets about this trend.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub tweet_count: Option<i64>,
     /// Twitter search URL for this trend.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1922,44 +2099,62 @@ pub struct TrendsResponse {
 #[serde(default)]
 pub struct TweetData {
     /// Number of times this tweet has been bookmarked.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub bookmark_count: Option<i64>,
     /// Whether the authenticated user has bookmarked this tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub bookmarked: Option<bool>,
     /// ID of the conversation thread this tweet belongs to.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub conversation_id: Option<String>,
     /// Timestamp when the tweet was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// List of tweet IDs in the edit chain.
     pub edit_tweet_ids: Option<Vec<String>>,
     /// Timestamp (milliseconds) until the tweet can be edited.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub editable_until_msecs: Option<i64>,
     /// Number of remaining edits allowed.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub edits_remaining: Option<i64>,
     /// Number of times this tweet has been liked.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub favorite_count: Option<i64>,
     /// Whether the authenticated user has liked this tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub favorited: Option<bool>,
     /// Full text of the tweet, including extended content beyond 280 characters.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub full_text: Option<String>,
     /// Whether the tweet has a link preview card.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub has_card: Option<bool>,
     /// Whether the tweet has community notes attached.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub has_community_notes: Option<bool>,
     /// Hashtags in the tweet.
     pub hashtags: Vec<Hashtag>,
     /// Unique tweet identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// ID of the tweet this is a reply to, if applicable.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub in_reply_to_status_id: Option<String>,
     /// ID of the user this tweet is replying to.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub in_reply_to_user_id: Option<String>,
     /// Whether the tweet is eligible for editing.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_edit_eligible: Option<bool>,
     /// Whether the tweet is a quote tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_quote_status: Option<bool>,
     /// Whether the tweet is a retweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_retweet: Option<bool>,
     /// BCP 47 language tag of the tweet content.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub lang: Option<String>,
     /// Media attachments (photos, videos, GIFs).
     pub media: Vec<Media>,
@@ -1968,38 +2163,53 @@ pub struct TweetData {
     /// Poll data if the tweet contains a poll.
     pub poll: Option<Poll>,
     /// Whether the tweet is flagged as possibly containing sensitive content.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub possibly_sensitive: Option<bool>,
     /// Number of times this tweet has been quoted.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub quote_count: Option<i64>,
     /// ID of the quoted tweet, if this is a quote tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub quoted_status_id: Option<String>,
     /// Number of replies to this tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reply_count: Option<i64>,
     /// Number of times this tweet has been retweeted.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub retweet_count: Option<i64>,
     /// Whether the authenticated user has retweeted this tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub retweeted: Option<bool>,
     /// ID of the original tweet, if this is a retweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub retweeted_status_id: Option<String>,
     /// Client application used to post the tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
     /// The tweet text content.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub text: Option<String>,
     /// Title of the link preview card.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail_title: Option<String>,
     /// URL of the link preview thumbnail.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail_url: Option<String>,
     /// URLs mentioned in the tweet.
     pub urls: Vec<Url>,
     /// Numeric ID of the tweet author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub user_id: Option<String>,
     /// Users mentioned in the tweet.
     pub user_mentions: Vec<UserMention>,
     /// Display name of the tweet author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub user_name: Option<String>,
     /// Username (screen name) of the tweet author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub username: Option<String>,
     /// Number of times this tweet has been viewed.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub view_count: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2011,32 +2221,46 @@ pub struct TweetData {
 #[serde(default)]
 pub struct TweetDeliveryLogResponse {
     /// Username of the tweet author.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_username: Option<String>,
     /// Overall delivery status (e.g., "delivered", "failed", "pending").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub delivery_status: Option<String>,
     /// Timestamp when the tweet was detected by the monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub detected_at: Option<String>,
     /// Unique log entry identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Human-readable latency badge (e.g., "fast", "normal", "slow").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub latency_badge: Option<String>,
     /// Detection latency in milliseconds (time between tweet publication and detection).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub latency_ms: Option<i64>,
     /// ID of the stream monitor that detected the tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub monitor_id: Option<String>,
     /// Name of the stream monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub monitor_name: Option<String>,
     /// ID of the detected tweet.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_id: Option<String>,
     /// Timestamp when the tweet was originally published.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_published_at: Option<String>,
     /// Truncated preview of the tweet text.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_text_preview: Option<String>,
     /// Full URL to the tweet on Twitter/X.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tweet_url: Option<String>,
     /// Number of webhook delivery attempts.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub webhook_attempts: Option<i64>,
     /// HTTP status code returned by the webhook endpoint, if applicable.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub webhook_status_code: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2050,6 +2274,7 @@ pub struct TweetsResponse {
     /// Array of tweet objects.
     pub data: Option<Vec<TweetData>>,
     /// Cursor for fetching the next page. Null if no more results.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub next_cursor: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2061,12 +2286,16 @@ pub struct TweetsResponse {
 #[serde(default)]
 pub struct Url {
     /// Display-friendly version of the URL.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub display_url: Option<String>,
     /// The fully expanded URL.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub expanded_url: Option<String>,
     /// Fully resolved URL after following redirects.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub unwound_url: Option<String>,
     /// The shortened t.co URL.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2078,56 +2307,81 @@ pub struct Url {
 #[serde(default)]
 pub struct UserData {
     /// Whether the authenticated user can send a DM to this user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub can_dm: Option<bool>,
     /// Account creation timestamp.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Account creation date in ISO 8601 format.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at_datetime: Option<String>,
     /// The user's bio/description.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     /// Number of tweets this user has liked.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub favourites_count: Option<i64>,
     /// Whether this user follows the authenticated user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub followed_by: Option<bool>,
     /// Number of followers.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub followers_count: Option<i64>,
     /// Whether the authenticated user follows this user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub following: Option<bool>,
     /// Number of accounts this user follows.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub following_count: Option<i64>,
     /// Unique numeric user identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Whether the user has a Twitter Blue/Premium subscription.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_blue_verified: Option<bool>,
     /// Number of lists this user appears on.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub listed_count: Option<i64>,
     /// The user's self-reported location.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub location: Option<String>,
     /// Number of media items posted.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub media_count: Option<i64>,
     /// The user's display name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// IDs of the user's pinned tweets.
     pub pinned_tweet_ids: Option<Vec<String>>,
     /// Whether the user's content may be sensitive.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub possibly_sensitive: Option<bool>,
     /// Professional account type, if applicable.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub professional_type: Option<String>,
     /// URL of the user's profile banner.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub profile_banner_url: Option<String>,
     /// URL of the user's profile image.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub profile_image_url: Option<String>,
     /// Whether the user's tweets are protected (private).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub protected: Option<bool>,
     /// Total number of tweets posted.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub tweet_count: Option<i64>,
     /// URL in the user's profile.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// The user's screen name (handle).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub username: Option<String>,
     /// Whether the user is verified (legacy verification).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub verified: Option<bool>,
     /// Type of verification (e.g., Government, Business).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub verified_type: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2139,12 +2393,15 @@ pub struct UserData {
 #[serde(default)]
 pub struct UserMention {
     /// Numeric ID of the mentioned user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// Start and end positions of the mention in the tweet text.
     pub indices: Option<Vec<i64>>,
     /// Display name of the mentioned user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Username of the mentioned user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub username: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2158,6 +2415,7 @@ pub struct UsersResponse {
     /// Array of user objects.
     pub data: Option<Vec<UserData>>,
     /// Cursor for fetching the next page. Null if no more results.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub next_cursor: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2168,10 +2426,13 @@ pub struct UsersResponse {
 #[serde(default)]
 pub struct ValidateFilterRuleQueryResponse {
     /// Error message if the query is invalid.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub error: Option<String>,
     /// The query that was validated.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     /// Whether the query syntax is valid.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub valid: Option<bool>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2183,16 +2444,22 @@ pub struct ValidateFilterRuleQueryResponse {
 #[serde(default)]
 pub struct WebhookListItem {
     /// Timestamp when the webhook was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Unique webhook identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// ID of the associated stream monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub monitor_id: Option<String>,
     /// Name of the associated stream monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub monitor_name: Option<String>,
     /// Whether a secret is configured for this webhook.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub secret_set: Option<bool>,
     /// HTTPS URL of the webhook endpoint.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2204,14 +2471,19 @@ pub struct WebhookListItem {
 #[serde(default)]
 pub struct WebhookResponse {
     /// Timestamp when the webhook was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Unique webhook identifier.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     /// ID of the associated stream monitor.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub monitor_id: Option<String>,
     /// Webhook secret for HMAC-SHA256 signing. Only returned once on creation.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub secret: Option<String>,
     /// HTTPS URL of the webhook endpoint.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]

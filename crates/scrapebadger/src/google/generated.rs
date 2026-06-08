@@ -922,11 +922,16 @@ impl Google {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AdResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub displayed_link: Option<String>,
     pub extensions: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -937,8 +942,11 @@ pub struct AdResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AiModeResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub references: Vec<AiReference>,
     pub text_blocks: Vec<AiTextBlock>,
@@ -954,8 +962,10 @@ pub struct AiModeResponse {
 #[serde(default)]
 pub struct AiOverview {
     /// True when the AI Overview was present as a deferred block.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub deferred: Option<bool>,
     /// Continuation token for the deferred AI Overview fetch. Non-null when Google embeds only a placeholder in the main SERP response.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub page_token: Option<String>,
     pub references: Vec<AiOverviewReference>,
     pub text_blocks: Vec<AiOverviewTextBlock>,
@@ -968,8 +978,10 @@ pub struct AiOverview {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AiOverviewListItem {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
     pub snippet_links: Vec<SnippetLink>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -980,11 +992,17 @@ pub struct AiOverviewListItem {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AiOverviewReference {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub index: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub logo: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -996,9 +1014,11 @@ pub struct AiOverviewReference {
 #[serde(default)]
 pub struct AiOverviewTextBlock {
     pub list_items: Vec<AiOverviewListItem>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
     pub snippet_links: Vec<SnippetLink>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     pub video: Option<AiOverviewVideo>,
     pub video_links: Vec<AiOverviewVideo>,
@@ -1011,11 +1031,17 @@ pub struct AiOverviewTextBlock {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AiOverviewVideo {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub channel: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub duration: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1026,9 +1052,13 @@ pub struct AiOverviewVideo {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AiReference {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1039,8 +1069,10 @@ pub struct AiReference {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AiTextBlock {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1051,8 +1083,11 @@ pub struct AiTextBlock {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AutocompleteResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub suggestions: Vec<AutocompleteSuggestion>,
     /// Fields present in the response but not in the spec.
@@ -1064,7 +1099,9 @@ pub struct AutocompleteResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AutocompleteSuggestion {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub relevance: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub value: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1075,7 +1112,9 @@ pub struct AutocompleteSuggestion {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct CitationByYear {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub citations: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub year: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1086,12 +1125,17 @@ pub struct CitationByYear {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FinanceQuoteResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub exchange: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub price: Option<f64>,
     pub price_movement: Option<PriceMovement>,
     pub stats: Option<FinanceStats>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub stock: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1102,10 +1146,15 @@ pub struct FinanceQuoteResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FinanceStats {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub day_range: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub market_cap: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pe_ratio: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub prev_close: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub year_range: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1116,9 +1165,13 @@ pub struct FinanceStats {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FlightAirport {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub city: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub iata_code: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1129,9 +1182,13 @@ pub struct FlightAirport {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FlightLayover {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub airport: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub airport_name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub duration_minutes: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub overnight: Option<bool>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1142,21 +1199,34 @@ pub struct FlightLayover {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FlightLeg {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub aircraft: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub airline: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub airline_logo: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub arrival_airport: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub arrival_airport_name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub arrival_time: Option<String>,
     /// IATA code
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub departure_airport: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub departure_airport_name: Option<String>,
     /// ISO-8601 local time of departure
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub departure_time: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub duration_minutes: Option<i64>,
     pub extensions: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub flight_number: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub legroom: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub travel_class: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1167,18 +1237,27 @@ pub struct FlightLeg {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FlightOffer {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub airline_logo: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub booking_token: Option<String>,
     /// Difference vs typical emissions for this route, in grams
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub carbon_emissions_diff_typical: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub carbon_emissions_grams: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub departure_token: Option<String>,
     pub extensions: Vec<String>,
     pub layovers: Vec<FlightLayover>,
     pub legs: Vec<FlightLeg>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub price: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price_type: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_duration_minutes: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1189,9 +1268,11 @@ pub struct FlightOffer {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FlightPriceInsights {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub lowest_price: Option<f64>,
     /// Historical price points as [[unix_timestamp, price], ...]
     pub price_history: Option<Vec<Vec<f64>>>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price_level: Option<String>,
     /// [min, max] typical price for this route
     pub typical_price_range: Option<Vec<f64>>,
@@ -1288,14 +1369,20 @@ impl std::fmt::Display for FlightsSearchTripType {
 #[serde(default)]
 pub struct GoogleFlightsResponse {
     pub airports: Vec<FlightAirport>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub arrival_id: Option<String>,
     pub best_flights: Vec<FlightOffer>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub departure_id: Option<String>,
     pub other_flights: Vec<FlightOffer>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub outbound_date: Option<String>,
     pub price_insights: Option<FlightPriceInsights>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub return_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub trip_type: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1349,7 +1436,9 @@ pub struct GoogleShortsResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GpsCoordinates {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub lat: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub lng: Option<f64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1370,8 +1459,11 @@ pub struct HotelDetailResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct HotelNearbyPlace {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub duration: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub transport: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1382,10 +1474,15 @@ pub struct HotelNearbyPlace {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct HotelPrice {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub cancellation_policy: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub price: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1396,22 +1493,33 @@ pub struct HotelPrice {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct HotelProperty {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub address: Option<String>,
     pub amenities: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub check_in_time: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub check_out_time: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub eco_certified: Option<bool>,
     pub gps_coordinates: Option<GpsCoordinates>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub hotel_class: Option<i64>,
     pub images: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     pub nearby_places: Vec<HotelNearbyPlace>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub overall_rating: Option<f64>,
     pub prices: Vec<HotelPrice>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub property_token: Option<String>,
     pub rate_per_night: Option<HotelRate>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
     pub total_rate: Option<HotelRate>,
     /// Fields present in the response but not in the spec.
@@ -1423,8 +1531,11 @@ pub struct HotelProperty {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct HotelRate {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub extracted: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub lowest: Option<f64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1455,13 +1566,21 @@ pub struct HttpValidationError {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ImageResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub original: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub original_height: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub original_width: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1472,8 +1591,11 @@ pub struct ImageResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ImagesSearchResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub results: Vec<ImageResult>,
     /// Fields present in the response but not in the spec.
@@ -1485,7 +1607,9 @@ pub struct ImagesSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct InlineSitelink {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1496,12 +1620,19 @@ pub struct InlineSitelink {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct InlineVideo {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub duration: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub platform: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1512,8 +1643,11 @@ pub struct InlineVideo {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct JobApplyOption {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1524,6 +1658,7 @@ pub struct JobApplyOption {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct JobFilter {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     pub options: Vec<JobFilterOption>,
     /// Fields present in the response but not in the spec.
@@ -1535,7 +1670,9 @@ pub struct JobFilter {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct JobFilterOption {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub label: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub value: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1561,21 +1698,32 @@ pub struct JobResult {
     /// Flat list of apply URLs for quick access.
     pub apply_links: Vec<String>,
     pub apply_options: Vec<JobApplyOption>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub company_name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     pub extensions: Vec<String>,
     pub job_highlights: Option<JobHighlights>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub job_type: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub location: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub posted_at: Option<String>,
     pub salary: Option<JobSalary>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub schedule_type: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Canonical Google Jobs listing URL.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Source platform ("Talent.com", "Built In NYC", …) parsed from "via X".
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub via: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub work_from_home: Option<bool>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1586,9 +1734,13 @@ pub struct JobResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct JobSalary {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub max: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub min: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub period: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1721,11 +1873,16 @@ pub struct JobsSearchResponse {
 #[serde(default)]
 pub struct KnowledgeGraph {
     pub attributes: HashMap<String, String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1736,10 +1893,15 @@ pub struct KnowledgeGraph {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct LensResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1750,6 +1912,7 @@ pub struct LensResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct LensSearchResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image_url: Option<String>,
     pub results: Vec<LensResult>,
     /// Fields present in the response but not in the spec.
@@ -1761,14 +1924,21 @@ pub struct LensSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct LocalResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub address: Option<String>,
     pub gps_coordinates: Option<GpsCoordinates>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub phone: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub place_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1779,7 +1949,9 @@ pub struct LocalResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsLocationDetails {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub logo: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1790,9 +1962,13 @@ pub struct MapsLocationDetails {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsLocationInfo {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub address: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1803,7 +1979,9 @@ pub struct MapsLocationInfo {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsOwnerResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub text: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1814,7 +1992,9 @@ pub struct MapsOwnerResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsPhoto {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1825,7 +2005,9 @@ pub struct MapsPhoto {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsPhotoCategory {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1848,38 +2030,60 @@ pub struct MapsPhotosResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsPlaceDetail {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub address: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub data_cid: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub data_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     pub extensions: HashMap<String, HashMap<String, Value>>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub google_maps_url: Option<String>,
     pub gps_coordinates: Option<GpsCoordinates>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub hours: Option<String>,
     /// Full-size image URL (same CDN as thumbnail but larger)
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub open_state: Option<String>,
     pub operating_hours: HashMap<String, String>,
     pub order_online_urls: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub phone: Option<String>,
     pub photos: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub photos_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub place_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub posts_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price_level: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub provider_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rank: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
     pub rating_breakdown: HashMap<String, i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub reviews_link: Option<String>,
     pub service_options: Option<MapsServiceOptions>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     pub type_ids: Vec<String>,
     pub types: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub website: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1900,34 +2104,55 @@ pub struct MapsPlaceResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsPlaceResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub address: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub data_cid: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub data_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     pub extensions: Vec<HashMap<String, Vec<String>>>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub google_maps_url: Option<String>,
     pub gps_coordinates: Option<GpsCoordinates>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub hours: Option<String>,
     /// Full-size image URL (same CDN as thumbnail but larger)
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub open_state: Option<String>,
     pub operating_hours: HashMap<String, String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub phone: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub photos_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub place_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub posts_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price_level: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rank: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub reviews_link: Option<String>,
     pub service_options: Option<MapsServiceOptions>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     pub type_ids: Vec<String>,
     pub types: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub website: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1938,9 +2163,13 @@ pub struct MapsPlaceResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsPost {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1952,9 +2181,11 @@ pub struct MapsPost {
 #[serde(default)]
 pub struct MapsPostsResponse {
     /// True when the SERP knowledge panel shows an 'Updates from' section
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub has_updates: Option<bool>,
     pub location_details: Option<MapsLocationDetails>,
     /// The 'From the business' description text set by the business owner
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub merchant_description: Option<String>,
     pub pagination: Option<Pagination>,
     pub post_data: Vec<MapsPost>,
@@ -1967,12 +2198,17 @@ pub struct MapsPostsResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsReview {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
     pub images: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub iso_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub likes: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rating: Option<i64>,
     pub response_from_owner: Option<MapsOwnerResponse>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub text: Option<String>,
     pub user: Option<MapsReviewUser>,
     /// Fields present in the response but not in the spec.
@@ -1984,8 +2220,11 @@ pub struct MapsReview {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsReviewTopic {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub keyword: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub mentions: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -1996,11 +2235,17 @@ pub struct MapsReviewTopic {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsReviewUser {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub contributor_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub local_guide: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub photos_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2064,9 +2309,13 @@ pub struct MapsSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MapsServiceOptions {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub curbside_pickup: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub delivery: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub dine_in: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub takeout: Option<bool>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2077,12 +2326,17 @@ pub struct MapsServiceOptions {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct NewsArticle {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub published_at: Option<String>,
     pub related_stories: Vec<NewsRelatedStory>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
     pub source: Option<NewsSource>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2134,9 +2388,13 @@ impl std::fmt::Display for NewsByTopicTopic {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct NewsRelatedStory {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub published_at: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2147,10 +2405,15 @@ pub struct NewsRelatedStory {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct NewsResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2162,8 +2425,11 @@ pub struct NewsResult {
 #[serde(default)]
 pub struct NewsSearchResponse {
     pub articles: Vec<NewsArticle>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2174,8 +2440,11 @@ pub struct NewsSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct NewsSource {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub icon: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2187,8 +2456,11 @@ pub struct NewsSource {
 #[serde(default)]
 pub struct NewsTopicsResponse {
     pub articles: Vec<NewsArticle>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub topic: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2200,7 +2472,9 @@ pub struct NewsTopicsResponse {
 #[serde(default)]
 pub struct NewsTrendingResponse {
     pub articles: Vec<NewsArticle>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2211,18 +2485,28 @@ pub struct NewsTrendingResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct OrganicResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub displayed_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub favicon: Option<String>,
     pub highlighted_keywords: Vec<String>,
     pub inline_sitelinks: Vec<InlineSitelink>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub page_rank: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rank: Option<i64>,
     pub sitelinks: Vec<Sitelink>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2234,9 +2518,12 @@ pub struct OrganicResult {
 #[serde(default)]
 pub struct Pagination {
     pub current: Option<Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub next: Option<String>,
     pub page_no: HashMap<String, String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_pages: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_results: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2247,9 +2534,13 @@ pub struct Pagination {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PatentCitation {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub assignee: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub filing_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub patent_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2261,28 +2552,46 @@ pub struct PatentCitation {
 #[serde(default)]
 pub struct PatentDetail {
     #[serde(rename = "abstract")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub abstract_: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub application_number: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub assignee: Option<String>,
     pub citations: Vec<PatentCitation>,
     pub claims: Vec<String>,
     pub classifications: Vec<String>,
     pub country_status: HashMap<String, String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub expiration_date: Option<String>,
     pub figures: Vec<PatentFigure>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub filing_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub grant_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub inventor: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub patent_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pdf_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub priority_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub publication_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub publication_number: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2303,7 +2612,9 @@ pub struct PatentDetailResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PatentFigure {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2314,21 +2625,35 @@ pub struct PatentFigure {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PatentResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub assignee: Option<String>,
     pub country_status: HashMap<String, String>,
     pub figures: Vec<PatentFigure>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub filing_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub grant_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub inventor: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub patent_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pdf_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub priority_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub publication_date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub publication_number: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2340,8 +2665,10 @@ pub struct PatentResult {
 #[serde(default)]
 pub struct PatentSearchResponse {
     pub pagination: Option<Pagination>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub results: Vec<PatentResult>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_results: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2352,8 +2679,11 @@ pub struct PatentSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PriceMovement {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub direction: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub percentage: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub value: Option<f64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2364,15 +2694,22 @@ pub struct PriceMovement {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ProductDetailResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub brand: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     pub images: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price_range: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub product_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
     pub sellers: Vec<ProductSeller>,
     pub specs: HashMap<String, String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2383,9 +2720,13 @@ pub struct ProductDetailResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ProductSeller {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub shipping: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2396,12 +2737,19 @@ pub struct ProductSeller {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct RelatedQuestion {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub displayed_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub question: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rank: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source_logo: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2412,7 +2760,9 @@ pub struct RelatedQuestion {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct RelatedSearch {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2423,12 +2773,19 @@ pub struct RelatedSearch {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarAuthorArticle {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub authors: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub cited_by_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub cited_by_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub publication: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub year: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2439,8 +2796,10 @@ pub struct ScholarAuthorArticle {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarAuthorCitationResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_id: Option<String>,
     pub citations_by_year: Vec<CitationByYear>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_citations: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2452,11 +2811,16 @@ pub struct ScholarAuthorCitationResponse {
 #[serde(default)]
 pub struct ScholarAuthorInfo {
     pub affiliations: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub email_domain: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub homepage: Option<String>,
     pub interests: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2480,12 +2844,19 @@ pub struct ScholarAuthorResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarAuthorStats {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub citations_all: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub citations_since_year: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub h_index_all: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub h_index_since_year: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub i10_index_all: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub i10_index_since_year: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub since_year: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2496,7 +2867,9 @@ pub struct ScholarAuthorStats {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarCitationFormat {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub citation: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub style: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2507,7 +2880,9 @@ pub struct ScholarCitationFormat {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarCitationLink {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2529,9 +2904,13 @@ pub struct ScholarCiteResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarCoAuthor {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub affiliation: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2542,15 +2921,23 @@ pub struct ScholarCoAuthor {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarProfile {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub affiliation: Option<String>,
     /// Google Scholar user ID (the `user` query parameter)
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub author_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub cited_by: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub email_domain: Option<String>,
     pub interests: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2562,11 +2949,15 @@ pub struct ScholarProfile {
 #[serde(default)]
 pub struct ScholarProfilesResponse {
     /// Pagination token for the next page
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub after_author: Option<String>,
     /// Pagination token for the previous page
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub before_author: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
     pub profiles: Vec<ScholarProfile>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2578,15 +2969,25 @@ pub struct ScholarProfilesResponse {
 #[serde(default)]
 pub struct ScholarResult {
     pub authors: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub cited_by_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub cited_by_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pdf_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub publication_info: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub related_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub versions_count: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2597,9 +2998,12 @@ pub struct ScholarResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScholarSearchResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub results: Vec<ScholarResult>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_results: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2610,10 +3014,15 @@ pub struct ScholarSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SearchInformation {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub organic_results_state: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query_displayed: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub time_taken: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_results: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2751,10 +3160,15 @@ impl std::fmt::Display for SearchPatentsStatus {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingClickResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub merchant_domain: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub merchant_url: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub product_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source_query: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2765,6 +3179,7 @@ pub struct ShoppingClickResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingFilter {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     pub options: Vec<ShoppingFilterOption>,
     /// Fields present in the response but not in the spec.
@@ -2776,10 +3191,14 @@ pub struct ShoppingFilter {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingFilterOption {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub aria_label: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub label: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub value: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2790,8 +3209,11 @@ pub struct ShoppingFilterOption {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingPrice {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub extracted: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub value: Option<f64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2802,16 +3224,24 @@ pub struct ShoppingPrice {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingProductDetail {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub brand: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     pub images: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub price_range_high: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub price_range_low: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
     pub sellers: Vec<ShoppingSeller>,
     pub specs: HashMap<String, String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2832,25 +3262,43 @@ pub struct ShoppingProductResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingProductResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub click_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub delivery: Option<String>,
     pub extensions: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub old_price: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub old_price_extracted: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub on_sale: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub page_token: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
     pub price: Option<ShoppingPrice>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub product_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub return_policy: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub reviews: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source_icon: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tag: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2861,12 +3309,19 @@ pub struct ShoppingProductResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2890,15 +3345,25 @@ pub struct ShoppingSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ShoppingSeller {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub logo: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub original_price: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub price: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub reviews_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub shipping: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tax: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub total_cost: Option<f64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2910,17 +3375,28 @@ pub struct ShoppingSeller {
 #[serde(default)]
 pub struct ShortVideoResult {
     /// Channel / account name
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub account: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub duration: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub published: Option<String>,
     /// Host domain (e.g. 'youtube.com', 'tiktok.com')
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub video_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub views: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2931,8 +3407,11 @@ pub struct ShortVideoResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Sitelink {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub snippet: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2943,7 +3422,9 @@ pub struct Sitelink {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SnippetLink {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link_text: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2956,11 +3437,15 @@ pub struct SnippetLink {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsAutocompleteItem {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
     /// Knowledge Graph machine ID (e.g. '/m/02vx4')
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub mid: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -2971,6 +3456,7 @@ pub struct TrendsAutocompleteItem {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsAutocompleteResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub results: Vec<TrendsAutocompleteItem>,
     /// Fields present in the response but not in the spec.
@@ -2983,6 +3469,7 @@ pub struct TrendsAutocompleteResponse {
 #[serde(default)]
 pub struct TrendsInterestResponse {
     pub averages: Vec<TrendsTimelineValue>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub timeline: Vec<TrendsTimelinePoint>,
     /// Fields present in the response but not in the spec.
@@ -2994,9 +3481,13 @@ pub struct TrendsInterestResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsRegionInterest {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub max_value_index: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub region: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub region_code: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub value: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -3040,6 +3531,7 @@ impl std::fmt::Display for TrendsRegionsResolution {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsRegionsResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub regions: Vec<TrendsRegionInterest>,
     /// Fields present in the response but not in the spec.
@@ -3051,10 +3543,15 @@ pub struct TrendsRegionsResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsRelatedItem {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub topic_id: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub topic_type: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub value: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -3065,6 +3562,7 @@ pub struct TrendsRelatedItem {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsRelatedResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub rising_queries: Vec<TrendsRelatedItem>,
     pub rising_topics: Vec<TrendsRelatedItem>,
@@ -3115,7 +3613,9 @@ impl std::fmt::Display for TrendsSearchDataType {
 #[serde(default)]
 pub struct TrendsSearchResponse {
     pub averages: Vec<TrendsTimelineValue>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub data_type: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub regions: Vec<TrendsRegionInterest>,
     pub rising_queries: Vec<TrendsRelatedItem>,
@@ -3132,7 +3632,9 @@ pub struct TrendsSearchResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsTimelinePoint {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub timestamp: Option<i64>,
     pub values: Vec<TrendsTimelineValue>,
     /// Fields present in the response but not in the spec.
@@ -3144,8 +3646,11 @@ pub struct TrendsTimelinePoint {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsTimelineValue {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub extracted_value: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub value: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -3156,9 +3661,13 @@ pub struct TrendsTimelineValue {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsTrendingArticle {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -3170,7 +3679,9 @@ pub struct TrendsTrendingArticle {
 #[serde(default)]
 pub struct TrendsTrendingItem {
     pub articles: Vec<TrendsTrendingArticle>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub traffic: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -3231,6 +3742,7 @@ impl std::fmt::Display for TrendsTrendingNowStatus {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TrendsTrendingResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
     pub trending: Vec<TrendsTrendingItem>,
     /// Fields present in the response but not in the spec.
@@ -3244,8 +3756,10 @@ pub struct ValidationError {
     pub ctx: HashMap<String, Value>,
     pub input: Option<Value>,
     pub loc: Vec<Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub msg: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -3256,13 +3770,21 @@ pub struct ValidationError {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct VideoResult {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub displayed_link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub duration: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub source: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub thumbnail: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -3273,8 +3795,11 @@ pub struct VideoResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct VideosSearchResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub results: Vec<VideoResult>,
     /// Fields present in the response but not in the spec.

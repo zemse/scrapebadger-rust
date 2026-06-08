@@ -50,16 +50,21 @@ impl Account {
 #[serde(default)]
 pub struct GetAccountInfoResponse {
     /// PAYG (pay-as-you-go) credit balance — never expires
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub credits_balance: Option<i64>,
     /// Maximum API requests allowed per minute
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rate_limit_per_minute: Option<i64>,
     /// Active subscription details, or null if PAYG-only
     pub subscription: Option<GetAccountInfoResponseSubscription>,
     /// Subscription wallet — current period's monthly allowance (0 if no subscription)
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub subscription_credits_balance: Option<i64>,
     /// Account tier (free, basic, pro, enterprise)
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub tier: Option<String>,
     /// Sum of PAYG + subscription credits
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_credits_balance: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -70,26 +75,38 @@ pub struct GetAccountInfoResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetAccountInfoResponseSubscription {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub billing_cadence: Option<String>,
     /// Whether the subscription is set to cancel at period end
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub cancel_at_period_end: Option<bool>,
     /// When the cancellation takes effect
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub cancel_effective_at: Option<String>,
     /// Next renewal date
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub current_period_end: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub current_period_start: Option<String>,
     /// Credits included per month in this plan
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub monthly_credits: Option<i64>,
     /// When the pending plan change takes effect
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pending_change_effective_at: Option<String>,
     /// Scheduled downgrade plan code
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pending_plan_code: Option<String>,
     /// Scheduled downgrade plan title
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub pending_plan_title: Option<String>,
     /// Plan identifier (e.g., starter, growth, pro)
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub plan_code: Option<String>,
     /// Display name of the plan
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub plan_title: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub status: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]

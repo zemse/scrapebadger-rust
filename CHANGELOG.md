@@ -26,6 +26,10 @@
   that reconnects with exponential backoff (1s→30s, reset on success).
 - Live integration tests behind `SCRAPEBADGER_API_KEY` (ignored by default);
   run with `cargo test --test integration -- --ignored`.
+- Live type-conformance sweep (`examples/conformance.rs`): calls read endpoints
+  and verifies each response deserializes into its typed model, classifying
+  Pass / TYPE-failure / api-error and chaining real ids. Run with
+  `cargo run --example conformance` (needs `SCRAPEBADGER_API_KEY`).
 
 ### Robustness & forward-compat
 
@@ -34,6 +38,12 @@
 - Generated response structs capture unknown fields in a `#[serde(flatten)]`
   catch-all (`extra`) instead of silently dropping them — responses are now
   lossless against spec drift.
+- Lenient scalar decoding: every generated scalar field routes through
+  `core::flex` deserializers that accept numbers-as-strings, bools-as-strings,
+  and JSON-stringify an unexpected object — so the scalar/shape drift common in
+  scraped data no longer fails a whole response. Found and fixed real mismatches
+  in Twitter (string-encoded counts typed `i64`) and Vinted (`price` object
+  typed `String`) via the conformance sweep below.
 - Generated query-param enums and the `Error` enum are `#[non_exhaustive]`, so
   the API adding a value/variant later is not a breaking change. **Breaking** for
   exhaustive `match` on `Error` (add a `_ =>` arm).

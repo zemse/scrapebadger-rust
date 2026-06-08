@@ -240,6 +240,13 @@ impl SchemaCtx {
             if rename {
                 body.push_str(&format!("    #[serde(rename = \"{}\")]\n", pname));
             }
+            // Lenient scalar decoding: scraped responses often encode numbers/
+            // bools as strings (or send an object where a string is declared).
+            if let Some(de) = flex_deserializer(&ty) {
+                body.push_str(&format!(
+                    "    #[serde(default, deserialize_with = \"{de}\")]\n"
+                ));
+            }
             body.push_str(&format!("    pub {ident}: {ty},\n"));
             idents.insert(ident);
         }
@@ -432,6 +439,24 @@ fn unwrap_anyof_nullable(schema: &Value) -> Value {
         }
     }
     schema.clone()
+}
+
+/// Map a scalar field type to its lenient `crate::core::flex` deserializer, so
+/// generated response structs tolerate the scalar/shape drift common in scraped
+/// data. Non-scalar fields (`Vec`, `HashMap`, nested structs, `Value`) keep the
+/// default decoding.
+fn flex_deserializer(ty: &str) -> Option<&'static str> {
+    Some(match ty {
+        "Option<i64>" => "crate::core::flex::opt_i64",
+        "Option<f64>" => "crate::core::flex::opt_f64",
+        "Option<bool>" => "crate::core::flex::opt_bool",
+        "Option<String>" => "crate::core::flex::opt_string",
+        "i64" => "crate::core::flex::req_i64",
+        "f64" => "crate::core::flex::req_f64",
+        "bool" => "crate::core::flex::req_bool",
+        "String" => "crate::core::flex::req_string",
+        _ => return None,
+    })
 }
 
 /// Extract a fixed string `enum` value-set from a schema, if it is one.
