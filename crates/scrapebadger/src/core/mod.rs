@@ -5,6 +5,7 @@
 mod client;
 mod config;
 mod error;
+pub(crate) mod flex;
 mod request;
 
 pub mod pagination;

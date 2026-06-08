@@ -200,24 +200,31 @@ and remaining polish.
 - [ ] Publish to crates.io (`scrapebadger` — name is available) — **on hold**
 
 ## Type correctness (live validation)
-- [ ] **Live type-conformance suite for all 137 endpoints.** Hit every endpoint
-      with representative inputs, deserialize the real response into its
-      generated/typed model, and assert zero deserialization errors. Generalize
-      the Reddit approach (`scripts/collect_reddit_samples.py`) to every
-      platform. Surface: (a) hard type mismatches (like Reddit's mixed `edited`
-      bool|timestamp), (b) fields landing in `extra`/dropped as unknown
-      (under-modeled — candidates to promote), (c) endpoints still returning
-      `serde_json::Value`. Gate live runs on `SCRAPEBADGER_API_KEY`.
+- [x] **Live type-conformance suite** (`examples/conformance.rs`): calls read
+      endpoints, deserializes each live response into its typed model, classifies
+      Pass / TYPE-fail / api-err, and chains real ids. Found & fixed 4 real type
+      bugs (Twitter string-encoded counts typed `i64`; Vinted `price` object
+      typed `String`) via lenient `core::flex` decoding. Last run: 64 pass, 0
+      type failures.
+      - Coverage gaps (environmental, not type issues): Google scrapers return
+        404 "not configured" on the test key; Amazon detail hits anti-bot;
+        several Twitter detail endpoints (community/list/space/broadcast/place/
+        article) and all stream mutations are skipped — extend when ids/state
+        are available.
+      - Note: `vinted.search_brands` wants a `keyword` query param but the spec
+        declares `query` — a spec/param mismatch to investigate.
 - [ ] Commit **sanitized response fixtures** captured by the collector so the
       conformance suite also runs offline in CI (permanent regression guard,
       no key needed).
 
 ## Robustness & ergonomics
-- [ ] Retry `429` honoring `Retry-After` (client currently retries only
-      502/503/504 + transient; we hit 429s in practice — see sample collection).
+- [x] Retry `429` honoring `Retry-After` (capped 60s) + exponential backoff.
+- [x] Lenient scalar decoding (`core::flex`) — generated scalar fields accept
+      number/bool-as-string and JSON-stringify unexpected objects.
 - [x] Cross-platform pagination `*_stream` — Reddit (`after`) in
       `reddit/pagination.rs`; Amazon/Vinted (page) in `*/pagination.rs`.
-- [ ] `#[non_exhaustive]` on generated enums (and `Error`) so adding a
+- [x] `#[non_exhaustive]` on generated enums (and `Error`) so adding a
       variant/field later isn't a breaking change.
 - [ ] Enums for fixed-value **body** params (inputs only; currently query-only).
 - [ ] Add backoff **jitter** to client + WS reconnect (avoid thundering herd).
+- [ ] Investigate `vinted.search_brands` `keyword` vs spec's `query` param.

@@ -432,8 +432,10 @@ pub struct ValidationError {
     pub ctx: HashMap<String, Value>,
     pub input: Option<Value>,
     pub loc: Vec<Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub msg: Option<String>,
     #[serde(rename = "type")]
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub type_: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]

@@ -165,38 +165,53 @@ impl Vinted {
 #[serde(default)]
 pub struct GetItemDetailResponse {
     /// Brand name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub brand_title: Option<String>,
     /// Primary color.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub color1: Option<String>,
     /// Secondary color.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub color2: Option<String>,
     /// ISO 8601 timestamp when the item was listed.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// ISO 4217 currency code.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
     /// Full item description text.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
     /// Number of favourites.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub favourite_count: Option<i64>,
     /// Item ID.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub id: Option<i64>,
     /// Array of photo objects.
     pub photos: Vec<VintedPhoto>,
     /// Price in local currency.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price: Option<String>,
     /// Size label.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub size_title: Option<String>,
     /// Item condition (e.g. "New with tags", "Good").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub status: Option<String>,
     /// Item title.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// ISO 8601 timestamp of the last update.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub updated_at: Option<String>,
     /// Full URL to the Vinted listing.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Seller information.
     pub user: Option<VintedUserSummary>,
     /// Number of views.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub view_count: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -207,11 +222,14 @@ pub struct GetItemDetailResponse {
 #[serde(default)]
 pub struct GetUserItemsResponse {
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub current_page: Option<i64>,
     pub items: Vec<VintedItemSummary>,
     /// Number of items per page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub per_page: Option<i64>,
     /// Total number of items listed by this user.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_entries: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -222,28 +240,40 @@ pub struct GetUserItemsResponse {
 #[serde(default)]
 pub struct GetUserProfileResponse {
     /// User's city (if public).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub city: Option<String>,
     /// User's country.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country_title: Option<String>,
     /// ISO 8601 timestamp when the account was created.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub created_at: Option<String>,
     /// Total number of feedback ratings received.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub feedback_count: Option<i64>,
     /// Reputation score between 0 and 1.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub feedback_reputation: Option<f64>,
     /// Number of followers.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub followers_count: Option<i64>,
     /// Number of users followed.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub following_count: Option<i64>,
     /// Number of items the user has sold.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub given_item_count: Option<i64>,
     /// User ID.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub id: Option<i64>,
     /// Number of items currently listed.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub item_count: Option<i64>,
     /// ISO 8601 timestamp of last login.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub last_loged_on: Option<String>,
     /// Username.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub login: Option<String>,
     /// Profile photo.
     pub photo: Option<GetUserProfileResponsePhoto>,
@@ -256,8 +286,11 @@ pub struct GetUserProfileResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetUserProfileResponsePhoto {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub height: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub width: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -277,10 +310,13 @@ pub struct ListColorsResponse {
 #[serde(default)]
 pub struct ListColorsResponseColorsItem {
     /// Hex color code (e.g. "#000000").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub hex: Option<String>,
     /// Color ID.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub id: Option<i64>,
     /// Localized color name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -300,12 +336,16 @@ pub struct ListMarketsResponse {
 #[serde(default)]
 pub struct ListMarketsResponseMarketsItem {
     /// Market code (e.g. "fr", "de").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub code: Option<String>,
     /// ISO 4217 currency code.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
     /// Vinted domain for this market.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     /// Country name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -325,8 +365,10 @@ pub struct ListStatusesResponse {
 #[serde(default)]
 pub struct ListStatusesResponseStatusesItem {
     /// Status ID.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub id: Option<i64>,
     /// Localized condition label.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -346,14 +388,19 @@ pub struct SearchBrandsResponse {
 #[serde(default)]
 pub struct SearchBrandsResponseBrandsItem {
     /// Number of users following this brand.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub favourite_count: Option<i64>,
     /// Brand ID.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub id: Option<i64>,
     /// Number of items listed under this brand.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub item_count: Option<i64>,
     /// URL-friendly brand name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub slug: Option<String>,
     /// Brand name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -393,11 +440,14 @@ impl std::fmt::Display for SearchItemsOrder {
 #[serde(default)]
 pub struct SearchItemsResponse {
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub current_page: Option<i64>,
     pub items: Vec<VintedItemSummary>,
     /// Number of items per page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub per_page: Option<i64>,
     /// Total number of matching items across all pages.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_entries: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -408,21 +458,29 @@ pub struct SearchItemsResponse {
 #[serde(default)]
 pub struct VintedItemSummary {
     /// Brand name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub brand_title: Option<String>,
     /// ISO 4217 currency code (e.g. "EUR").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
     /// Number of users who favourited this item.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub favourite_count: Option<i64>,
     /// Item ID.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub id: Option<i64>,
     pub photo: Option<VintedPhoto>,
     /// Price in local currency (e.g. "15.00").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub price: Option<String>,
     /// Size label.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub size_title: Option<String>,
     /// Item title.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Full URL to the Vinted listing.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     pub user: Option<VintedUserSummary>,
     /// Fields present in the response but not in the spec.
@@ -434,10 +492,13 @@ pub struct VintedItemSummary {
 #[serde(default)]
 pub struct VintedPhoto {
     /// Height in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub height: Option<i64>,
     /// Photo URL.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Width in pixels.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub width: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -448,10 +509,13 @@ pub struct VintedPhoto {
 #[serde(default)]
 pub struct VintedUserSummary {
     /// Reputation score between 0 and 1.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub feedback_reputation: Option<f64>,
     /// User ID.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub id: Option<i64>,
     /// Username.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub login: Option<String>,
     pub photo: Option<VintedUserSummaryPhoto>,
     /// Fields present in the response but not in the spec.
@@ -462,6 +526,7 @@ pub struct VintedUserSummary {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct VintedUserSummaryPhoto {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]

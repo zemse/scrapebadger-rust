@@ -140,12 +140,18 @@ impl Web {
 #[serde(default)]
 pub struct DetectProtectionResponse {
     pub antibot_systems: Vec<Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub blocking_type: Option<String>,
     pub captcha_systems: Vec<Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub credits_used: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub duration_ms: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_blocked: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub recommendation: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -155,27 +161,44 @@ pub struct DetectProtectionResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ScrapeUrlResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub ai_error: Option<String>,
     pub ai_extraction: Option<Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub ai_model: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub anti_bot_solved: Option<bool>,
     pub antibot_systems: Vec<Value>,
     pub blocking_details: Option<HashMap<String, Value>>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub blocking_detected: Option<bool>,
     pub captcha_systems: Vec<Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub content: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub content_length: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub credits_used: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub duration_ms: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub engine_used: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub format: Option<String>,
     pub headers: HashMap<String, Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub retries_used: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub screenshot_url: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub solver_used: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub status_code: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub success: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub url: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub video_url: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]

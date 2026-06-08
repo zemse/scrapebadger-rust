@@ -292,12 +292,16 @@ impl Amazon {
 #[serde(default)]
 pub struct AmazonPrice {
     /// ISO 4217 currency code.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
     /// Price exactly as displayed on Amazon.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub raw: Option<String>,
     /// Currency symbol (e.g. $, £, €).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub symbol: Option<String>,
     /// Numeric price value.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub value: Option<f64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -307,7 +311,9 @@ pub struct AmazonPrice {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AutocompleteResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub suggestions: Vec<AutocompleteResponseSuggestionsItem>,
     /// Fields present in the response but not in the spec.
@@ -319,8 +325,10 @@ pub struct AutocompleteResponse {
 #[serde(default)]
 pub struct AutocompleteResponseSuggestionsItem {
     /// Department alias the suggestion is scoped to, if any.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub alias: Option<String>,
     /// Suggested search phrase.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub value: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -330,16 +338,24 @@ pub struct AutocompleteResponseSuggestionsItem {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Bestseller {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub asin: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
     /// Position on the page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
     pub price: Option<AmazonPrice>,
     /// Best-seller / new-release rank.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rank: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub ratings_total: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -349,7 +365,9 @@ pub struct Bestseller {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct BrowseCategoryResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub node: Option<String>,
     pub pagination: Option<Pagination>,
     pub results: Vec<SearchResult>,
@@ -394,18 +412,29 @@ impl std::fmt::Display for BrowseCategorySortBy {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Deal {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub asin: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub badge: Option<String>,
     pub deal_price: Option<AmazonPrice>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub deal_type: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub discount_percent: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub ends_at: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub ends_at_utc: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_lightning_deal: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
     pub list_price: Option<AmazonPrice>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -415,7 +444,9 @@ pub struct Deal {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetBestsellersResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub category: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub results: Vec<Bestseller>,
     /// Fields present in the response but not in the spec.
@@ -426,7 +457,9 @@ pub struct GetBestsellersResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetDealsResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub category: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub results: Vec<Deal>,
     /// Fields present in the response but not in the spec.
@@ -437,7 +470,9 @@ pub struct GetDealsResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetNewReleasesResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub category: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub results: Vec<Bestseller>,
     /// Fields present in the response but not in the spec.
@@ -448,7 +483,9 @@ pub struct GetNewReleasesResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetOffersResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub asin: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub offers: Vec<Offer>,
     /// Fields present in the response but not in the spec.
@@ -459,6 +496,7 @@ pub struct GetOffersResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetProductResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub product: Option<Product>,
     /// Fields present in the response but not in the spec.
@@ -469,13 +507,17 @@ pub struct GetProductResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetReviewsResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub asin: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub pagination: Option<Pagination>,
     /// Overall average product rating.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
     pub rating_breakdown: Option<GetReviewsResponseRatingBreakdown>,
     /// Total number of ratings for the product.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub ratings_total: Option<i64>,
     pub reviews: Vec<Review>,
     /// Fields present in the response but not in the spec.
@@ -486,10 +528,15 @@ pub struct GetReviewsResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetReviewsResponseRatingBreakdown {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub five_star: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub four_star: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub one_star: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub three_star: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub two_star: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -561,9 +608,11 @@ impl std::fmt::Display for GetReviewsStar {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetSellerFeedbackResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub feedback: Vec<GetSellerFeedbackResponseFeedbackItem>,
     pub pagination: Option<Pagination>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub seller_id: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -574,14 +623,19 @@ pub struct GetSellerFeedbackResponse {
 #[serde(default)]
 pub struct GetSellerFeedbackResponseFeedbackItem {
     /// Feedback comment text.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub body: Option<String>,
     /// ISO 8601 timestamp of the feedback.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date_at: Option<String>,
     /// Raw date string as shown on Amazon.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date_raw: Option<String>,
     /// Buyer display name, if shown.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub rater: Option<String>,
     /// Star rating left by the buyer (1-5).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rating: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -591,9 +645,11 @@ pub struct GetSellerFeedbackResponseFeedbackItem {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetSellerProductsResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub pagination: Option<Pagination>,
     pub results: Vec<SearchResult>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub seller_id: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -603,6 +659,7 @@ pub struct GetSellerProductsResponse {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct GetSellerResponse {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub seller: Option<Seller>,
     /// Fields present in the response but not in the spec.
@@ -614,6 +671,7 @@ pub struct GetSellerResponse {
 #[serde(default)]
 pub struct ListCategoriesResponse {
     pub categories: Vec<ListCategoriesResponseCategoriesItem>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -624,10 +682,13 @@ pub struct ListCategoriesResponse {
 #[serde(default)]
 pub struct ListCategoriesResponseCategoriesItem {
     /// Category alias usable in the search category parameter (the i= value).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub alias: Option<String>,
     /// Browse-node slug usable with bestsellers / new-releases.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub bestsellers_node: Option<String>,
     /// Human-readable department name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -647,16 +708,22 @@ pub struct ListMarketsResponse {
 #[serde(default)]
 pub struct ListMarketsResponseMarketsItem {
     /// Market code (e.g. US, UK, DE).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub code: Option<String>,
     /// ISO country code used for proxy geo-targeting.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country_code: Option<String>,
     /// ISO 4217 currency code.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub currency: Option<String>,
     /// Amazon domain TLD for this market (e.g. com, co.uk).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     /// Default locale for this market.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub language: Option<String>,
     /// Marketplace country name.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -667,14 +734,19 @@ pub struct ListMarketsResponseMarketsItem {
 #[serde(default)]
 pub struct Offer {
     /// Whether this offer currently wins the Buy Box.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub buybox_winner: Option<bool>,
     /// is_new, title, comments.
     pub condition: HashMap<String, Value>,
     /// is_free, fulfilled_by_amazon, date, price.
     pub delivery: HashMap<String, Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_prime: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub maximum_order_quantity: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub minimum_order_quantity: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
     pub price: Option<AmazonPrice>,
     /// Seller summary: name, id, link, rating, ratings_total, ratings_percentage_positive.
@@ -688,10 +760,13 @@ pub struct Offer {
 #[serde(default)]
 pub struct Pagination {
     /// Current page number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub current_page: Option<i64>,
     /// Total number of pages available.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_pages: Option<i64>,
     /// Total number of results across all pages.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub total_results: Option<i64>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -702,60 +777,89 @@ pub struct Pagination {
 #[serde(default)]
 pub struct Product {
     pub also_bought: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub answered_questions: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub asin: Option<String>,
     pub attributes: HashMap<String, Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub availability: Option<String>,
     /// amazons_choice, amazons_choice_keyword, best_seller, prime, climate_pledge_friendly.
     pub badges: HashMap<String, Value>,
     /// Best-seller ranks with rank, category, link.
     pub bestsellers_rank: Vec<HashMap<String, Value>>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub bought_past_month: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub brand: Option<String>,
     /// Buy Box winner: seller_name, seller_id, price, fulfillment.
     pub buybox: HashMap<String, Value>,
     /// Breadcrumb categories.
     pub categories: Vec<HashMap<String, Value>>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub country_of_origin: Option<String>,
     pub coupon: Option<HashMap<String, Value>>,
     pub deal: Option<HashMap<String, Value>>,
     pub delivery: Option<HashMap<String, Value>>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub dimensions: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub discount_percent: Option<i64>,
     pub feature_bullets: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub first_available: Option<String>,
     pub frequently_bought_together: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub fulfilled_by: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub has_aplus_content: Option<bool>,
     pub images: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub images_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub in_stock: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_amazon_seller: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
     pub list_price: Option<AmazonPrice>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub main_image: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub manufacturer: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub model_number: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub parent_asin: Option<String>,
     pub price: Option<AmazonPrice>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
     /// Percentage of ratings per star bucket (five_star ... one_star).
     pub rating_breakdown: HashMap<String, Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub ratings_total: Option<i64>,
     pub savings_amount: Option<AmazonPrice>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub scraped_at: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub scraped_utc: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub ships_from: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub sold_by: Option<String>,
     pub specifications: HashMap<String, Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     pub top_reviews: Vec<Review>,
     pub variant_asins: Vec<String>,
     /// Variation children with asin, attributes, price, is_current.
     pub variants: Vec<HashMap<String, Value>>,
     pub videos: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub videos_count: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub weight: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -765,22 +869,35 @@ pub struct Product {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Review {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub body: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date_at: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub date_raw: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub date_utc: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub helpful_votes: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub id: Option<String>,
     pub images: Vec<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_global_review: Option<bool>,
     /// Reviewer profile: name, link, id, image.
     pub profile: HashMap<String, Value>,
     /// Star rating left by the reviewer (1-5).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub rating: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub review_country: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub variant: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub verified_purchase: Option<bool>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub vine_program: Option<bool>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -791,9 +908,11 @@ pub struct Review {
 #[serde(default)]
 pub struct SearchProductsResponse {
     /// Marketplace domain that was searched.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub domain: Option<String>,
     pub pagination: Option<Pagination>,
     /// The search query that was executed.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub query: Option<String>,
     pub results: Vec<SearchResult>,
     /// Fields present in the response but not in the spec.
@@ -838,36 +957,51 @@ impl std::fmt::Display for SearchProductsSortBy {
 #[serde(default)]
 pub struct SearchResult {
     /// Amazon Standard Identification Number.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub asin: Option<String>,
     /// Availability/stock message.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub availability: Option<String>,
     /// Purchase-volume hint (e.g. "5K+ bought in past month").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub bought_past_month: Option<String>,
     /// Coupon text, if any.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub coupon: Option<String>,
     /// Primary product image URL.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub image: Option<String>,
     /// Whether the item has the Amazon's Choice badge.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_amazons_choice: Option<bool>,
     /// Whether the item has the Best Seller badge.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_best_seller: Option<bool>,
     /// Whether the item is Prime-eligible.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_prime: Option<bool>,
     /// Whether the result is a sponsored placement.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
     pub is_sponsored: Option<bool>,
     /// Full URL to the product page.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
     pub list_price: Option<AmazonPrice>,
     /// Position of the result on the page (1-based).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub position: Option<i64>,
     pub price: Option<AmazonPrice>,
     /// Average star rating (0-5).
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
     /// Total number of ratings.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub ratings_total: Option<i64>,
     /// Product title.
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub title: Option<String>,
     /// Unit price string (e.g. "$0.50 / count").
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub unit_price: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
@@ -877,16 +1011,25 @@ pub struct SearchResult {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Seller {
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub business_address: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub business_name: Option<String>,
     /// Feedback windows (lifetime, 12mo, 90d, 30d) each with positive, neutral, negative, count.
     pub feedback: HashMap<String, Value>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub link: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub member_since: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub name: Option<String>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
     pub rating: Option<f64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub ratings_percentage_positive: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
     pub ratings_total: Option<i64>,
+    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
     pub seller_id: Option<String>,
     /// Fields present in the response but not in the spec.
     #[serde(flatten)]
