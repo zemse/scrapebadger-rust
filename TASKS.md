@@ -225,6 +225,7 @@ and remaining polish.
       `reddit/pagination.rs`; Amazon/Vinted (page) in `*/pagination.rs`.
 - [x] `#[non_exhaustive]` on generated enums (and `Error`) so adding a
       variant/field later isn't a breaking change.
-- [ ] Enums for fixed-value **body** params (inputs only; currently query-only).
+- [x] Enums for fixed-value **body** params (web scrape `format`/`engine`,
+      stream `status`) — query + body now both typed (32 enums).
 - [x] Backoff **jitter** (equal jitter) on client retries + WS reconnect.
 - [ ] Investigate `vinted.search_brands` `keyword` vs spec's `query` param.

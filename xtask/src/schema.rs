@@ -304,6 +304,19 @@ impl SchemaCtx {
         (scalar, false)
     }
 
+    /// Rust type for a request-body field. String fields with a fixed `enum`
+    /// value-set become generated enums (like query params); everything else
+    /// falls back to the general type mapping. Inputs only — never responses.
+    pub fn body_param_type(&mut self, schema: &Value, hint: &str) -> String {
+        let resolved = self.resolve(schema);
+        let effective = unwrap_anyof_nullable(&resolved);
+        if let Some(values) = string_enum_values(&effective) {
+            let doc = effective.get("description").and_then(Value::as_str);
+            return self.emit_param_enum(hint, &values, doc);
+        }
+        self.rust_type(schema, hint)
+    }
+
     /// Pick a type name not already taken by a model/enum, suffixing `2`, `3`, …
     /// on collision so generated enum names never clash.
     fn unique_type_name(&self, base: &str) -> String {
