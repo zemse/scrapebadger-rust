@@ -197,12 +197,10 @@ and remaining polish.
 - [x] Typed Reddit response models (`reddit/models.rs`, reverse-engineered from
       live samples via `scripts/collect_reddit_samples.py`; wired through the
       generator's `response_override`)
-- [ ] Publish to crates.io (`scrapebadger` — name is available). **Prep done**:
-      fmt/clippy/test/doc all clean, `cargo publish --dry-run` packages 38 files
-      and builds in isolation, `include` whitelist verified, README links
-      absolutized, CHANGELOG dated 0.2.0. Remaining (outward-facing, needs go):
-      (1) create+push `github.com/zemse/scrapebadger-rust` (currently 404, no git
-      remote); (2) `cargo publish` (irreversible).
+- [x] **Published `scrapebadger v0.2.0` to crates.io** (2026-06-09). Repo created
+      and pushed at `github.com/zemse/scrapebadger-rust`, tagged `v0.2.0` with a
+      GitHub release. crates.io: https://crates.io/crates/scrapebadger ·
+      docs.rs: https://docs.rs/scrapebadger.
 
 ## Type correctness (live validation)
 - [x] **Live type-conformance suite** (`examples/conformance.rs`): calls read
