@@ -134,8 +134,7 @@ cargo build --workspace
 cargo test  -p scrapebadger
 ```
 
-Design + full endpoint reference: [`ARCHITECTURE.md`](ARCHITECTURE.md) ·
-Build status: [`TASKS.md`](TASKS.md)
+Endpoint reference: [`docs/CLI.md`](crates/scrapebadger/docs/CLI.md) · Backlog: [`TASKS.md`](TASKS.md)
 
 ## License
 

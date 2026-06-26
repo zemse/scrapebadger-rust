@@ -6,7 +6,7 @@
 //!   * `crates/scrapebadger/docs/CLI.md` — the human reference (also rendered on
 //!     docs.rs via a `cli_reference` module).
 //!
-//! Command-path rules (see NESTED_CLI.md):
+//! Command-path rules:
 //!   * static path segments → subcommands, `{params}` → trailing positionals;
 //!   * a unique chain ending in a param gets a `get` leaf; a chain shared by
 //!     several methods/paths (CRUD) gets `list`/`get`/`create`/`update`/`delete`;
