@@ -1,8 +1,9 @@
 # scrapebadger (Rust)
 
 Async Rust SDK and CLI for the [ScrapeBadger](https://scrapebadger.com)
-web-scraping API — **137 endpoints** across Amazon, Google, Twitter/X, Reddit,
-Vinted, Web Scraping, and Account, plus real-time Twitter Streams.
+web-scraping API — **211 endpoints** across Amazon, eBay, Google, Reddit,
+TikTok, Twitter/X, Vinted, Web Scraping, YouTube, and Account, plus real-time
+Twitter Streams.
 
 One crate, a library and a binary both named `scrapebadger`.
 
@@ -34,11 +35,14 @@ Or `export SCRAPEBADGER_API_KEY=sb_live_xxx`, or pass `--api-key` per call.
 | Platform | Command | Endpoints | What you get |
 |---|---|---|---|
 | **Amazon** | `scrapebadger amazon` | 14 | products, offers, reviews, sellers, search, bestsellers, deals, categories |
+| **eBay** | `scrapebadger ebay` | 11 | search, item details & reviews, sellers, categories, completed listings |
 | **Google** | `scrapebadger google` | 39 | search, maps, shopping, flights, hotels, news, jobs, trends, scholar, patents, finance, images, lens |
-| **Twitter / X** | `scrapebadger twitter` | 53 | tweets, users, followers, search, trends, lists, communities, spaces + real-time streams |
 | **Reddit** | `scrapebadger reddit` | 20 | posts, comments, subreddits, users, wikis, search |
+| **TikTok** | `scrapebadger tiktok` | 25 | videos, users, hashtags, music, comments, search, trending, ads |
+| **Twitter / X** | `scrapebadger twitter` | 53 | tweets, users, followers, search, trends, lists, communities, spaces + real-time streams |
 | **Vinted** | `scrapebadger vinted` | 8 | item & user listings, search with brand/color/condition filters |
 | **Web** | `scrapebadger web` | 2 | scrape any URL (markdown/html, JS rendering), bot-protection detection |
+| **YouTube** | `scrapebadger youtube` | 38 | videos, channels, playlists, comments, transcripts, captions, search, trending |
 | **Account** | `scrapebadger account` | 1 | credits & usage |
 
 ## CLI
@@ -101,7 +105,7 @@ scrapebadger raw /v1/amazon/products/B08N5WRWNW
 scrapebadger raw --method POST /v1/web/scrape -d '{"url":"https://example.com"}'
 ```
 
-Full 137-command reference: [`crates/scrapebadger/docs/CLI.md`](crates/scrapebadger/docs/CLI.md).
+Full 211-command reference: [`crates/scrapebadger/docs/CLI.md`](crates/scrapebadger/docs/CLI.md).
 
 ## Library
 

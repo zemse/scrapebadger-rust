@@ -1,0 +1,835 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger eBay API",
+    "version": "1.0.0",
+    "description": "eBay marketplace scraping API for search, item details, reviews, sellers, categories, completed listings, and reference data."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/ebay/autocomplete": {
+      "get": {
+        "operationId": "autocomplete_v1_ebay_autocomplete_get",
+        "summary": "Keyword suggestions",
+        "description": "Return eBay keyword autocomplete suggestions.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Partial query prefix",
+              "title": "Query"
+            },
+            "description": "Partial query prefix"
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Autocomplete V1 Ebay Autocomplete Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/categories": {
+      "get": {
+        "operationId": "list_categories_v1_ebay_categories_get",
+        "summary": "List categories",
+        "description": "List eBay's top-level category ids.",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Categories V1 Ebay Categories Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/categories/{category_id}/items": {
+      "get": {
+        "operationId": "browse_category_v1_ebay_categories__category_id__items_get",
+        "summary": "Browse a category",
+        "description": "List active listings within an eBay category.",
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Category Id"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 240,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Per Page"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "best_match|ending_soonest|newly_listed|price_low_to_high|price_high_to_low",
+              "default": "best_match",
+              "title": "Sort By"
+            },
+            "description": "best_match|ending_soonest|newly_listed|price_low_to_high|price_high_to_low"
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Price"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Price"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Browse Category V1 Ebay Categories  Category Id  Items Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/completed": {
+      "get": {
+        "operationId": "completed_v1_ebay_completed_get",
+        "summary": "Completed / sold listings",
+        "description": "Search completed/sold listings \u2014 eBay's sold-price history.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keywords",
+              "title": "Query"
+            },
+            "description": "Search keywords"
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 240,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Per Page"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "best_match|ending_soonest|newly_listed|price_low_to_high|price_high_to_low",
+              "default": "best_match",
+              "title": "Sort By"
+            },
+            "description": "best_match|ending_soonest|newly_listed|price_low_to_high|price_high_to_low"
+          },
+          {
+            "name": "condition",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "new|open_box|refurbished|used|for_parts",
+              "title": "Condition"
+            },
+            "description": "new|open_box|refurbished|used|for_parts"
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Price"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Price"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Completed V1 Ebay Completed Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/items/{item_id}": {
+      "get": {
+        "operationId": "get_item_v1_ebay_items__item_id__get",
+        "summary": "Get item detail",
+        "description": "Get a single eBay listing's full detail.",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Item V1 Ebay Items  Item Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/items/{item_id}/reviews": {
+      "get": {
+        "operationId": "get_item_reviews_v1_ebay_items__item_id__reviews_get",
+        "summary": "Get item reviews",
+        "description": "Get catalog product reviews shown on an eBay listing.",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Item Reviews V1 Ebay Items  Item Id  Reviews Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/markets": {
+      "get": {
+        "operationId": "list_markets_v1_ebay_markets_get",
+        "summary": "List markets",
+        "description": "List all supported eBay marketplaces.",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Ebay Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/search": {
+      "get": {
+        "operationId": "search_v1_ebay_search_get",
+        "summary": "Search listings",
+        "description": "Search an eBay marketplace for active listings.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keywords",
+              "title": "Query"
+            },
+            "description": "Search keywords"
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Marketplace domain (com, co.uk, de \u2026)",
+              "default": "com",
+              "title": "Domain"
+            },
+            "description": "Marketplace domain (com, co.uk, de \u2026)"
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Restrict to a category id",
+              "title": "Category Id"
+            },
+            "description": "Restrict to a category id"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 240,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "60, 120 or 240",
+              "title": "Per Page"
+            },
+            "description": "60, 120 or 240"
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "best_match|ending_soonest|newly_listed|price_low_to_high|price_high_to_low",
+              "default": "best_match",
+              "title": "Sort By"
+            },
+            "description": "best_match|ending_soonest|newly_listed|price_low_to_high|price_high_to_low"
+          },
+          {
+            "name": "condition",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "new|open_box|refurbished|used|for_parts",
+              "title": "Condition"
+            },
+            "description": "new|open_box|refurbished|used|for_parts"
+          },
+          {
+            "name": "buying_format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "auction|buy_it_now|best_offer",
+              "title": "Buying Format"
+            },
+            "description": "auction|buy_it_now|best_offer"
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Price"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Price"
+            }
+          },
+          {
+            "name": "free_shipping",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Free Shipping"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Ebay Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/sellers/{username}": {
+      "get": {
+        "operationId": "get_seller_v1_ebay_sellers__username__get",
+        "summary": "Get seller profile",
+        "description": "Get an eBay seller's public profile.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Seller V1 Ebay Sellers  Username  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/sellers/{username}/feedback": {
+      "get": {
+        "operationId": "get_seller_feedback_v1_ebay_sellers__username__feedback_get",
+        "summary": "Get seller feedback",
+        "description": "Get a seller's recent feedback comments.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Seller Feedback V1 Ebay Sellers  Username  Feedback Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ebay/sellers/{username}/items": {
+      "get": {
+        "operationId": "get_seller_items_v1_ebay_sellers__username__items_get",
+        "summary": "Get seller listings",
+        "description": "List the active listings of a single eBay seller.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "com",
+              "title": "Domain"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Query"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 240,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Per Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Seller Items V1 Ebay Sellers  Username  Items Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

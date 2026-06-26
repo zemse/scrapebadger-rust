@@ -1,6 +1,6 @@
 # scrapebadger CLI — command reference
 
-All **137** endpoints as nested subcommands, generated from `specs/*.json` — the same source as the SDK. The general shape is:
+All **211** endpoints as nested subcommands, generated from `specs/*.json` — the same source as the SDK. The general shape is:
 
 ```text
 scrapebadger PLATFORM GROUP [SUBGROUP] ACTION [IDS...] [--flags]

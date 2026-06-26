@@ -24,7 +24,7 @@
 use std::future::Future;
 use std::time::Duration;
 
-use scrapebadger::{account, amazon, google, reddit, twitter, vinted, web};
+use scrapebadger::{account, amazon, ebay, google, reddit, tiktok, twitter, vinted, web, youtube};
 use scrapebadger::{Error, Result, ScrapeBadger};
 
 #[derive(Default)]
@@ -722,6 +722,75 @@ async fn main() {
         }),
     )
     .await;
+
+    // ---- ebay ----
+    r.run("ebay.list_markets", c.ebay().list_markets(d())).await;
+    r.run("ebay.list_categories", c.ebay().list_categories(d()))
+        .await;
+    r.run(
+        "ebay.search",
+        c.ebay().search(ebay::SearchParams {
+            query: Some("laptop".into()),
+            ..d()
+        }),
+    )
+    .await;
+    r.run(
+        "ebay.autocomplete",
+        c.ebay().autocomplete(ebay::AutocompleteParams {
+            query: Some("laptop".into()),
+            ..d()
+        }),
+    )
+    .await;
+    r.skip(
+        "ebay.get_item/get_item_reviews/get_seller/completed/browse_category",
+        "need an item id / seller username / category id",
+    );
+
+    // ---- tiktok ----
+    r.run("tiktok.trending_videos", c.tiktok().trending_videos(d()))
+        .await;
+    r.run(
+        "tiktok.trending_hashtags",
+        c.tiktok().trending_hashtags(d()),
+    )
+    .await;
+    r.run("tiktok.trending_songs", c.tiktok().trending_songs(d()))
+        .await;
+    r.run("tiktok.list_regions", c.tiktok().list_regions(d()))
+        .await;
+    r.run(
+        "tiktok.search_general",
+        c.tiktok().search_general(tiktok::SearchGeneralParams {
+            query: Some("rust".into()),
+            ..d()
+        }),
+    )
+    .await;
+    r.skip(
+        "tiktok.get_user/get_video/get_hashtag/get_music/*replies",
+        "need a username / video id / hashtag / music id",
+    );
+
+    // ---- youtube ----
+    r.run("youtube.trending", c.youtube().trending(d())).await;
+    r.run("youtube.categories", c.youtube().categories(d()))
+        .await;
+    r.run("youtube.regions", c.youtube().regions(d())).await;
+    r.run("youtube.languages", c.youtube().languages(d())).await;
+    r.run(
+        "youtube.search",
+        c.youtube().search(youtube::SearchParams {
+            query: Some("rust programming".into()),
+            ..d()
+        }),
+    )
+    .await;
+    r.skip(
+        "youtube.get_video/get_channel/get_playlist/*transcript/*comments",
+        "need a video id / channel id / playlist id",
+    );
 
     // ---- summary ----
     let total = r.pass.len() + r.type_fail.len() + r.api_err.len();

@@ -1,0 +1,1482 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger TikTok API",
+    "version": "1.0.0",
+    "description": "TikTok scraping API for videos, users, hashtags, music, comments, search, trending, and ads."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/tiktok/ads/search": {
+      "get": {
+        "operationId": "search_ads_v1_tiktok_ads_search_get",
+        "summary": "Search the TikTok Ad Library",
+        "description": "Search TikTok's Commercial Content Library (ad transparency) by keyword or advertiser.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Keyword (ignored when advertiser_id is set)",
+              "default": "",
+              "title": "Query"
+            },
+            "description": "Keyword (ignored when advertiser_id is set)"
+          },
+          {
+            "name": "advertiser_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Advertiser business id(s) for advertiser search",
+              "default": "",
+              "title": "Advertiser Id"
+            },
+            "description": "Advertiser business id(s) for advertiser search"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "EU region code (the Ad Library is EU-only)",
+              "default": "DE",
+              "title": "Region"
+            },
+            "description": "EU region code (the Ad Library is EU-only)"
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "default": 30,
+              "title": "Days"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "last_shown_date,desc",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "search_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Search Id"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search Ads V1 Tiktok Ads Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/comments/{comment_id}/replies": {
+      "get": {
+        "operationId": "get_comment_replies_v1_tiktok_comments__comment_id__replies_get",
+        "summary": "Get comment replies",
+        "description": "Get replies to a TikTok comment (best-effort).",
+        "parameters": [
+          {
+            "name": "comment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Comment Id"
+            }
+          },
+          {
+            "name": "video_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Parent video id",
+              "title": "Video Id"
+            },
+            "description": "Parent video id"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Comment Replies V1 Tiktok Comments  Comment Id  Replies Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/hashtags/{name}": {
+      "get": {
+        "operationId": "get_hashtag_v1_tiktok_hashtags__name__get",
+        "summary": "Get hashtag detail",
+        "description": "Get TikTok hashtag/challenge detail.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Hashtag V1 Tiktok Hashtags  Name  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/hashtags/{name}/videos": {
+      "get": {
+        "operationId": "get_hashtag_videos_v1_tiktok_hashtags__name__videos_get",
+        "summary": "Get hashtag videos",
+        "description": "Get videos tagged with a TikTok hashtag.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Hashtag Videos V1 Tiktok Hashtags  Name  Videos Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/music/{music_id}": {
+      "get": {
+        "operationId": "get_music_v1_tiktok_music__music_id__get",
+        "summary": "Get music/sound detail",
+        "description": "Get TikTok sound/music detail.",
+        "parameters": [
+          {
+            "name": "music_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Music Id"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Music V1 Tiktok Music  Music Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/music/{music_id}/videos": {
+      "get": {
+        "operationId": "get_music_videos_v1_tiktok_music__music_id__videos_get",
+        "summary": "Get music videos",
+        "description": "Get videos using a given TikTok sound.",
+        "parameters": [
+          {
+            "name": "music_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Music Id"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Music Videos V1 Tiktok Music  Music Id  Videos Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/oembed": {
+      "get": {
+        "operationId": "get_oembed_v1_tiktok_oembed_get",
+        "summary": "Get oEmbed metadata",
+        "description": "Get cheap unauthenticated oEmbed metadata for a TikTok URL.",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Full TikTok video or profile URL",
+              "title": "Url"
+            },
+            "description": "Full TikTok video or profile URL"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Oembed V1 Tiktok Oembed Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/regions": {
+      "get": {
+        "operationId": "list_regions_v1_tiktok_regions_get",
+        "summary": "List regions",
+        "description": "List supported TikTok content regions.",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Regions V1 Tiktok Regions Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/search": {
+      "get": {
+        "operationId": "search_general_v1_tiktok_search_get",
+        "summary": "General search",
+        "description": "General TikTok search \u2014 video results from the Top feed.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keyword",
+              "title": "Query"
+            },
+            "description": "Search keyword"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search General V1 Tiktok Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/search/hashtags": {
+      "get": {
+        "operationId": "search_hashtags_v1_tiktok_search_hashtags_get",
+        "summary": "Search hashtags",
+        "description": "Search TikTok hashtags by keyword.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keyword",
+              "title": "Query"
+            },
+            "description": "Search keyword"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search Hashtags V1 Tiktok Search Hashtags Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/search/users": {
+      "get": {
+        "operationId": "search_users_v1_tiktok_search_users_get",
+        "summary": "Search users",
+        "description": "Search TikTok users by keyword.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keyword",
+              "title": "Query"
+            },
+            "description": "Search keyword"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search Users V1 Tiktok Search Users Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/search/videos": {
+      "get": {
+        "operationId": "search_videos_v1_tiktok_search_videos_get",
+        "summary": "Search videos",
+        "description": "Search TikTok videos by keyword.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keyword",
+              "title": "Query"
+            },
+            "description": "Search keyword"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Composite pagination cursor (offset.search_id) from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search Videos V1 Tiktok Search Videos Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/trending/hashtags": {
+      "get": {
+        "operationId": "trending_hashtags_v1_tiktok_trending_hashtags_get",
+        "summary": "Trending hashtags",
+        "description": "Get trending hashtags (mobile Discover surface \u2014 view_count + creators).",
+        "parameters": [
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 7,
+              "title": "Period"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Trending Hashtags V1 Tiktok Trending Hashtags Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/trending/songs": {
+      "get": {
+        "operationId": "trending_songs_v1_tiktok_trending_songs_get",
+        "summary": "Trending songs",
+        "description": "Get trending songs/sounds (mobile hot-music feed \u2014 ranked by usage).",
+        "parameters": [
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 7,
+              "title": "Period"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Trending Songs V1 Tiktok Trending Songs Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/trending/videos": {
+      "get": {
+        "operationId": "trending_videos_v1_tiktok_trending_videos_get",
+        "summary": "Trending videos",
+        "description": "Get trending videos from the TikTok Explore feed.",
+        "parameters": [
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Trending Videos V1 Tiktok Trending Videos Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/users/{username}": {
+      "get": {
+        "operationId": "get_user_v1_tiktok_users__username__get",
+        "summary": "Get user profile",
+        "description": "Get a TikTok user's full profile.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Content region (ISO 3166-1 alpha-2)",
+              "default": "US",
+              "title": "Region"
+            },
+            "description": "Content region (ISO 3166-1 alpha-2)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User V1 Tiktok Users  Username  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/users/{username}/followers": {
+      "get": {
+        "operationId": "get_user_followers_v1_tiktok_users__username__followers_get",
+        "summary": "Get followers (deprecated)",
+        "description": "DEPRECATED \u2014 TikTok followers require an authenticated account session. Returns HTTP 410.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User Followers V1 Tiktok Users  Username  Followers Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/users/{username}/following": {
+      "get": {
+        "operationId": "get_user_following_v1_tiktok_users__username__following_get",
+        "summary": "Get following (deprecated)",
+        "description": "DEPRECATED \u2014 TikTok following requires an authenticated account session. Returns HTTP 410.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User Following V1 Tiktok Users  Username  Following Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/users/{username}/liked": {
+      "get": {
+        "operationId": "get_user_liked_v1_tiktok_users__username__liked_get",
+        "summary": "Get liked videos (deprecated)",
+        "description": "DEPRECATED \u2014 TikTok liked videos require an authenticated account session. Returns HTTP 410.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User Liked V1 Tiktok Users  Username  Liked Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/users/{username}/reposts": {
+      "get": {
+        "operationId": "get_user_reposts_v1_tiktok_users__username__reposts_get",
+        "summary": "Get reposts",
+        "description": "Get videos a TikTok user has reposted.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User Reposts V1 Tiktok Users  Username  Reposts Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/users/{username}/videos": {
+      "get": {
+        "operationId": "get_user_videos_v1_tiktok_users__username__videos_get",
+        "summary": "Get user videos",
+        "description": "Get a TikTok user's posted videos.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor from a prior page's `pagination.cursor` (signer path only).",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor from a prior page's `pagination.cursor` (signer path only)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User Videos V1 Tiktok Users  Username  Videos Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/videos/{video_id}": {
+      "get": {
+        "operationId": "get_video_v1_tiktok_videos__video_id__get",
+        "summary": "Get video detail",
+        "description": "Get full metadata for a single TikTok video/post.",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Author handle (skips oEmbed lookup)",
+              "title": "Username"
+            },
+            "description": "Author handle (skips oEmbed lookup)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Video V1 Tiktok Videos  Video Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/videos/{video_id}/comments": {
+      "get": {
+        "operationId": "get_comments_v1_tiktok_videos__video_id__comments_get",
+        "summary": "Get comments",
+        "description": "Get top-level comments on a TikTok video.",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Count"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor from a prior page's pagination.cursor",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor from a prior page's pagination.cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Comments V1 Tiktok Videos  Video Id  Comments Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/videos/{video_id}/related": {
+      "get": {
+        "operationId": "get_related_v1_tiktok_videos__video_id__related_get",
+        "summary": "Get related videos",
+        "description": "Get TikTok's related videos for a given video.",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 16,
+              "title": "Count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Related V1 Tiktok Videos  Video Id  Related Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tiktok/videos/{video_id}/transcript": {
+      "get": {
+        "operationId": "get_transcript_v1_tiktok_videos__video_id__transcript_get",
+        "summary": "Get transcript",
+        "description": "Get subtitle/caption tracks for a TikTok video.",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Region"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Transcript V1 Tiktok Videos  Video Id  Transcript Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

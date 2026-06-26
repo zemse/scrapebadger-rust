@@ -1,0 +1,1476 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger YouTube API",
+    "version": "1.0.0",
+    "description": "YouTube scraping API for videos, channels, playlists, posts, comments, transcripts, captions, search, and trending."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/youtube/autocomplete": {
+      "get": {
+        "operationId": "autocomplete_v1_youtube_autocomplete_get",
+        "summary": "Keyword suggestions",
+        "description": "Return YouTube keyword autocomplete suggestions.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Partial query prefix",
+              "title": "Query"
+            },
+            "description": "Partial query prefix"
+          },
+          {
+            "name": "gl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Gl"
+            }
+          },
+          {
+            "name": "hl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hl"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Autocomplete V1 Youtube Autocomplete Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/categories": {
+      "get": {
+        "operationId": "categories_v1_youtube_categories_get",
+        "summary": "Video categories",
+        "parameters": [
+          {
+            "name": "gl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "US",
+              "title": "Gl"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Categories V1 Youtube Categories Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/resolve": {
+      "get": {
+        "operationId": "channels_resolve_v1_youtube_channels_resolve_get",
+        "summary": "Resolve handle/URL to id",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Handle"
+            }
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Url"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channels Resolve V1 Youtube Channels Resolve Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}": {
+      "get": {
+        "operationId": "get_channel_v1_youtube_channels__channel_id__get",
+        "summary": "Get channel detail",
+        "description": "Channel detail (accepts a UC id, @handle, or custom URL).",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          },
+          {
+            "name": "gl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Gl"
+            }
+          },
+          {
+            "name": "hl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hl"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Channel V1 Youtube Channels  Channel Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/about": {
+      "get": {
+        "operationId": "channel_about_v1_youtube_channels__channel_id__about_get",
+        "summary": "Channel about",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel About V1 Youtube Channels  Channel Id  About Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/community": {
+      "get": {
+        "operationId": "channel_community_v1_youtube_channels__channel_id__community_get",
+        "summary": "Community posts",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel Community V1 Youtube Channels  Channel Id  Community Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/playlists": {
+      "get": {
+        "operationId": "channel_playlists_v1_youtube_channels__channel_id__playlists_get",
+        "summary": "Channel playlists",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel Playlists V1 Youtube Channels  Channel Id  Playlists Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/search": {
+      "get": {
+        "operationId": "channel_search_v1_youtube_channels__channel_id__search_get",
+        "summary": "Search within a channel",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keywords",
+              "title": "Query"
+            },
+            "description": "Search keywords"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel Search V1 Youtube Channels  Channel Id  Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/shorts": {
+      "get": {
+        "operationId": "channel_shorts_v1_youtube_channels__channel_id__shorts_get",
+        "summary": "Channel shorts",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel Shorts V1 Youtube Channels  Channel Id  Shorts Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/streams": {
+      "get": {
+        "operationId": "channel_streams_v1_youtube_channels__channel_id__streams_get",
+        "summary": "Channel streams",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel Streams V1 Youtube Channels  Channel Id  Streams Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/subscriber_count": {
+      "get": {
+        "operationId": "channel_subscriber_count_v1_youtube_channels__channel_id__subscriber_count_get",
+        "summary": "Subscriber count (fast)",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel Subscriber Count V1 Youtube Channels  Channel Id  Subscriber Count Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/channels/{channel_id}/videos": {
+      "get": {
+        "operationId": "channel_videos_v1_youtube_channels__channel_id__videos_get",
+        "summary": "Channel videos",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Channel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Channel Videos V1 Youtube Channels  Channel Id  Videos Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/hashtags/{tag}": {
+      "get": {
+        "operationId": "hashtag_v1_youtube_hashtags__tag__get",
+        "summary": "Videos under a hashtag",
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Tag"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Hashtag V1 Youtube Hashtags  Tag  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/home": {
+      "get": {
+        "operationId": "home_v1_youtube_home_get",
+        "summary": "Guest home feed",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Home V1 Youtube Home Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/languages": {
+      "get": {
+        "operationId": "languages_v1_youtube_languages_get",
+        "summary": "UI languages",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Languages V1 Youtube Languages Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/markets": {
+      "get": {
+        "operationId": "markets_v1_youtube_markets_get",
+        "summary": "Supported markets",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Markets V1 Youtube Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/mixes/{playlist_id}": {
+      "get": {
+        "operationId": "get_mix_v1_youtube_mixes__playlist_id__get",
+        "summary": "Get a mix / radio queue",
+        "parameters": [
+          {
+            "name": "playlist_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Playlist Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Mix V1 Youtube Mixes  Playlist Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/music/search": {
+      "get": {
+        "operationId": "music_search_v1_youtube_music_search_get",
+        "summary": "Search YouTube Music",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keywords",
+              "title": "Query"
+            },
+            "description": "Search keywords"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Music Search V1 Youtube Music Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/oembed": {
+      "get": {
+        "operationId": "oembed_v1_youtube_oembed_get",
+        "summary": "oEmbed metadata",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "A YouTube URL",
+              "title": "Url"
+            },
+            "description": "A YouTube URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Oembed V1 Youtube Oembed Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/playlists/{playlist_id}": {
+      "get": {
+        "operationId": "get_playlist_v1_youtube_playlists__playlist_id__get",
+        "summary": "Get playlist detail",
+        "parameters": [
+          {
+            "name": "playlist_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Playlist Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Playlist V1 Youtube Playlists  Playlist Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/playlists/{playlist_id}/items": {
+      "get": {
+        "operationId": "playlist_items_v1_youtube_playlists__playlist_id__items_get",
+        "summary": "Playlist items page",
+        "parameters": [
+          {
+            "name": "playlist_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Playlist Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Playlist Items V1 Youtube Playlists  Playlist Id  Items Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/posts/{post_id}": {
+      "get": {
+        "operationId": "get_post_v1_youtube_posts__post_id__get",
+        "summary": "Get a community post",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Post Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Post V1 Youtube Posts  Post Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/posts/{post_id}/comments": {
+      "get": {
+        "operationId": "post_comments_v1_youtube_posts__post_id__comments_get",
+        "summary": "Community post comments",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Post Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Post Comments V1 Youtube Posts  Post Id  Comments Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/regions": {
+      "get": {
+        "operationId": "regions_v1_youtube_regions_get",
+        "summary": "Content regions",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Regions V1 Youtube Regions Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/search": {
+      "get": {
+        "operationId": "search_v1_youtube_search_get",
+        "summary": "Search YouTube",
+        "description": "Search videos / channels / playlists with the full filter matrix.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search keywords",
+              "title": "Query"
+            },
+            "description": "Search keywords"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "video|channel|playlist|movie|all",
+              "title": "Type"
+            },
+            "description": "video|channel|playlist|movie|all"
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "relevance|date|views|rating",
+              "title": "Sort By"
+            },
+            "description": "relevance|date|views|rating"
+          },
+          {
+            "name": "upload_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "hour|today|week|month|year",
+              "title": "Upload Date"
+            },
+            "description": "hour|today|week|month|year"
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "short|medium|long",
+              "title": "Duration"
+            },
+            "description": "short|medium|long"
+          },
+          {
+            "name": "features",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "hd,4k,360,vr180,3d,hdr,cc,subtitles,live",
+              "title": "Features"
+            },
+            "description": "hd,4k,360,vr180,3d,hdr,cc,subtitles,live"
+          },
+          {
+            "name": "gl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Content region (US, GB, DE\u2026)",
+              "title": "Gl"
+            },
+            "description": "Content region (US, GB, DE\u2026)"
+          },
+          {
+            "name": "hl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "UI language",
+              "title": "Hl"
+            },
+            "description": "UI language"
+          },
+          {
+            "name": "continuation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Continuation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Youtube Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/shorts/by_sound/{sound_id}": {
+      "get": {
+        "operationId": "shorts_by_sound_v1_youtube_shorts_by_sound__sound_id__get",
+        "summary": "Shorts by sound",
+        "parameters": [
+          {
+            "name": "sound_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sound Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Shorts By Sound V1 Youtube Shorts By Sound  Sound Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/shorts/{video_id}": {
+      "get": {
+        "operationId": "get_short_v1_youtube_shorts__video_id__get",
+        "summary": "Get a Short",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Short V1 Youtube Shorts  Video Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/trending": {
+      "get": {
+        "operationId": "trending_v1_youtube_trending_get",
+        "summary": "Trending videos",
+        "parameters": [
+          {
+            "name": "gl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Gl"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "now|music|gaming|movies",
+              "default": "now",
+              "title": "Type"
+            },
+            "description": "now|music|gaming|movies"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Trending V1 Youtube Trending Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/trending/shorts": {
+      "get": {
+        "operationId": "trending_shorts_v1_youtube_trending_shorts_get",
+        "summary": "Trending shorts",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Trending Shorts V1 Youtube Trending Shorts Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/batch": {
+      "post": {
+        "operationId": "videos_batch_v1_youtube_videos_batch_post",
+        "summary": "Batch video detail",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Videos Batch V1 Youtube Videos Batch Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}": {
+      "get": {
+        "operationId": "get_video_v1_youtube_videos__video_id__get",
+        "summary": "Get video detail",
+        "description": "Full video detail \u2014 merged player + next (likes, comments, chapters, related).",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "gl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Gl"
+            }
+          },
+          {
+            "name": "hl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hl"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Video V1 Youtube Videos  Video Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}/captions": {
+      "get": {
+        "operationId": "video_captions_v1_youtube_videos__video_id__captions_get",
+        "summary": "List caption tracks",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Video Captions V1 Youtube Videos  Video Id  Captions Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}/comments": {
+      "get": {
+        "operationId": "video_comments_v1_youtube_videos__video_id__comments_get",
+        "summary": "Video comments",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "top|newest",
+              "default": "top",
+              "title": "Sort By"
+            },
+            "description": "top|newest"
+          },
+          {
+            "name": "continuation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Continuation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Video Comments V1 Youtube Videos  Video Id  Comments Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}/comments/{comment_id}/replies": {
+      "get": {
+        "operationId": "video_replies_v1_youtube_videos__video_id__comments__comment_id__replies_get",
+        "summary": "Comment replies",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "comment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Comment Id"
+            }
+          },
+          {
+            "name": "continuation",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Replies continuation token",
+              "title": "Continuation"
+            },
+            "description": "Replies continuation token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Video Replies V1 Youtube Videos  Video Id  Comments  Comment Id  Replies Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}/live_chat": {
+      "get": {
+        "operationId": "video_live_chat_v1_youtube_videos__video_id__live_chat_get",
+        "summary": "Live chat messages",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "continuation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Continuation"
+            }
+          },
+          {
+            "name": "replay",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Replay"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Video Live Chat V1 Youtube Videos  Video Id  Live Chat Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}/related": {
+      "get": {
+        "operationId": "video_related_v1_youtube_videos__video_id__related_get",
+        "summary": "Related videos",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Video Related V1 Youtube Videos  Video Id  Related Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}/streams": {
+      "get": {
+        "operationId": "video_streams_v1_youtube_videos__video_id__streams_get",
+        "summary": "Stream formats",
+        "description": "Stream/format metadata (best-effort; media URLs may be PO-token gated).",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "client",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "IOS|ANDROID|WEB",
+              "default": "IOS",
+              "title": "Client"
+            },
+            "description": "IOS|ANDROID|WEB"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Video Streams V1 Youtube Videos  Video Id  Streams Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/youtube/videos/{video_id}/transcript": {
+      "get": {
+        "operationId": "video_transcript_v1_youtube_videos__video_id__transcript_get",
+        "summary": "Video transcript",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "BCP-47 language code",
+              "title": "Language"
+            },
+            "description": "BCP-47 language code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Video Transcript V1 Youtube Videos  Video Id  Transcript Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

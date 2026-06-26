@@ -40,11 +40,14 @@ pub mod core;
 // `cargo run -p xtask -- gen` from the vendored OpenAPI specs in `specs/`.
 pub mod account;
 pub mod amazon;
+pub mod ebay;
 pub mod google;
 pub mod reddit;
+pub mod tiktok;
 pub mod twitter;
 pub mod vinted;
 pub mod web;
+pub mod youtube;
 
 /// Full `scrapebadger` **CLI** command reference — every endpoint as a nested
 /// subcommand. Generated from `specs/*.json` (the same source as this SDK), so
@@ -65,11 +68,14 @@ use crate::core::{resolve_api_key, Client, Config as CoreConfig};
 // Re-export the top-level platform handle types for convenience.
 pub use account::Account;
 pub use amazon::Amazon;
+pub use ebay::Ebay;
 pub use google::Google;
 pub use reddit::Reddit;
+pub use tiktok::Tiktok;
 pub use twitter::Twitter;
 pub use vinted::Vinted;
 pub use web::Web;
+pub use youtube::Youtube;
 
 /// The ScrapeBadger API client. Cheap to clone (reference-counted inside).
 #[derive(Clone)]
@@ -108,6 +114,11 @@ impl ScrapeBadger {
         Amazon::new(self.client.clone())
     }
 
+    /// eBay search, item details, reviews, sellers, and catalog reference data.
+    pub fn ebay(&self) -> Ebay {
+        Ebay::new(self.client.clone())
+    }
+
     /// Google product APIs (Search, Maps, Flights, News, Trends, and more).
     pub fn google(&self) -> Google {
         Google::new(self.client.clone())
@@ -116,6 +127,11 @@ impl ScrapeBadger {
     /// Reddit posts, comments, subreddits, and users.
     pub fn reddit(&self) -> Reddit {
         Reddit::new(self.client.clone())
+    }
+
+    /// TikTok videos, users, hashtags, music, search, trending, and ads.
+    pub fn tiktok(&self) -> Tiktok {
+        Tiktok::new(self.client.clone())
     }
 
     /// Twitter/X tweets, users, lists, spaces, trends, and real-time streams.
@@ -131,6 +147,11 @@ impl ScrapeBadger {
     /// General-purpose website scraping and anti-bot detection.
     pub fn web(&self) -> Web {
         Web::new(self.client.clone())
+    }
+
+    /// YouTube videos, channels, playlists, comments, transcripts, and trending.
+    pub fn youtube(&self) -> Youtube {
+        Youtube::new(self.client.clone())
     }
 }
 

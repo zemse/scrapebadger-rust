@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Three new platforms, generated from the live Portal OpenAPI and exposed in
+  both the SDK and the nested CLI (total coverage now 211 endpoints):
+  - **eBay** (`scrapebadger ebay`, 11 endpoints): search, item details and
+    reviews, sellers (with feedback and items), categories (with items),
+    completed listings, autocomplete, markets.
+  - **TikTok** (`scrapebadger tiktok`, 25 endpoints): videos, users, hashtags,
+    music, comments, search, trending (videos/hashtags/songs), ads, regions.
+  - **YouTube** (`scrapebadger youtube`, 38 endpoints): videos (with comments,
+    captions, transcripts, related, streams, live chat), channels, playlists,
+    posts, shorts, music search, search, trending, and reference data.
+  - All responses are `serde_json::Value` (the live spec leaves 200 bodies
+    untyped); all three are live-verified via `examples/conformance.rs`.
+
 ## 0.2.0 — 2026-06-09
 
 First release published to crates.io. (0.1.0 was developed but never published,
