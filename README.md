@@ -1,7 +1,7 @@
 # scrapebadger (Rust)
 
 Async Rust SDK and CLI for the [ScrapeBadger](https://scrapebadger.com)
-web-scraping API — **211 endpoints** across Amazon, eBay, Google, Reddit,
+web-scraping API — **207 endpoints** across Amazon, eBay, Google, Reddit,
 TikTok, Twitter/X, Vinted, Web Scraping, YouTube, and Account, plus real-time
 Twitter Streams.
 
@@ -36,7 +36,7 @@ Or `export SCRAPEBADGER_API_KEY=sb_live_xxx`, or pass `--api-key` per call.
 |---|---|---|---|
 | **Amazon** | `scrapebadger amazon` | 14 | products, offers, reviews, sellers, search, bestsellers, deals, categories |
 | **eBay** | `scrapebadger ebay` | 11 | search, item details & reviews, sellers, categories, completed listings |
-| **Google** | `scrapebadger google` | 39 | search, maps, shopping, flights, hotels, news, jobs, trends, scholar, patents, finance, images, lens |
+| **Google** | `scrapebadger google` | 35 | search, maps, shopping, flights, hotels, news, jobs, trends, scholar, patents, finance, images, lens |
 | **Reddit** | `scrapebadger reddit` | 20 | posts, comments, subreddits, users, wikis, search |
 | **TikTok** | `scrapebadger tiktok` | 25 | videos, users, hashtags, music, comments, search, trending, ads |
 | **Twitter / X** | `scrapebadger twitter` | 53 | tweets, users, followers, search, trends, lists, communities, spaces + real-time streams |
@@ -105,7 +105,7 @@ scrapebadger raw /v1/amazon/products/B08N5WRWNW
 scrapebadger raw --method POST /v1/web/scrape -d '{"url":"https://example.com"}'
 ```
 
-Full 211-command reference: [`crates/scrapebadger/docs/CLI.md`](crates/scrapebadger/docs/CLI.md).
+Full 207-command reference: [`crates/scrapebadger/docs/CLI.md`](crates/scrapebadger/docs/CLI.md).
 
 ## Library
 

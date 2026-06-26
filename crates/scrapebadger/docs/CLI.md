@@ -1,6 +1,6 @@
 # scrapebadger CLI — command reference
 
-All **211** endpoints as nested subcommands, generated from `specs/*.json` — the same source as the SDK. The general shape is:
+All **207** endpoints as nested subcommands, generated from `specs/*.json` — the same source as the SDK. The general shape is:
 
 ```text
 scrapebadger PLATFORM GROUP [SUBGROUP] ACTION [IDS...] [--flags]
@@ -39,19 +39,19 @@ amazon sellers products <seller_id>  Seller Products
 
 ## Google
 
-`scrapebadger google` — 39 endpoints
+`scrapebadger google` — 35 endpoints
 
 ```text
 google ai-mode search           Google AI Mode search
+google ai-overview              Google AI Overview (inline SERP block)
 google autocomplete             Google search suggestions
-google finance quote            Get Google Finance stock quote
+google finance quote            Get stock/index quote
 google flights search           Google Flights search
 google hotels details           Hotel details
-google hotels search            Search Google Hotels
+google hotels search            Search hotels
 google images search            Search Google Images
 google jobs search              Search Google Jobs
 google lens search              Google Lens visual search
-google local search             Google Local Pack search
 google maps photos              Get place photos
 google maps place               Get place details
 google maps posts               Get business posts
@@ -60,26 +60,22 @@ google maps search              Search Google Maps places
 google news search              Search Google News
 google news topics              News by topic
 google news trending            Trending news
-google patents detail           Get patent details
-google patents search           Search Google Patents
-google products detail          Google immersive product detail
-google scholar author citation  Get citation chart data for a Scholar author
-google scholar author get       Get Google Scholar author profile
+google patents detail           Patent details
+google patents search           Search patents
+google products detail          Immersive product detail
+google scholar author citation  Get author citations-per-year chart
+google scholar author get       Get Scholar author profile
 google scholar cite             Get citation formats for a Scholar paper
-google scholar profiles         Search Google Scholar author profiles
+google scholar profiles         Search Scholar author profiles
 google scholar search           Search Google Scholar
 google search                   Google web search
-google shopping product click   Resolve merchant URL for a Google Shopping product
-google shopping product get     Product details
-google shopping search          Search Google Shopping
+google shopping search          Search products
 google shorts search            Google Shorts search
 google trends autocomplete      Trends topic autocomplete
 google trends interest          Interest over time
 google trends regions           Interest by region
 google trends related           Related topics & queries
-google trends search            Google Trends — unified search
 google trends trending          Trending searches
-google trends trending-now      Google Trends — current trending searches
 google videos search            Search Google Videos
 ```
 

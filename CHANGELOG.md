@@ -2,9 +2,21 @@
 
 ## Unreleased
 
+### Fixed
+- **Google endpoints now work.** Every Google path in the hand-authored
+  `specs/google.json` was wrong (`/api/v1/<sub>`, missing the `google` segment),
+  so all 39 calls returned `404 "Scraper 'X' is not configured"`. Re-vendored
+  from the live Portal OpenAPI with correct `/v1/google/...` paths (35
+  endpoints). Dropped 4 endpoints that don't exist on the live API
+  (`trends/search`, `trends/trending-now`, `local/search`,
+  `shopping/product[_click]`); some Google method names changed accordingly
+  (e.g. `search_news` → `news_search`, `get_autocomplete` → `autocomplete`,
+  `search_scholar` → `scholar_search`). Live-verified: 22/25 endpoints pass with
+  0 type failures.
+
 ### Added
 - Three new platforms, generated from the live Portal OpenAPI and exposed in
-  both the SDK and the nested CLI (total coverage now 211 endpoints):
+  both the SDK and the nested CLI (total coverage now 207 endpoints):
   - **eBay** (`scrapebadger ebay`, 11 endpoints): search, item details and
     reviews, sellers (with feedback and items), categories (with items),
     completed listings, autocomplete, markets.

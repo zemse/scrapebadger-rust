@@ -50,14 +50,28 @@ bodies untyped); typed models can follow later as a separate enhancement.
 - [x] Added to conformance suite (5 checks pass live: trending, categories,
       regions, languages, search)
 
+### Google path fix (was wrongly "blocked")
+- [x] **Root-caused the Google "not configured" 404**: the hand-authored
+      `specs/google.json` used `/api/v1/<sub>` paths (missing the `google`
+      segment), so the dispatcher read e.g. "flights" as a top-level scraper and
+      404'd. It was never an account/provisioning gate — Google works on the
+      basic-tier funded account.
+- [x] Re-vendored `specs/google.json` from the live Portal OpenAPI (35
+      endpoints, correct `/v1/google/...` paths); dropped 4 hand-authored
+      endpoints that don't exist live (`trends/search`, `trends/trending-now`,
+      `local/search`, `shopping/product[_click]`). Total coverage now 207.
+- [x] Rewrote the Google block in `examples/conformance.rs` for the new method
+      names. Live: **22/25 pass, 0 type failures**; the 3 api-errs are upstream
+      Google quirks (`scholar_cite` 501; `trends_interest`/`trends_regions` 502
+      "No widget" for thin-data terms), not the SDK.
+
 ### Release
-- [ ] Cut a minor version (3 new platforms is additive) — bump to 0.3.0,
-      publish to crates.io, tag a GitHub release. Requires explicit go-ahead
-      (irreversible); run via the `release` skill.
+- [ ] Cut a minor version (3 new platforms + Google fix is additive) — bump to
+      0.3.0, publish to crates.io, tag a GitHub release. Requires explicit
+      go-ahead (irreversible); run via the `release` skill.
 
-## Blocked
-
-- [ ] **Google conformance** can't run until the Google Scraper service is
-      enabled on the account (currently tier `basic`; all `/api/v1/*` →
-      404 "not configured"). Revisit if/when the Google add-on is provisioned;
-      run `CONFORMANCE_FILTER=google cargo run --example conformance` then.
+## Known minor issues
+- [ ] CLI flag collision: `google search` exposes a Google API param named
+      `output` (json|html SERP) as `--output`, shadowing the global `-o`. Works
+      if you omit `-o` (JSON is the default), but worth renaming the API param's
+      CLI flag (e.g. `--serp-format`) in the generator to avoid the clash.

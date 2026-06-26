@@ -416,8 +416,8 @@ mod tests {
     use std::collections::BTreeSet;
 
     #[test]
-    fn endpoint_count_is_211() {
-        assert_eq!(ENDPOINTS.len(), 211);
+    fn endpoint_count_is_207() {
+        assert_eq!(ENDPOINTS.len(), 207);
     }
 
     #[test]

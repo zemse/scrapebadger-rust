@@ -33,15 +33,32 @@ impl Google {
     ///
     /// Get AI-generated search results from Google AI Mode.
     ///
-    /// **Currently returns HTTP 501.** As of 2026 Google has repurposed
-    /// the historical ``udm=50`` parameter — it now opens the Visual Search
-    /// history prompt, not a dedicated AI Mode surface. There is no
-    /// standalone ``/search?udm=50`` URL that returns AI-only content
-    /// anymore; AI Overview blocks are rendered inside regular SERPs
-    /// instead, gated on query + user + geolocation signals.
-    /// `GET /api/v1/ai-mode/search`
-    pub async fn search_ai_mode(&self, params: SearchAiModeParams) -> Result<AiModeResponse> {
-        let path = "/api/v1/ai-mode/search".to_string();
+    /// Returns the structured `text_blocks` (paragraphs, headings, comparison
+    /// `table` blocks and lists), a flat `references` source list, a compact
+    /// `markdown` rendering of the whole answer and — unless `include_html`
+    /// is false — the raw `answer_html` body.
+    /// `GET /v1/google/ai-mode/search`
+    pub async fn ai_mode_search(&self, params: AiModeSearchParams) -> Result<Value> {
+        let path = "/v1/google/ai-mode/search".to_string();
+        let mut q = QueryParams::new();
+        q.opt("q", params.q.as_ref());
+        q.opt("gl", params.gl.as_ref());
+        q.opt("hl", params.hl.as_ref());
+        q.opt("include_html", params.include_html.as_ref());
+        let query = q.into_pairs();
+        let body = None;
+        self.client.send(Method::GET, &path, &query, body).await
+    }
+
+    /// Google AI Overview (inline SERP block)
+    ///
+    /// Get the AI Overview block Google renders inline at the top of a SERP.
+    ///
+    /// Deferred overviews (where Google lazy-loads the block via a follow-up
+    /// ``page_token``) are chased automatically.
+    /// `GET /v1/google/ai-overview`
+    pub async fn ai_overview(&self, params: AiOverviewParams) -> Result<Value> {
+        let path = "/v1/google/ai-overview".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("gl", params.gl.as_ref());
@@ -53,15 +70,10 @@ impl Google {
 
     /// Google search suggestions
     ///
-    /// Get Google search autocomplete suggestions via the JSON API.
-    ///
-    /// Returns up to 10 search suggestions ordered by relevance.
-    /// `GET /api/v1/autocomplete/`
-    pub async fn get_autocomplete(
-        &self,
-        params: GetAutocompleteParams,
-    ) -> Result<AutocompleteResponse> {
-        let path = "/api/v1/autocomplete/".to_string();
+    /// Get Google search autocomplete suggestions.
+    /// `GET /v1/google/autocomplete`
+    pub async fn autocomplete(&self, params: AutocompleteParams) -> Result<Value> {
+        let path = "/v1/google/autocomplete".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -71,15 +83,12 @@ impl Google {
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Get Google Finance stock quote
+    /// Get stock/index quote
     ///
     /// Get a stock or index quote from Google Finance.
-    /// `GET /api/v1/finance/quote`
-    pub async fn get_finance_quote(
-        &self,
-        params: GetFinanceQuoteParams,
-    ) -> Result<FinanceQuoteResponse> {
-        let path = "/api/v1/finance/quote".to_string();
+    /// `GET /v1/google/finance/quote`
+    pub async fn finance_quote(&self, params: FinanceQuoteParams) -> Result<Value> {
+        let path = "/v1/google/finance/quote".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -91,19 +100,9 @@ impl Google {
     /// Google Flights search
     ///
     /// Search Google Flights for available itineraries.
-    ///
-    /// Returns `best_flights` (Google's top recommendations) and `other_flights`
-    /// (the rest of the result set), plus `price_insights` when Google shows
-    /// its typical-price range / high-low-typical indicator.
-    ///
-    /// Parser is best-effort against the rendered DOM — Google's internal
-    /// batchexecute protobuf would give richer data (seat maps, booking tokens,
-    /// `GET /api/v1/flights/search`
-    pub async fn flights_search(
-        &self,
-        params: FlightsSearchParams,
-    ) -> Result<GoogleFlightsResponse> {
-        let path = "/api/v1/flights/search".to_string();
+    /// `GET /v1/google/flights/search`
+    pub async fn flights_search(&self, params: FlightsSearchParams) -> Result<Value> {
+        let path = "/v1/google/flights/search".to_string();
         let mut q = QueryParams::new();
         q.opt("departure_id", params.departure_id.as_ref());
         q.opt("arrival_id", params.arrival_id.as_ref());
@@ -120,52 +119,36 @@ impl Google {
         q.opt("hl", params.hl.as_ref());
         q.opt("stops", params.stops.as_ref());
         q.opt("max_price", params.max_price.as_ref());
+        q.opt("departure_token", params.departure_token.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
     /// Hotel details
-    ///
-    /// Get detailed hotel information and pricing.
-    /// `GET /api/v1/hotels/details`
-    pub async fn hotel_details(&self, params: HotelDetailsParams) -> Result<HotelDetailResponse> {
-        let path = "/api/v1/hotels/details".to_string();
+    /// `GET /v1/google/hotels/details`
+    pub async fn hotel_details(&self, params: HotelDetailsParams) -> Result<Value> {
+        let path = "/v1/google/hotels/details".to_string();
         let mut q = QueryParams::new();
         q.opt("property_token", params.property_token.as_ref());
         q.opt("check_in", params.check_in.as_ref());
         q.opt("check_out", params.check_out.as_ref());
-        q.opt("adults", params.adults.as_ref());
-        q.opt("currency", params.currency.as_ref());
-        q.opt("gl", params.gl.as_ref());
-        q.opt("hl", params.hl.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Search Google Hotels
-    ///
-    /// Search Google Hotels with dates and pricing.
-    ///
-    /// Uses browser rendering to access Google Travel Hotels.
-    /// `GET /api/v1/hotels/search`
-    pub async fn hotels_search(&self, params: HotelsSearchParams) -> Result<HotelsSearchResponse> {
-        let path = "/api/v1/hotels/search".to_string();
+    /// Search hotels
+    /// `GET /v1/google/hotels/search`
+    pub async fn hotels_search(&self, params: HotelsSearchParams) -> Result<Value> {
+        let path = "/v1/google/hotels/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("check_in", params.check_in.as_ref());
         q.opt("check_out", params.check_out.as_ref());
         q.opt("adults", params.adults.as_ref());
-        q.opt("children", params.children.as_ref());
         q.opt("currency", params.currency.as_ref());
         q.opt("gl", params.gl.as_ref());
-        q.opt("hl", params.hl.as_ref());
-        q.opt("sort_by", params.sort_by.as_ref());
-        q.opt("min_price", params.min_price.as_ref());
-        q.opt("max_price", params.max_price.as_ref());
-        q.opt("hotel_class", params.hotel_class.as_ref());
-        q.opt("next_page_token", params.next_page_token.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
@@ -174,9 +157,9 @@ impl Google {
     /// Search Google Images
     ///
     /// Search Google Images for visual content.
-    /// `GET /api/v1/images/search`
-    pub async fn search_images(&self, params: SearchImagesParams) -> Result<ImagesSearchResponse> {
-        let path = "/api/v1/images/search".to_string();
+    /// `GET /v1/google/images/search`
+    pub async fn images_search(&self, params: ImagesSearchParams) -> Result<Value> {
+        let path = "/v1/google/images/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("gl", params.gl.as_ref());
@@ -193,35 +176,15 @@ impl Google {
     }
 
     /// Search Google Jobs
-    ///
-    /// Search Google Jobs.
-    ///
-    /// Two data sources are available via ``mode``:
-    ///
-    /// - ``mode=rpc`` (default) — Google's own Careers SPA RPC. Very fast
-    /// (~300 ms), richly structured (title, apply URL, company,
-    /// locations, responsibilities, qualifications, posted-at,
-    /// experience levels). Scope limited to Google's openings.
-    /// `GET /api/v1/jobs/search`
-    pub async fn jobs_search(&self, params: JobsSearchParams) -> Result<JobsSearchResponse> {
-        let path = "/api/v1/jobs/search".to_string();
+    /// `GET /v1/google/jobs/search`
+    pub async fn jobs_search(&self, params: JobsSearchParams) -> Result<Value> {
+        let path = "/v1/google/jobs/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("location", params.location.as_ref());
         q.opt("gl", params.gl.as_ref());
-        q.opt("country", params.country.as_ref());
-        q.opt("hl", params.hl.as_ref());
-        q.opt("language", params.language.as_ref());
-        q.opt("domain", params.domain.as_ref());
         q.opt("job_type", params.job_type.as_ref());
         q.opt("date_posted", params.date_posted.as_ref());
-        q.opt("ltype", params.ltype.as_ref());
-        q.opt("chips", params.chips.as_ref());
-        q.opt("uds", params.uds.as_ref());
-        q.opt("uule", params.uule.as_ref());
-        q.opt("lrad", params.lrad.as_ref());
-        q.opt("next_page_token", params.next_page_token.as_ref());
-        q.opt("mode", params.mode.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
@@ -229,78 +192,47 @@ impl Google {
 
     /// Google Lens visual search
     ///
-    /// Search Google Lens by image URL for visually similar results.
-    /// `GET /api/v1/lens/search`
-    pub async fn search_lens(&self, params: SearchLensParams) -> Result<LensSearchResponse> {
-        let path = "/api/v1/lens/search".to_string();
+    /// Google Lens visual search.
+    ///
+    /// Response carries ``lens_results`` (Scrapingdog parity alias) with
+    /// ``title`` / ``source`` / ``source_favicon`` / ``thumbnail`` / ``tag``
+    /// (price chip) / ``in_stock``, plus ``related_searches`` chips.
+    /// Legacy ``results`` alias kept for backwards compat.
+    /// `GET /v1/google/lens/search`
+    pub async fn lens_search(&self, params: LensSearchParams) -> Result<Value> {
+        let path = "/v1/google/lens/search".to_string();
         let mut q = QueryParams::new();
         q.opt("url", params.url.as_ref());
+        q.opt("query", params.query.as_ref());
+        q.opt("country", params.country.as_ref());
+        q.opt("language", params.language.as_ref());
         q.opt("gl", params.gl.as_ref());
         q.opt("hl", params.hl.as_ref());
-        let query = q.into_pairs();
-        let body = None;
-        self.client.send(Method::GET, &path, &query, body).await
-    }
-
-    /// Google Local Pack search
-    ///
-    /// Return Google Local Pack listings for a query.
-    ///
-    /// Unlike ``/v1/google/maps/search`` (which targets the Maps Protobuf API and
-    /// is keyed by ``data_id``), this endpoint follows the Web SERP ``tbm=lcl``
-    /// mode — the same data that populates the "Places" block inside regular
-    /// search results. Use it when you care about ranking relative to a SERP
-    /// query (e.g. SEO/local-SEO research), not when you need full place
-    /// metadata.
-    /// `GET /api/v1/local/search`
-    pub async fn local_search(&self, params: LocalSearchParams) -> Result<GoogleLocalResponse> {
-        let path = "/api/v1/local/search".to_string();
-        let mut q = QueryParams::new();
-        q.opt("q", params.q.as_ref());
-        q.opt("gl", params.gl.as_ref());
-        q.opt("hl", params.hl.as_ref());
-        q.opt("domain", params.domain.as_ref());
-        q.opt("location", params.location.as_ref());
-        q.opt("uule", params.uule.as_ref());
-        q.opt("num", params.num.as_ref());
-        q.opt("start", params.start.as_ref());
+        q.opt("product", params.product.as_ref());
+        q.opt("visual_matches", params.visual_matches.as_ref());
+        q.opt("exact_matches", params.exact_matches.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
     /// Get place photos
-    ///
-    /// Get photos for a Google Maps place.
-    ///
-    /// Photos are extracted from the ``/maps/preview/place`` response
-    /// (field ``data[6][37]``). Returns up to 20 photo URLs with
-    /// configurable width/height via the Google CDN pattern
-    /// ``lh3.googleusercontent.com/gps-cs-s/{id}=w{w}-h{h}-k-no``.
-    /// `GET /api/v1/maps/photos`
-    pub async fn maps_photos(&self, params: MapsPhotosParams) -> Result<MapsPhotosResponse> {
-        let path = "/api/v1/maps/photos".to_string();
+    /// `GET /v1/google/maps/photos`
+    pub async fn maps_photos(&self, params: MapsPhotosParams) -> Result<Value> {
+        let path = "/v1/google/maps/photos".to_string();
         let mut q = QueryParams::new();
         q.opt("data_id", params.data_id.as_ref());
         q.opt("hl", params.hl.as_ref());
-        q.opt("gl", params.gl.as_ref());
+        q.opt("next_page_token", params.next_page_token.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
     /// Get place details
-    ///
-    /// Get detailed place information from Google Maps via the protobuf API.
-    ///
-    /// Requires either ``place_id`` (e.g. ``ChIJN1t_tDeuEmsRUsoyG83frY4``) or
-    /// ``data_id`` (e.g. ``0x89c259617ae5b78b:0xe919ce17bb09920e``). The
-    /// data_id is available in the ``data_id`` field of ``/maps/search``
-    /// results. Returns name, address, rating, review count, phone, website,
-    /// GPS coordinates, categories, and up to 20 photo URLs.
-    /// `GET /api/v1/maps/place`
-    pub async fn maps_place(&self, params: MapsPlaceParams) -> Result<MapsPlaceResponse> {
-        let path = "/api/v1/maps/place".to_string();
+    /// `GET /v1/google/maps/place`
+    pub async fn maps_place(&self, params: MapsPlaceParams) -> Result<Value> {
+        let path = "/v1/google/maps/place".to_string();
         let mut q = QueryParams::new();
         q.opt("place_id", params.place_id.as_ref());
         q.opt("data_id", params.data_id.as_ref());
@@ -312,45 +244,26 @@ impl Google {
     }
 
     /// Get business posts
-    ///
-    /// Get Google Business posts / updates for a Maps place.
-    ///
-    /// **Approach**: searches the Google SERP for the business by ``ludocid``
-    /// (derived from the ``data_id``'s low hex part) and parses the knowledge
-    /// panel's ``data-attrid="kc:/local:any posts"`` and
-    /// ``kc:/local:merchant_description`` sections. This is the same data
-    /// surface and other SERP-based scrapers use.
-    ///
-    /// `GET /api/v1/maps/posts`
-    pub async fn maps_posts(&self, params: MapsPostsParams) -> Result<MapsPostsResponse> {
-        let path = "/api/v1/maps/posts".to_string();
+    /// `GET /v1/google/maps/posts`
+    pub async fn maps_posts(&self, params: MapsPostsParams) -> Result<Value> {
+        let path = "/v1/google/maps/posts".to_string();
         let mut q = QueryParams::new();
         q.opt("data_id", params.data_id.as_ref());
-        q.opt("place_id", params.place_id.as_ref());
-        q.opt("hl", params.hl.as_ref());
-        q.opt("gl", params.gl.as_ref());
+        q.opt("next_page_token", params.next_page_token.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
     /// Get place reviews
-    ///
-    /// Get reviews for a Google Maps place via the protobuf API.
-    ///
-    /// The ``data_id`` is the hex pair from ``/maps/search`` results
-    /// (e.g. ``0x89c259617ae5b78b:0xe919ce17bb09920e``). Supports both
-    /// offset-based and token-based pagination.
-    /// `GET /api/v1/maps/reviews`
-    pub async fn maps_reviews(&self, params: MapsReviewsParams) -> Result<MapsReviewsResponse> {
-        let path = "/api/v1/maps/reviews".to_string();
+    /// `GET /v1/google/maps/reviews`
+    pub async fn maps_reviews(&self, params: MapsReviewsParams) -> Result<Value> {
+        let path = "/v1/google/maps/reviews".to_string();
         let mut q = QueryParams::new();
         q.opt("data_id", params.data_id.as_ref());
         q.opt("sort_by", params.sort_by.as_ref());
         q.opt("hl", params.hl.as_ref());
-        q.opt("gl", params.gl.as_ref());
         q.opt("next_page_token", params.next_page_token.as_ref());
-        q.opt("offset", params.offset.as_ref());
         q.opt("results", params.results.as_ref());
         let query = q.into_pairs();
         let body = None;
@@ -358,14 +271,9 @@ impl Google {
     }
 
     /// Search Google Maps places
-    ///
-    /// Search Google Maps for places.
-    ///
-    /// Returns place names, ratings, addresses, phone numbers, coordinates,
-    /// hours, and service options.
-    /// `GET /api/v1/maps/search`
-    pub async fn maps_search(&self, params: MapsSearchParams) -> Result<MapsSearchResponse> {
-        let path = "/api/v1/maps/search".to_string();
+    /// `GET /v1/google/maps/search`
+    pub async fn maps_search(&self, params: MapsSearchParams) -> Result<Value> {
+        let path = "/v1/google/maps/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("ll", params.ll.as_ref());
@@ -378,11 +286,9 @@ impl Google {
     }
 
     /// Search Google News
-    ///
-    /// Search Google News articles via RSS feed.
-    /// `GET /api/v1/news/search`
-    pub async fn search_news(&self, params: SearchNewsParams) -> Result<NewsSearchResponse> {
-        let path = "/api/v1/news/search".to_string();
+    /// `GET /v1/google/news/search`
+    pub async fn news_search(&self, params: NewsSearchParams) -> Result<Value> {
+        let path = "/v1/google/news/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -394,11 +300,9 @@ impl Google {
     }
 
     /// News by topic
-    ///
-    /// Get Google News articles by topic category via RSS.
-    /// `GET /api/v1/news/topics`
-    pub async fn news_by_topic(&self, params: NewsByTopicParams) -> Result<NewsTopicsResponse> {
-        let path = "/api/v1/news/topics".to_string();
+    /// `GET /v1/google/news/topics`
+    pub async fn news_topics(&self, params: NewsTopicsParams) -> Result<Value> {
+        let path = "/v1/google/news/topics".to_string();
         let mut q = QueryParams::new();
         q.opt("topic", params.topic.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -410,11 +314,9 @@ impl Google {
     }
 
     /// Trending news
-    ///
-    /// Get trending Google News stories via RSS.
-    /// `GET /api/v1/news/trending`
-    pub async fn trending_news(&self, params: TrendingNewsParams) -> Result<NewsTrendingResponse> {
-        let path = "/api/v1/news/trending".to_string();
+    /// `GET /v1/google/news/trending`
+    pub async fn news_trending(&self, params: NewsTrendingParams) -> Result<Value> {
+        let path = "/v1/google/news/trending".to_string();
         let mut q = QueryParams::new();
         q.opt("hl", params.hl.as_ref());
         q.opt("gl", params.gl.as_ref());
@@ -424,15 +326,10 @@ impl Google {
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Get patent details
-    ///
-    /// Get detailed patent information using the XHR endpoint (returns HTML).
-    /// `GET /api/v1/patents/detail`
-    pub async fn get_patent_detail(
-        &self,
-        params: GetPatentDetailParams,
-    ) -> Result<PatentDetailResponse> {
-        let path = "/api/v1/patents/detail".to_string();
+    /// Patent details
+    /// `GET /v1/google/patents/detail`
+    pub async fn patent_detail(&self, params: PatentDetailParams) -> Result<Value> {
+        let path = "/v1/google/patents/detail".to_string();
         let mut q = QueryParams::new();
         q.opt("patent_id", params.patent_id.as_ref());
         let query = q.into_pairs();
@@ -440,15 +337,10 @@ impl Google {
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Search Google Patents
-    ///
-    /// Search Google Patents using the XHR API.
-    /// `GET /api/v1/patents/search`
-    pub async fn search_patents(
-        &self,
-        params: SearchPatentsParams,
-    ) -> Result<PatentSearchResponse> {
-        let path = "/api/v1/patents/search".to_string();
+    /// Search patents
+    /// `GET /v1/google/patents/search`
+    pub async fn patents_search(&self, params: PatentsSearchParams) -> Result<Value> {
+        let path = "/v1/google/patents/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("page", params.page.as_ref());
@@ -467,45 +359,34 @@ impl Google {
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Google immersive product detail
+    /// Immersive product detail
     ///
     /// Get deep product details from Google's immersive product page.
-    ///
-    /// Two-step fetch: render the Shopping SERP for ``q`` to extract
-    /// session-bound tokens, then call ``/async/oapv`` with them. Returns
-    /// 404 when the product isn't on the SERP — the caller's query has to
-    /// surface the tile because the tokens are session-scoped.
-    ///
-    /// Response time: ~3 s warm (cached SERP), ~6 s cold (SERP + RPC).
-    /// `GET /api/v1/products/detail`
-    pub async fn get_product_detail(
-        &self,
-        params: GetProductDetailParams,
-    ) -> Result<ProductDetailResponse> {
-        let path = "/api/v1/products/detail".to_string();
+    /// `GET /v1/google/products/detail`
+    pub async fn products_detail(&self, params: ProductsDetailParams) -> Result<Value> {
+        let path = "/v1/google/products/detail".to_string();
         let mut q = QueryParams::new();
         q.opt("product_id", params.product_id.as_ref());
         q.opt("q", params.q.as_ref());
         q.opt("gl", params.gl.as_ref());
         q.opt("hl", params.hl.as_ref());
-        q.opt("domain", params.domain.as_ref());
+        q.opt("catalog_id", params.catalog_id.as_ref());
+        q.opt("image_docid", params.image_docid.as_ref());
+        q.opt("headline_offer_docid", params.headline_offer_docid.as_ref());
+        q.opt("mid", params.mid.as_ref());
         q.opt("include_offers", params.include_offers.as_ref());
         q.opt("include_variants", params.include_variants.as_ref());
-        q.opt("resolve_deep_urls", params.resolve_deep_urls.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Get Google Scholar author profile
+    /// Get Scholar author profile
     ///
-    /// Get detailed Google Scholar author profile including articles, stats, and co-authors.
-    /// `GET /api/v1/scholar/author`
-    pub async fn scholar_author(
-        &self,
-        params: ScholarAuthorParams,
-    ) -> Result<ScholarAuthorResponse> {
-        let path = "/api/v1/scholar/author".to_string();
+    /// Get detailed Google Scholar author profile including articles, stats, co-authors.
+    /// `GET /v1/google/scholar/author`
+    pub async fn scholar_author(&self, params: ScholarAuthorParams) -> Result<Value> {
+        let path = "/v1/google/scholar/author".to_string();
         let mut q = QueryParams::new();
         q.opt("author_id", params.author_id.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -516,15 +397,15 @@ impl Google {
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Get citation chart data for a Scholar author
+    /// Get author citations-per-year chart
     ///
     /// Return the citations-per-year chart for a Google Scholar author.
-    /// `GET /api/v1/scholar/author/citation`
+    /// `GET /v1/google/scholar/author/citation`
     pub async fn scholar_author_citation(
         &self,
         params: ScholarAuthorCitationParams,
-    ) -> Result<ScholarAuthorCitationResponse> {
-        let path = "/api/v1/scholar/author/citation".to_string();
+    ) -> Result<Value> {
+        let path = "/v1/google/scholar/author/citation".to_string();
         let mut q = QueryParams::new();
         q.opt("author_id", params.author_id.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -535,17 +416,10 @@ impl Google {
 
     /// Get citation formats for a Scholar paper
     ///
-    /// Return MLA, APA, Chicago, Harvard, and Vancouver citation formats.
-    ///
-    /// **Currently returns HTTP 501.** Google's cite-dialog endpoint
-    /// (``/scholar?q=info:<cluster>:scholar.google.com/&output=cite``)
-    /// returns ``HTTP 403 Forbidden`` for every unauthenticated client as of
-    /// late 2026 — the dialog is only served to browsers that have an
-    /// active Scholar JS session established via a prior `/scholar` page
-    /// load. Working around that requires a stateful browser session which
-    /// `GET /api/v1/scholar/cite`
-    pub async fn scholar_cite(&self, params: ScholarCiteParams) -> Result<ScholarCiteResponse> {
-        let path = "/api/v1/scholar/cite".to_string();
+    /// Return MLA, APA, Chicago, Harvard, and Vancouver citation formats for a paper.
+    /// `GET /v1/google/scholar/cite`
+    pub async fn scholar_cite(&self, params: ScholarCiteParams) -> Result<Value> {
+        let path = "/v1/google/scholar/cite".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -554,22 +428,12 @@ impl Google {
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Search Google Scholar author profiles
+    /// Search Scholar author profiles
     ///
     /// Search Google Scholar for author profiles by name.
-    ///
-    /// Google auth-gates the direct ``view_op=search_authors`` endpoint for
-    /// unauthenticated clients, so this handler falls back to a regular
-    /// ``/scholar?q=<name>`` search and harvests unique
-    /// ``/citations?user=<id>`` links from each result's author byline
-    /// (``gs_a`` div). The response schema is unchanged — each
-    /// ``ScholarProfile`` carries ``author_id``, ``name``, and ``link``.
-    /// `GET /api/v1/scholar/profiles`
-    pub async fn scholar_profiles(
-        &self,
-        params: ScholarProfilesParams,
-    ) -> Result<ScholarProfilesResponse> {
-        let path = "/api/v1/scholar/profiles".to_string();
+    /// `GET /v1/google/scholar/profiles`
+    pub async fn scholar_profiles(&self, params: ScholarProfilesParams) -> Result<Value> {
+        let path = "/v1/google/scholar/profiles".to_string();
         let mut q = QueryParams::new();
         q.opt("mauthors", params.mauthors.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -582,13 +446,17 @@ impl Google {
 
     /// Search Google Scholar
     ///
-    /// Search Google Scholar for scholarly articles using direct HTTP.
-    /// `GET /api/v1/scholar/search`
-    pub async fn search_scholar(
-        &self,
-        params: SearchScholarParams,
-    ) -> Result<ScholarSearchResponse> {
-        let path = "/api/v1/scholar/search".to_string();
+    /// Search Google Scholar for scholarly articles.
+    ///
+    /// Each result ships with its doc ``id``, ``type`` badge
+    /// ([BOOK]/[PDF]/...), wrapped ``inline_links`` (versions + cited_by +
+    /// related), PDF ``resources`` list, and structured ``authors`` (with
+    /// ``author_id`` for profiled authors — pipe straight into
+    /// ``/scholar/author``). Envelope carries ``scholar_results`` alias
+    /// (Scrapingdog parity), ``related_searches``, and matched
+    /// `GET /v1/google/scholar/search`
+    pub async fn scholar_search(&self, params: ScholarSearchParams) -> Result<Value> {
+        let path = "/v1/google/scholar/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -604,17 +472,10 @@ impl Google {
 
     /// Google web search
     ///
-    /// Search Google and get structured results.
-    ///
-    /// Two response modes:
-    ///
-    /// - **full** (default, 2 credits): complete SERP with organic, ads,
-    /// knowledge graph, People Also Ask, AI Overview, local pack, news,
-    /// related searches, inline videos, etc. ~1.5-2s cold, ~1.5ms warm.
-    /// - **fast** (1 credit, ~40% faster): lite endpoint (`gbv=1`) returning
-    /// `GET /api/v1/search`
-    pub async fn search(&self, params: SearchParams) -> Result<GoogleSearchResponse> {
-        let path = "/api/v1/search".to_string();
+    /// Search Google and get structured results (organic, ads, KG, AI overview, PAA).
+    /// `GET /v1/google/search`
+    pub async fn search(&self, params: SearchParams) -> Result<Value> {
+        let path = "/v1/google/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("gl", params.gl.as_ref());
@@ -623,6 +484,8 @@ impl Google {
         q.opt("start", params.start.as_ref());
         q.opt("domain", params.domain.as_ref());
         q.opt("device", params.device.as_ref());
+        q.opt("user_agent", params.user_agent.as_ref());
+        q.opt("output", params.output.as_ref());
         q.opt("location", params.location.as_ref());
         q.opt("lr", params.lr.as_ref());
         q.opt("tbs", params.tbs.as_ref());
@@ -638,79 +501,21 @@ impl Google {
         q.opt("ibp", params.ibp.as_ref());
         q.opt("uds", params.uds.as_ref());
         q.opt("ai_overview", params.ai_overview.as_ref());
-        q.opt("mode", params.mode.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
-    /// Product details
-    ///
-    /// Get detailed product information with seller offers.
-    /// `GET /api/v1/shopping/product`
-    pub async fn shopping_product(
-        &self,
-        params: ShoppingProductParams,
-    ) -> Result<ShoppingProductResponse> {
-        let path = "/api/v1/shopping/product".to_string();
-        let mut q = QueryParams::new();
-        q.opt("product_id", params.product_id.as_ref());
-        q.opt("gl", params.gl.as_ref());
-        q.opt("hl", params.hl.as_ref());
-        let query = q.into_pairs();
-        let body = None;
-        self.client.send(Method::GET, &path, &query, body).await
-    }
-
-    /// Resolve merchant URL for a Google Shopping product
-    ///
-    /// Resolve the real merchant URL for a product from Google Shopping.
-    ///
-    /// Google has removed direct merchant links from organic Shopping HTML,
-    /// so the public /shopping/search response can only return the product
-    /// title + price + source. This endpoint takes a product title (and
-    /// optionally the source merchant) and uses Google's "I'm Feeling Lucky"
-    /// redirect (`btnI=1`) to materialize the top merchant URL, mirroring
-    /// the per-product enrichment pattern exposes via
-    /// `GET /api/v1/shopping/product/click`
-    pub async fn shopping_product_click(
-        &self,
-        params: ShoppingProductClickParams,
-    ) -> Result<ShoppingClickResponse> {
-        let path = "/api/v1/shopping/product/click".to_string();
-        let mut q = QueryParams::new();
-        q.opt("title", params.title.as_ref());
-        q.opt("source", params.source.as_ref());
-        q.opt("q", params.q.as_ref());
-        q.opt("product_id", params.product_id.as_ref());
-        q.opt("gl", params.gl.as_ref());
-        q.opt("hl", params.hl.as_ref());
-        let query = q.into_pairs();
-        let body = None;
-        self.client.send(Method::GET, &path, &query, body).await
-    }
-
-    /// Search Google Shopping
-    ///
-    /// Search Google Shopping for products.
-    ///
-    /// Requires browser rendering due to dynamic JS-loaded content.
-    /// `GET /api/v1/shopping/search`
-    pub async fn shopping_search(
-        &self,
-        params: ShoppingSearchParams,
-    ) -> Result<ShoppingSearchResponse> {
-        let path = "/api/v1/shopping/search".to_string();
+    /// Search products
+    /// `GET /v1/google/shopping/search`
+    pub async fn shopping_search(&self, params: ShoppingSearchParams) -> Result<Value> {
+        let path = "/v1/google/shopping/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("gl", params.gl.as_ref());
-        q.opt("hl", params.hl.as_ref());
         q.opt("min_price", params.min_price.as_ref());
         q.opt("max_price", params.max_price.as_ref());
         q.opt("sort_by", params.sort_by.as_ref());
-        q.opt("free_shipping", params.free_shipping.as_ref());
-        q.opt("on_sale", params.on_sale.as_ref());
-        q.opt("start", params.start.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
@@ -718,15 +523,10 @@ impl Google {
 
     /// Google Shorts search
     ///
-    /// Return Google Shorts — short-form vertical videos surfaced in search.
-    ///
-    /// Triggers Google's Shorts mode via `udm=39` and parses out the
-    /// `short_videos_results` carousel. Mostly returns YouTube Shorts but also
-    /// includes TikToks, Facebook Reels, and other short-form sources when
-    /// Google surfaces them.
-    /// `GET /api/v1/shorts/search`
-    pub async fn shorts_search(&self, params: ShortsSearchParams) -> Result<GoogleShortsResponse> {
-        let path = "/api/v1/shorts/search".to_string();
+    /// Return short-form video results (YouTube Shorts, TikToks) from Google Shorts mode.
+    /// `GET /v1/google/shorts/search`
+    pub async fn shorts_search(&self, params: ShortsSearchParams) -> Result<Value> {
+        let path = "/v1/google/shorts/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("gl", params.gl.as_ref());
@@ -741,19 +541,10 @@ impl Google {
 
     /// Trends topic autocomplete
     ///
-    /// Return categorized topic entities from the Google Trends autocomplete API.
-    ///
-    /// Unlike Google Search autocomplete (which returns flat keyword suggestions),
-    /// this endpoint returns Knowledge Graph entities each tagged with a `type`
-    /// and a machine identifier (`mid`) — the same data that powers the Trends
-    /// UI's "Search topic" picker. Each entry includes a direct link into the
-    /// Trends explore view for that topic.
-    /// `GET /api/v1/trends/autocomplete`
-    pub async fn trends_autocomplete(
-        &self,
-        params: TrendsAutocompleteParams,
-    ) -> Result<TrendsAutocompleteResponse> {
-        let path = "/api/v1/trends/autocomplete".to_string();
+    /// Return categorized Knowledge Graph topic entities (mid, type) for a query.
+    /// `GET /v1/google/trends/autocomplete`
+    pub async fn trends_autocomplete(&self, params: TrendsAutocompleteParams) -> Result<Value> {
+        let path = "/v1/google/trends/autocomplete".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("hl", params.hl.as_ref());
@@ -764,134 +555,48 @@ impl Google {
     }
 
     /// Interest over time
-    ///
-    /// Get interest over time for search terms via Google Trends internal API.
-    /// `GET /api/v1/trends/interest`
-    pub async fn trends_interest(
-        &self,
-        params: TrendsInterestParams,
-    ) -> Result<TrendsInterestResponse> {
-        let path = "/api/v1/trends/interest".to_string();
+    /// `GET /v1/google/trends/interest`
+    pub async fn trends_interest(&self, params: TrendsInterestParams) -> Result<Value> {
+        let path = "/v1/google/trends/interest".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("geo", params.geo.as_ref());
         q.opt("date", params.date.as_ref());
-        q.opt("category", params.category.as_ref());
-        q.opt("gprop", params.gprop.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
     /// Interest by region
-    ///
-    /// Get interest by region for a search term.
-    ///
-    /// Google's widget has a resolution hierarchy — you can't ask for
-    /// country-level data inside a specific country. Passing
-    /// ``resolution=auto`` (the default) uses whatever resolution the
-    /// widget itself returned, which is always valid.
-    /// `GET /api/v1/trends/regions`
-    pub async fn trends_regions(
-        &self,
-        params: TrendsRegionsParams,
-    ) -> Result<TrendsRegionsResponse> {
-        let path = "/api/v1/trends/regions".to_string();
+    /// `GET /v1/google/trends/regions`
+    pub async fn trends_regions(&self, params: TrendsRegionsParams) -> Result<Value> {
+        let path = "/v1/google/trends/regions".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("geo", params.geo.as_ref());
-        q.opt("date", params.date.as_ref());
-        q.opt("resolution", params.resolution.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
     /// Related topics & queries
-    ///
-    /// Get related topics and queries for a search term.
-    /// `GET /api/v1/trends/related`
-    pub async fn trends_related(
-        &self,
-        params: TrendsRelatedParams,
-    ) -> Result<TrendsRelatedResponse> {
-        let path = "/api/v1/trends/related".to_string();
+    /// `GET /v1/google/trends/related`
+    pub async fn trends_related(&self, params: TrendsRelatedParams) -> Result<Value> {
+        let path = "/v1/google/trends/related".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("geo", params.geo.as_ref());
-        q.opt("date", params.date.as_ref());
-        let query = q.into_pairs();
-        let body = None;
-        self.client.send(Method::GET, &path, &query, body).await
-    }
-
-    /// Google Trends — unified search
-    ///
-    /// Unified Google Trends dispatcher. Pick the shape via `data_type`.
-    /// `GET /api/v1/trends/search`
-    pub async fn trends_search(&self, params: TrendsSearchParams) -> Result<TrendsSearchResponse> {
-        let path = "/api/v1/trends/search".to_string();
-        let mut q = QueryParams::new();
-        q.opt("q", params.q.as_ref());
-        q.opt("data_type", params.data_type.as_ref());
-        q.opt("geo", params.geo.as_ref());
-        q.opt("date", params.date.as_ref());
-        q.opt("cat", params.cat.as_ref());
-        q.opt("gprop", params.gprop.as_ref());
-        q.opt("region", params.region.as_ref());
-        q.opt("language", params.language.as_ref());
-        q.opt("tz", params.tz.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
     }
 
     /// Trending searches
-    ///
-    /// Get trending searches with related queries via Google's TrendsUi.
-    ///
-    /// Primary path: ``POST /_/TrendsUi/data/batchexecute?rpcids=i0OFE``,
-    /// Google's internal RPC backend for the ``/trending`` page. This
-    /// endpoint is **not** protected by SearchGuard / BotGuard — no
-    /// cookies or anti-abuse token required — and returns the trending
-    /// list **with related queries embedded per trend** (10-25 queries
-    /// each), the same data that powers the trending UI's expanded view.
-    /// `GET /api/v1/trends/trending`
-    pub async fn trends_trending(
-        &self,
-        params: TrendsTrendingParams,
-    ) -> Result<TrendsTrendingResponse> {
-        let path = "/api/v1/trends/trending".to_string();
+    /// `GET /v1/google/trends/trending`
+    pub async fn trends_trending(&self, params: TrendsTrendingParams) -> Result<Value> {
+        let path = "/v1/google/trends/trending".to_string();
         let mut q = QueryParams::new();
         q.opt("geo", params.geo.as_ref());
-        q.opt("hl", params.hl.as_ref());
-        q.opt("hours", params.hours.as_ref());
-        let query = q.into_pairs();
-        let body = None;
-        self.client.send(Method::GET, &path, &query, body).await
-    }
-
-    /// Google Trends — current trending searches
-    ///
-    /// Current trending searches with the full Google Trends UI filters.
-    ///
-    /// ``geo`` honored by the upstream feed. ``category`` is passed through
-    /// as ``cat=<letter>``; when the feed ignores it we still return the
-    /// base result set so callers get *something* useful. ``status`` and
-    /// ``sort`` are applied client-side against the parsed result list.
-    /// `GET /api/v1/trends/trending-now`
-    pub async fn trends_trending_now(
-        &self,
-        params: TrendsTrendingNowParams,
-    ) -> Result<TrendsTrendingResponse> {
-        let path = "/api/v1/trends/trending-now".to_string();
-        let mut q = QueryParams::new();
-        q.opt("geo", params.geo.as_ref());
-        q.opt("hours", params.hours.as_ref());
-        q.opt("category", params.category.as_ref());
-        q.opt("status", params.status.as_ref());
-        q.opt("sort", params.sort.as_ref());
-        q.opt("hl", params.hl.as_ref());
         let query = q.into_pairs();
         let body = None;
         self.client.send(Method::GET, &path, &query, body).await
@@ -900,9 +605,9 @@ impl Google {
     /// Search Google Videos
     ///
     /// Search Google for video results.
-    /// `GET /api/v1/videos/search`
-    pub async fn search_videos(&self, params: SearchVideosParams) -> Result<VideosSearchResponse> {
-        let path = "/api/v1/videos/search".to_string();
+    /// `GET /v1/google/videos/search`
+    pub async fn videos_search(&self, params: VideosSearchParams) -> Result<Value> {
+        let path = "/v1/google/videos/search".to_string();
         let mut q = QueryParams::new();
         q.opt("q", params.q.as_ref());
         q.opt("gl", params.gl.as_ref());
@@ -918,2899 +623,81 @@ impl Google {
 
 // ===== Models =====
 
-/// A sponsored/ad result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AdResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub displayed_link: Option<String>,
-    pub extensions: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/ai-mode/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiModeResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub references: Vec<AiReference>,
-    pub text_blocks: Vec<AiTextBlock>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Google AI Overview (AI-generated summary).
-///
-/// Google increasingly serves the AI Overview as a **deferred** block — the
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiOverview {
-    /// True when the AI Overview was present as a deferred block.
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub deferred: Option<bool>,
-    /// Continuation token for the deferred AI Overview fetch. Non-null when Google embeds only a placeholder in the main SERP response.
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub page_token: Option<String>,
-    pub references: Vec<AiOverviewReference>,
-    pub text_blocks: Vec<AiOverviewTextBlock>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A list item within an AI Overview text block.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiOverviewListItem {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    pub snippet_links: Vec<SnippetLink>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A source reference in AI Overview.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiOverviewReference {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub index: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub logo: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A typed content block within AI Overview.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiOverviewTextBlock {
-    pub list_items: Vec<AiOverviewListItem>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    pub snippet_links: Vec<SnippetLink>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    pub video: Option<AiOverviewVideo>,
-    pub video_links: Vec<AiOverviewVideo>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Video reference in AI Overview.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiOverviewVideo {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub channel: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub duration: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A reference cited in the AI response.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiReference {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A block of AI-generated text.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AiTextBlock {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/autocomplete/.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AutocompleteResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub suggestions: Vec<AutocompleteSuggestion>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single autocomplete suggestion.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct AutocompleteSuggestion {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub relevance: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub value: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// One point in the citations-per-year chart.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct CitationByYear {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub citations: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub year: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/finance/quote.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FinanceQuoteResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub exchange: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub price: Option<f64>,
-    pub price_movement: Option<PriceMovement>,
-    pub stats: Option<FinanceStats>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub stock: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Key financial statistics.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FinanceStats {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub day_range: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub market_cap: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub pe_ratio: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub prev_close: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub year_range: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Airport metadata referenced in a search result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FlightAirport {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub city: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub iata_code: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A layover between two legs in a multi-segment itinerary.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FlightLayover {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub airport: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub airport_name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub duration_minutes: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub overnight: Option<bool>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// One segment of a flight itinerary (e.g. SFO → LHR on a connection).
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FlightLeg {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub aircraft: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub airline: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub airline_logo: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub arrival_airport: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub arrival_airport_name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub arrival_time: Option<String>,
-    /// IATA code
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub departure_airport: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub departure_airport_name: Option<String>,
-    /// ISO-8601 local time of departure
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub departure_time: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub duration_minutes: Option<i64>,
-    pub extensions: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub flight_number: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub legroom: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub travel_class: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single end-to-end flight itinerary that appears in the results.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FlightOffer {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub airline_logo: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub booking_token: Option<String>,
-    /// Difference vs typical emissions for this route, in grams
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub carbon_emissions_diff_typical: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub carbon_emissions_grams: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub departure_token: Option<String>,
-    pub extensions: Vec<String>,
-    pub layovers: Vec<FlightLayover>,
-    pub legs: Vec<FlightLeg>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub price: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub price_type: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub total_duration_minutes: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Typical price range insight for the searched route.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FlightPriceInsights {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub lowest_price: Option<f64>,
-    /// Historical price points as [[unix_timestamp, price], ...]
-    pub price_history: Option<Vec<Vec<f64>>>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub price_level: Option<String>,
-    /// [min, max] typical price for this route
-    pub typical_price_range: Option<Vec<f64>>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Max stops filter
+/// Device target: desktop, mobile, iphone, android, tablet
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[non_exhaustive]
-pub enum FlightsSearchStops {
-    /// `any`
-    #[serde(rename = "any")]
-    Any,
-    /// `nonstop`
-    #[serde(rename = "nonstop")]
-    Nonstop,
-    /// `one_stop`
-    #[serde(rename = "one_stop")]
-    OneStop,
-    /// `two_stops`
-    #[serde(rename = "two_stops")]
-    TwoStops,
+pub enum SearchDevice {
+    /// `desktop`
+    #[serde(rename = "desktop")]
+    Desktop,
+    /// `mobile`
+    #[serde(rename = "mobile")]
+    Mobile,
+    /// `iphone`
+    #[serde(rename = "iphone")]
+    Iphone,
+    /// `android`
+    #[serde(rename = "android")]
+    Android,
+    /// `tablet`
+    #[serde(rename = "tablet")]
+    Tablet,
 }
 
-impl std::fmt::Display for FlightsSearchStops {
+impl std::fmt::Display for SearchDevice {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
-            FlightsSearchStops::Any => "any",
-            FlightsSearchStops::Nonstop => "nonstop",
-            FlightsSearchStops::OneStop => "one_stop",
-            FlightsSearchStops::TwoStops => "two_stops",
+            SearchDevice::Desktop => "desktop",
+            SearchDevice::Mobile => "mobile",
+            SearchDevice::Iphone => "iphone",
+            SearchDevice::Android => "android",
+            SearchDevice::Tablet => "tablet",
         })
     }
 }
 
-/// Cabin class
+/// Response format: json (parsed) or html (raw SERP)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[non_exhaustive]
-pub enum FlightsSearchTravelClass {
-    /// `economy`
-    #[serde(rename = "economy")]
-    Economy,
-    /// `premium_economy`
-    #[serde(rename = "premium_economy")]
-    PremiumEconomy,
-    /// `business`
-    #[serde(rename = "business")]
-    Business,
-    /// `first`
-    #[serde(rename = "first")]
-    First,
+pub enum SearchOutput {
+    /// `json`
+    #[serde(rename = "json")]
+    Json,
+    /// `html`
+    #[serde(rename = "html")]
+    Html,
 }
 
-impl std::fmt::Display for FlightsSearchTravelClass {
+impl std::fmt::Display for SearchOutput {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
-            FlightsSearchTravelClass::Economy => "economy",
-            FlightsSearchTravelClass::PremiumEconomy => "premium_economy",
-            FlightsSearchTravelClass::Business => "business",
-            FlightsSearchTravelClass::First => "first",
+            SearchOutput::Json => "json",
+            SearchOutput::Html => "html",
         })
     }
 }
 
-/// Trip type: round_trip | one_way | multi_city
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum FlightsSearchTripType {
-    /// `one_way`
-    #[serde(rename = "one_way")]
-    OneWay,
-    /// `round_trip`
-    #[serde(rename = "round_trip")]
-    RoundTrip,
-    /// `multi_city`
-    #[serde(rename = "multi_city")]
-    MultiCity,
-}
-
-impl std::fmt::Display for FlightsSearchTripType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            FlightsSearchTripType::OneWay => "one_way",
-            FlightsSearchTripType::RoundTrip => "round_trip",
-            FlightsSearchTripType::MultiCity => "multi_city",
-        })
-    }
-}
-
-/// Response for GET /api/v1/flights/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct GoogleFlightsResponse {
-    pub airports: Vec<FlightAirport>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub arrival_id: Option<String>,
-    pub best_flights: Vec<FlightOffer>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub departure_id: Option<String>,
-    pub other_flights: Vec<FlightOffer>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub outbound_date: Option<String>,
-    pub price_insights: Option<FlightPriceInsights>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub return_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub trip_type: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/local/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct GoogleLocalResponse {
-    pub local_results: Vec<LocalResult>,
-    pub search_information: Option<SearchInformation>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct GoogleSearchResponse {
-    pub ads: Vec<AdResult>,
-    pub ai_overview: Option<AiOverview>,
-    pub inline_videos: Vec<InlineVideo>,
-    pub knowledge_graph: Option<KnowledgeGraph>,
-    pub local_results: Vec<LocalResult>,
-    pub news_results: Vec<NewsResult>,
-    pub organic_results: Vec<OrganicResult>,
-    pub pagination: Option<Pagination>,
-    pub related_questions: Vec<RelatedQuestion>,
-    pub related_searches: Vec<RelatedSearch>,
-    pub search_information: Option<SearchInformation>,
-    pub shopping_results: Vec<ShoppingResult>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/shorts/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct GoogleShortsResponse {
-    pub search_information: Option<SearchInformation>,
-    pub short_videos_results: Vec<ShortVideoResult>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// GPS coordinates.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct GpsCoordinates {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub lat: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub lng: Option<f64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/hotels/details.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct HotelDetailResponse {
-    pub property: Option<HotelProperty>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A place near the hotel.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct HotelNearbyPlace {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub duration: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub transport: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A hotel price from a specific source.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct HotelPrice {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub cancellation_policy: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub price: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A hotel search result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct HotelProperty {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub address: Option<String>,
-    pub amenities: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub check_in_time: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub check_out_time: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub eco_certified: Option<bool>,
-    pub gps_coordinates: Option<GpsCoordinates>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub hotel_class: Option<i64>,
-    pub images: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    pub nearby_places: Vec<HotelNearbyPlace>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub overall_rating: Option<f64>,
-    pub prices: Vec<HotelPrice>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub property_token: Option<String>,
-    pub rate_per_night: Option<HotelRate>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    pub total_rate: Option<HotelRate>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Hotel rate information.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct HotelRate {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub extracted: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub lowest: Option<f64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/hotels/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct HotelsSearchResponse {
-    pub pagination: Option<Pagination>,
-    pub properties: Vec<HotelProperty>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct HttpValidationError {
-    pub detail: Vec<ValidationError>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single image search result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ImageResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub original: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub original_height: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub original_width: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/images/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ImagesSearchResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub results: Vec<ImageResult>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// An inline sitelink (e.g. Reddit post metadata).
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct InlineSitelink {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Inline video result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct InlineVideo {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub duration: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub platform: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A job application link.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct JobApplyOption {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A filter option for job search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct JobFilter {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    pub options: Vec<JobFilterOption>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single filter option value.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct JobFilterOption {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub label: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub value: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Structured job highlights.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct JobHighlights {
-    pub benefits: Vec<String>,
-    pub qualifications: Vec<String>,
-    pub responsibilities: Vec<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single job listing.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct JobResult {
-    /// Flat list of apply URLs for quick access.
-    pub apply_links: Vec<String>,
-    pub apply_options: Vec<JobApplyOption>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub company_name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    pub extensions: Vec<String>,
-    pub job_highlights: Option<JobHighlights>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub job_type: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub location: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub posted_at: Option<String>,
-    pub salary: Option<JobSalary>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub schedule_type: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Canonical Google Jobs listing URL.
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub url: Option<String>,
-    /// Source platform ("Talent.com", "Built In NYC", …) parsed from "via X".
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub via: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub work_from_home: Option<bool>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Job salary information.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct JobSalary {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub max: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub min: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub period: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Allowed values for a fixed-value query parameter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum JobsSearchDatePosted {
-    /// `today`
-    #[serde(rename = "today")]
-    Today,
-    /// `3days`
-    #[serde(rename = "3days")]
-    V3days,
-    /// `week`
-    #[serde(rename = "week")]
-    Week,
-    /// `month`
-    #[serde(rename = "month")]
-    Month,
-}
-
-impl std::fmt::Display for JobsSearchDatePosted {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            JobsSearchDatePosted::Today => "today",
-            JobsSearchDatePosted::V3days => "3days",
-            JobsSearchDatePosted::Week => "week",
-            JobsSearchDatePosted::Month => "month",
-        })
-    }
-}
-
-/// Allowed values for a fixed-value query parameter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum JobsSearchJobType {
-    /// `FULLTIME`
-    #[serde(rename = "FULLTIME")]
-    Fulltime,
-    /// `PARTTIME`
-    #[serde(rename = "PARTTIME")]
-    Parttime,
-    /// `CONTRACTOR`
-    #[serde(rename = "CONTRACTOR")]
-    Contractor,
-    /// `INTERN`
-    #[serde(rename = "INTERN")]
-    Intern,
-}
-
-impl std::fmt::Display for JobsSearchJobType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            JobsSearchJobType::Fulltime => "FULLTIME",
-            JobsSearchJobType::Parttime => "PARTTIME",
-            JobsSearchJobType::Contractor => "CONTRACTOR",
-            JobsSearchJobType::Intern => "INTERN",
-        })
-    }
-}
-
-/// Allowed values for a fixed-value query parameter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum JobsSearchLtype {
-    /// `remote`
-    #[serde(rename = "remote")]
-    Remote,
-    /// `hybrid`
-    #[serde(rename = "hybrid")]
-    Hybrid,
-    /// `onsite`
-    #[serde(rename = "onsite")]
-    Onsite,
-    /// `work_from_home`
-    #[serde(rename = "work_from_home")]
-    WorkFromHome,
-}
-
-impl std::fmt::Display for JobsSearchLtype {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            JobsSearchLtype::Remote => "remote",
-            JobsSearchLtype::Hybrid => "hybrid",
-            JobsSearchLtype::Onsite => "onsite",
-            JobsSearchLtype::WorkFromHome => "work_from_home",
-        })
-    }
-}
-
-/// Data source. ``rpc`` (default, ~300 ms) replays Google's own ``r06xKb`` batchexecute RPC on the Google Careers portal — clean JSON, 20 roles per page, scope = Google's internal openings. ``serp`` uses the public Jobs search vertical (``udm=8``, SERP-embedded, 3rd-party aggregator) and costs more latency because Google gates it behind JS.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum JobsSearchMode {
-    /// `rpc`
-    #[serde(rename = "rpc")]
-    Rpc,
-    /// `serp`
-    #[serde(rename = "serp")]
-    Serp,
-}
-
-impl std::fmt::Display for JobsSearchMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            JobsSearchMode::Rpc => "rpc",
-            JobsSearchMode::Serp => "serp",
-        })
-    }
-}
-
-/// Response for GET /api/v1/jobs/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct JobsSearchResponse {
-    pub filters: Vec<JobFilter>,
-    pub jobs: Vec<JobResult>,
-    pub jobs_results: Vec<JobResult>,
-    pub pagination: Option<Pagination>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Knowledge Graph panel.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct KnowledgeGraph {
-    pub attributes: HashMap<String, String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub image: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single visual search result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct LensResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/lens/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct LensSearchResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub image_url: Option<String>,
-    pub results: Vec<LensResult>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Local pack result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct LocalResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub address: Option<String>,
-    pub gps_coordinates: Option<GpsCoordinates>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub phone: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub place_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Business identity shown alongside posts (matches shape).
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsLocationDetails {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub logo: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Location summary in review responses.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsLocationInfo {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub address: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Business owner response to a review.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsOwnerResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub text: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A place photo.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPhoto {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub image: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A photo category.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPhotoCategory {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/maps/photos.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPhotosResponse {
-    pub categories: Vec<MapsPhotoCategory>,
-    pub pagination: Option<Pagination>,
-    pub photos: Vec<MapsPhoto>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Detailed place information.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPlaceDetail {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub address: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub data_cid: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub data_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    pub extensions: HashMap<String, HashMap<String, Value>>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub google_maps_url: Option<String>,
-    pub gps_coordinates: Option<GpsCoordinates>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub hours: Option<String>,
-    /// Full-size image URL (same CDN as thumbnail but larger)
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub image: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub open_state: Option<String>,
-    pub operating_hours: HashMap<String, String>,
-    pub order_online_urls: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub phone: Option<String>,
-    pub photos: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub photos_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub place_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub posts_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub price_level: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub provider_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub rank: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    pub rating_breakdown: HashMap<String, i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub reviews_link: Option<String>,
-    pub service_options: Option<MapsServiceOptions>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    pub type_ids: Vec<String>,
-    pub types: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub website: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/maps/place.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPlaceResponse {
-    pub place: Option<MapsPlaceDetail>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A place from Maps search results.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPlaceResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub address: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub data_cid: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub data_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    pub extensions: Vec<HashMap<String, Vec<String>>>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub google_maps_url: Option<String>,
-    pub gps_coordinates: Option<GpsCoordinates>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub hours: Option<String>,
-    /// Full-size image URL (same CDN as thumbnail but larger)
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub image: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub open_state: Option<String>,
-    pub operating_hours: HashMap<String, String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub phone: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub photos_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub place_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub posts_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub price_level: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub rank: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub reviews_link: Option<String>,
-    pub service_options: Option<MapsServiceOptions>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    pub type_ids: Vec<String>,
-    pub types: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub website: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A business post or update.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPost {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub image: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/maps/posts.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsPostsResponse {
-    /// True when the SERP knowledge panel shows an 'Updates from' section
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub has_updates: Option<bool>,
-    pub location_details: Option<MapsLocationDetails>,
-    /// The 'From the business' description text set by the business owner
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub merchant_description: Option<String>,
-    pub pagination: Option<Pagination>,
-    pub post_data: Vec<MapsPost>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single place review.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsReview {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    pub images: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub iso_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub likes: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub rating: Option<i64>,
-    pub response_from_owner: Option<MapsOwnerResponse>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub text: Option<String>,
-    pub user: Option<MapsReviewUser>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A review topic/keyword.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsReviewTopic {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub keyword: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub mentions: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// User who wrote a review.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsReviewUser {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub contributor_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub local_guide: Option<bool>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub photos_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/maps/reviews.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsReviewsResponse {
-    pub location: Option<MapsLocationInfo>,
-    pub pagination: Option<Pagination>,
-    pub reviews: Vec<MapsReview>,
-    pub topics: Vec<MapsReviewTopic>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Sort order
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum MapsReviewsSortBy {
-    /// `qualityScore`
-    #[serde(rename = "qualityScore")]
-    QualityScore,
-    /// `newestFirst`
-    #[serde(rename = "newestFirst")]
-    NewestFirst,
-    /// `ratingHigh`
-    #[serde(rename = "ratingHigh")]
-    RatingHigh,
-    /// `ratingLow`
-    #[serde(rename = "ratingLow")]
-    RatingLow,
-}
-
-impl std::fmt::Display for MapsReviewsSortBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            MapsReviewsSortBy::QualityScore => "qualityScore",
-            MapsReviewsSortBy::NewestFirst => "newestFirst",
-            MapsReviewsSortBy::RatingHigh => "ratingHigh",
-            MapsReviewsSortBy::RatingLow => "ratingLow",
-        })
-    }
-}
-
-/// Response for GET /api/v1/maps/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsSearchResponse {
-    pub pagination: Option<Pagination>,
-    pub results: Vec<MapsPlaceResult>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Service options for a business.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct MapsServiceOptions {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub curbside_pickup: Option<bool>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub delivery: Option<bool>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub dine_in: Option<bool>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub takeout: Option<bool>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single news article.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct NewsArticle {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub published_at: Option<String>,
-    pub related_stories: Vec<NewsRelatedStory>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    pub source: Option<NewsSource>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Topic name
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum NewsByTopicTopic {
-    /// `WORLD`
-    #[serde(rename = "WORLD")]
-    World,
-    /// `BUSINESS`
-    #[serde(rename = "BUSINESS")]
-    Business,
-    /// `TECHNOLOGY`
-    #[serde(rename = "TECHNOLOGY")]
-    Technology,
-    /// `ENTERTAINMENT`
-    #[serde(rename = "ENTERTAINMENT")]
-    Entertainment,
-    /// `SPORTS`
-    #[serde(rename = "SPORTS")]
-    Sports,
-    /// `SCIENCE`
-    #[serde(rename = "SCIENCE")]
-    Science,
-    /// `HEALTH`
-    #[serde(rename = "HEALTH")]
-    Health,
-}
-
-impl std::fmt::Display for NewsByTopicTopic {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            NewsByTopicTopic::World => "WORLD",
-            NewsByTopicTopic::Business => "BUSINESS",
-            NewsByTopicTopic::Technology => "TECHNOLOGY",
-            NewsByTopicTopic::Entertainment => "ENTERTAINMENT",
-            NewsByTopicTopic::Sports => "SPORTS",
-            NewsByTopicTopic::Science => "SCIENCE",
-            NewsByTopicTopic::Health => "HEALTH",
-        })
-    }
-}
-
-/// A related story within a news cluster.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct NewsRelatedStory {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub published_at: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Inline news/top stories result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct NewsResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/news/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct NewsSearchResponse {
-    pub articles: Vec<NewsArticle>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// News article source.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct NewsSource {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub icon: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub url: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/news/topics.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct NewsTopicsResponse {
-    pub articles: Vec<NewsArticle>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub topic: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/news/trending.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct NewsTrendingResponse {
-    pub articles: Vec<NewsArticle>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single organic search result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct OrganicResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub displayed_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub favicon: Option<String>,
-    pub highlighted_keywords: Vec<String>,
-    pub inline_sitelinks: Vec<InlineSitelink>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub page_rank: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub rank: Option<i64>,
-    pub sitelinks: Vec<Sitelink>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Pagination metadata.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct Pagination {
-    pub current: Option<Value>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub next: Option<String>,
-    pub page_no: HashMap<String, String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub total_pages: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub total_results: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A patent citation reference.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct PatentCitation {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub assignee: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub filing_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub patent_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Detailed patent information from /xhr/result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct PatentDetail {
-    #[serde(rename = "abstract")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub abstract_: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub application_number: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub assignee: Option<String>,
-    pub citations: Vec<PatentCitation>,
-    pub claims: Vec<String>,
-    pub classifications: Vec<String>,
-    pub country_status: HashMap<String, String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub expiration_date: Option<String>,
-    pub figures: Vec<PatentFigure>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub filing_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub grant_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub inventor: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub patent_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub pdf_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub priority_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub publication_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub publication_number: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/patents/detail.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct PatentDetailResponse {
-    pub patent: Option<PatentDetail>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Patent figure/drawing.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct PatentFigure {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub url: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single patent search result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct PatentResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub assignee: Option<String>,
-    pub country_status: HashMap<String, String>,
-    pub figures: Vec<PatentFigure>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub filing_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub grant_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub inventor: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub patent_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub pdf_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub priority_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub publication_date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub publication_number: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/patents/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct PatentSearchResponse {
-    pub pagination: Option<Pagination>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub results: Vec<PatentResult>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub total_results: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Price movement data.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct PriceMovement {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub direction: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub percentage: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub value: Option<f64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/products/detail.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ProductDetailResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub brand: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    pub images: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub price_range: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub product_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    pub sellers: Vec<ProductSeller>,
-    pub specs: HashMap<String, String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A seller offering the product.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ProductSeller {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub price: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub shipping: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// People Also Ask question.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct RelatedQuestion {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub displayed_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub question: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub rank: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source_logo: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Related search suggestion.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct RelatedSearch {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// One article row from the author profile's publication list.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarAuthorArticle {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub authors: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub cited_by_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub cited_by_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub publication: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub year: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/scholar/author/citation.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarAuthorCitationResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub author_id: Option<String>,
-    pub citations_by_year: Vec<CitationByYear>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub total_citations: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Header block of a Scholar author profile page.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarAuthorInfo {
-    pub affiliations: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub author_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub email_domain: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub homepage: Option<String>,
-    pub interests: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/scholar/author.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarAuthorResponse {
-    pub articles: Vec<ScholarAuthorArticle>,
-    pub author: Option<ScholarAuthorInfo>,
-    pub co_authors: Vec<ScholarCoAuthor>,
-    pub stats: Option<ScholarAuthorStats>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Right-rail citation stats table.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarAuthorStats {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub citations_all: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub citations_since_year: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub h_index_all: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub h_index_since_year: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub i10_index_all: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub i10_index_since_year: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub since_year: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single citation-style rendering (MLA, APA, Chicago, etc.).
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarCitationFormat {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub citation: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub style: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Export link shown at the bottom of the cite dialog (BibTeX, RIS, ...).
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarCitationLink {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/scholar/cite.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarCiteResponse {
-    pub citations: Vec<ScholarCitationFormat>,
-    pub links: Vec<ScholarCitationLink>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Co-author card shown on the author profile page.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarCoAuthor {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub affiliation: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub author_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// One author card from the Scholar profile search page.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarProfile {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub affiliation: Option<String>,
-    /// Google Scholar user ID (the `user` query parameter)
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub author_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub cited_by: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub email_domain: Option<String>,
-    pub interests: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/scholar/profiles.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarProfilesResponse {
-    /// Pagination token for the next page
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub after_author: Option<String>,
-    /// Pagination token for the previous page
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub before_author: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    pub profiles: Vec<ScholarProfile>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single scholarly article result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarResult {
-    pub authors: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub cited_by_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub cited_by_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub pdf_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub publication_info: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub related_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub versions_count: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/scholar/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ScholarSearchResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub results: Vec<ScholarResult>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub total_results: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Metadata about the search query.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct SearchInformation {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub organic_results_state: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query_displayed: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub time_taken: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub total_results: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub url: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response mode. **full** (default): complete SERP with all blocks (organic, ads, knowledge graph, local pack, AI overview, news, related questions, etc). **fast**: lite endpoint via `gbv=1` that returns ONLY organic results + related searches in ~0.6-1s cold (vs 1.5-2s full). Use when you only need organic results and can skip rich features.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum SearchMode {
-    /// `full`
-    #[serde(rename = "full")]
-    Full,
-    /// `fast`
-    #[serde(rename = "fast")]
-    Fast,
-}
-
-impl std::fmt::Display for SearchMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            SearchMode::Full => "full",
-            SearchMode::Fast => "fast",
-        })
-    }
-}
-
-/// Allowed values for a fixed-value query parameter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum SearchPatentsLanguage {
-    /// `ENGLISH`
-    #[serde(rename = "ENGLISH")]
-    English,
-    /// `GERMAN`
-    #[serde(rename = "GERMAN")]
-    German,
-    /// `CHINESE`
-    #[serde(rename = "CHINESE")]
-    Chinese,
-    /// `FRENCH`
-    #[serde(rename = "FRENCH")]
-    French,
-    /// `JAPANESE`
-    #[serde(rename = "JAPANESE")]
-    Japanese,
-    /// `KOREAN`
-    #[serde(rename = "KOREAN")]
-    Korean,
-    /// `SPANISH`
-    #[serde(rename = "SPANISH")]
-    Spanish,
-}
-
-impl std::fmt::Display for SearchPatentsLanguage {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            SearchPatentsLanguage::English => "ENGLISH",
-            SearchPatentsLanguage::German => "GERMAN",
-            SearchPatentsLanguage::Chinese => "CHINESE",
-            SearchPatentsLanguage::French => "FRENCH",
-            SearchPatentsLanguage::Japanese => "JAPANESE",
-            SearchPatentsLanguage::Korean => "KOREAN",
-            SearchPatentsLanguage::Spanish => "SPANISH",
-        })
-    }
-}
-
-/// Allowed values for a fixed-value query parameter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum SearchPatentsPatentType {
-    /// `PATENT`
-    #[serde(rename = "PATENT")]
-    Patent,
-    /// `DESIGN`
-    #[serde(rename = "DESIGN")]
-    Design,
-}
-
-impl std::fmt::Display for SearchPatentsPatentType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            SearchPatentsPatentType::Patent => "PATENT",
-            SearchPatentsPatentType::Design => "DESIGN",
-        })
-    }
-}
-
-/// Allowed values for a fixed-value query parameter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum SearchPatentsSort {
-    /// `new`
-    #[serde(rename = "new")]
-    New,
-    /// `old`
-    #[serde(rename = "old")]
-    Old,
-}
-
-impl std::fmt::Display for SearchPatentsSort {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            SearchPatentsSort::New => "new",
-            SearchPatentsSort::Old => "old",
-        })
-    }
-}
-
-/// Allowed values for a fixed-value query parameter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum SearchPatentsStatus {
-    /// `GRANT`
-    #[serde(rename = "GRANT")]
-    Grant,
-    /// `APPLICATION`
-    #[serde(rename = "APPLICATION")]
-    Application,
-}
-
-impl std::fmt::Display for SearchPatentsStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            SearchPatentsStatus::Grant => "GRANT",
-            SearchPatentsStatus::Application => "APPLICATION",
-        })
-    }
-}
-
-/// Response for GET /api/v1/shopping/product/click.
-///
-/// Returns the direct merchant URL for a given product title by using
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingClickResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub merchant_domain: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub merchant_url: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub product_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source_query: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A shopping filter group.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingFilter {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    pub options: Vec<ShoppingFilterOption>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single filter option.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingFilterOption {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub aria_label: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub label: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub value: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Product price.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingPrice {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub extracted: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub value: Option<f64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Detailed product information.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingProductDetail {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub brand: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub currency: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    pub images: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub price_range_high: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub price_range_low: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    pub sellers: Vec<ShoppingSeller>,
-    pub specs: HashMap<String, String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/shopping/product.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingProductResponse {
-    pub product: Option<ShoppingProductDetail>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single product from search results.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingProductResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub click_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub delivery: Option<String>,
-    pub extensions: Vec<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub old_price: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub old_price_extracted: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_bool")]
-    pub on_sale: Option<bool>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub page_token: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    pub price: Option<ShoppingPrice>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub product_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub return_policy: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub reviews: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source_icon: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub tag: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Inline shopping result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub price: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/shopping/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingSearchResponse {
-    pub ads: Vec<ShoppingProductResult>,
-    pub filters: Vec<ShoppingFilter>,
-    pub pagination: Option<Pagination>,
-    pub results: Vec<ShoppingProductResult>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A seller offering the product.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShoppingSeller {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub logo: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub name: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub original_price: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub price: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub rating: Option<f64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub reviews_count: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub shipping: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub tax: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_f64")]
-    pub total_cost: Option<f64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single short-form video result surfaced in Google Shorts.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ShortVideoResult {
-    /// Channel / account name
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub account: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub description: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub duration: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub published: Option<String>,
-    /// Host domain (e.g. 'youtube.com', 'tiktok.com')
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub video_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub views: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A sitelink within an organic result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct Sitelink {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub snippet: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Inline link within an AI Overview text block.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct SnippetLink {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link_text: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A categorized topic suggestion returned by the Trends autocomplete API.
-///
-/// Distinct from Google Search autocomplete in that each entry is a
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsAutocompleteItem {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    /// Knowledge Graph machine ID (e.g. '/m/02vx4')
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub mid: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/trends/autocomplete.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsAutocompleteResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub results: Vec<TrendsAutocompleteItem>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/trends/interest.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsInterestResponse {
-    pub averages: Vec<TrendsTimelineValue>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub timeline: Vec<TrendsTimelinePoint>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Interest for a specific region.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsRegionInterest {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub max_value_index: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub region: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub region_code: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub value: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Region granularity. `auto` (default) uses Google's widget default, which is `COUNTRY` for worldwide queries and `REGION` (state/province) for single-country queries. Overriding to `COUNTRY` when `geo` is set returns HTTP 400 from Google — use `REGION`, `DMA`, or `CITY` in that case.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum TrendsRegionsResolution {
-    /// `COUNTRY`
-    #[serde(rename = "COUNTRY")]
-    Country,
-    /// `REGION`
-    #[serde(rename = "REGION")]
-    Region,
-    /// `DMA`
-    #[serde(rename = "DMA")]
-    Dma,
-    /// `CITY`
-    #[serde(rename = "CITY")]
-    City,
-    /// `auto`
-    #[serde(rename = "auto")]
-    Auto,
-}
-
-impl std::fmt::Display for TrendsRegionsResolution {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            TrendsRegionsResolution::Country => "COUNTRY",
-            TrendsRegionsResolution::Region => "REGION",
-            TrendsRegionsResolution::Dma => "DMA",
-            TrendsRegionsResolution::City => "CITY",
-            TrendsRegionsResolution::Auto => "auto",
-        })
-    }
-}
-
-/// Response for GET /api/v1/trends/regions.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsRegionsResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub regions: Vec<TrendsRegionInterest>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A related topic or query.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsRelatedItem {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub topic_id: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub topic_type: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub value: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/trends/related.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsRelatedResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub rising_queries: Vec<TrendsRelatedItem>,
-    pub rising_topics: Vec<TrendsRelatedItem>,
-    pub top_queries: Vec<TrendsRelatedItem>,
-    pub top_topics: Vec<TrendsRelatedItem>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Dispatch on: TIMESERIES (interest over time), GEO_MAP (compared breakdown, multi-query), GEO_MAP_0 (interest by region, single query), RELATED_TOPICS (top + rising topics), RELATED_QUERIES (top + rising queries).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum TrendsSearchDataType {
-    /// `TIMESERIES`
-    #[serde(rename = "TIMESERIES")]
-    Timeseries,
-    /// `GEO_MAP`
-    #[serde(rename = "GEO_MAP")]
-    GeoMap,
-    /// `GEO_MAP_0`
-    #[serde(rename = "GEO_MAP_0")]
-    GeoMap0,
-    /// `RELATED_TOPICS`
-    #[serde(rename = "RELATED_TOPICS")]
-    RelatedTopics,
-    /// `RELATED_QUERIES`
-    #[serde(rename = "RELATED_QUERIES")]
-    RelatedQueries,
-}
-
-impl std::fmt::Display for TrendsSearchDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            TrendsSearchDataType::Timeseries => "TIMESERIES",
-            TrendsSearchDataType::GeoMap => "GEO_MAP",
-            TrendsSearchDataType::GeoMap0 => "GEO_MAP_0",
-            TrendsSearchDataType::RelatedTopics => "RELATED_TOPICS",
-            TrendsSearchDataType::RelatedQueries => "RELATED_QUERIES",
-        })
-    }
-}
-
-/// Unified response for GET /api/v1/trends/search.
-///
-/// A single endpoint that dispatches on ``data_type``
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsSearchResponse {
-    pub averages: Vec<TrendsTimelineValue>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub data_type: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub regions: Vec<TrendsRegionInterest>,
-    pub rising_queries: Vec<TrendsRelatedItem>,
-    pub rising_topics: Vec<TrendsRelatedItem>,
-    pub timeline: Vec<TrendsTimelinePoint>,
-    pub top_queries: Vec<TrendsRelatedItem>,
-    pub top_topics: Vec<TrendsRelatedItem>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single point in interest over time.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsTimelinePoint {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub timestamp: Option<i64>,
-    pub values: Vec<TrendsTimelineValue>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single value in a trends timeline point.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsTimelineValue {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub extracted_value: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub value: Option<i64>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// An article associated with a trending search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsTrendingArticle {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A trending search item.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsTrendingItem {
-    pub articles: Vec<TrendsTrendingArticle>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub traffic: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Sort order. ``relevance`` (default) keeps Google's ordering; ``search_volume`` orders by parsed traffic descending; ``title`` sorts alphabetically; ``recency`` falls back to relevance when the feed omits publication timestamps.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum TrendsTrendingNowSort {
-    /// `relevance`
-    #[serde(rename = "relevance")]
-    Relevance,
-    /// `search_volume`
-    #[serde(rename = "search_volume")]
-    SearchVolume,
-    /// `title`
-    #[serde(rename = "title")]
-    Title,
-    /// `recency`
-    #[serde(rename = "recency")]
-    Recency,
-}
-
-impl std::fmt::Display for TrendsTrendingNowSort {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            TrendsTrendingNowSort::Relevance => "relevance",
-            TrendsTrendingNowSort::SearchVolume => "search_volume",
-            TrendsTrendingNowSort::Title => "title",
-            TrendsTrendingNowSort::Recency => "recency",
-        })
-    }
-}
-
-/// Trend state. ``active`` keeps only entries with a non-zero search volume (still surging); ``all`` (default) returns every entry including ended ones.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum TrendsTrendingNowStatus {
-    /// `all`
-    #[serde(rename = "all")]
-    All,
-    /// `active`
-    #[serde(rename = "active")]
-    Active,
-}
-
-impl std::fmt::Display for TrendsTrendingNowStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            TrendsTrendingNowStatus::All => "all",
-            TrendsTrendingNowStatus::Active => "active",
-        })
-    }
-}
-
-/// Response for GET /api/v1/trends/trending.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct TrendsTrendingResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    pub trending: Vec<TrendsTrendingItem>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ValidationError {
-    pub ctx: HashMap<String, Value>,
-    pub input: Option<Value>,
-    pub loc: Vec<Value>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub msg: Option<String>,
-    #[serde(rename = "type")]
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub type_: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// A single video search result.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct VideoResult {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub date: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub displayed_link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub duration: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub link: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_i64")]
-    pub position: Option<i64>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub source: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub thumbnail: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub title: Option<String>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Response for GET /api/v1/videos/search.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct VideosSearchResponse {
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub country: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub language: Option<String>,
-    #[serde(default, deserialize_with = "crate::core::flex::opt_string")]
-    pub query: Option<String>,
-    pub results: Vec<VideoResult>,
-    /// Fields present in the response but not in the spec.
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,
-}
-
-/// Parameters for [`SearchAiModeParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`AiModeSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct SearchAiModeParams {
+pub struct AiModeSearchParams {
     /// Search query for AI-generated response
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub q: Option<String>,
+    /// Country code
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gl: Option<String>,
+    /// Language code
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hl: Option<String>,
+    /// Include the raw `answer_html` (full answer body HTML) in the response for maximum parity. It can be 100s of KB — set false when you only need the structured `text_blocks` + `markdown`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_html: Option<bool>,
+}
+
+/// Parameters for [`AiOverviewParams`]. All fields optional; required ones are noted per method.
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct AiOverviewParams {
+    /// Search query — same shape as a Google Search query
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
     /// Country code
@@ -3821,9 +708,9 @@ pub struct SearchAiModeParams {
     pub hl: Option<String>,
 }
 
-/// Parameters for [`GetAutocompleteParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`AutocompleteParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct GetAutocompleteParams {
+pub struct AutocompleteParams {
     /// Search query to get suggestions for
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
@@ -3835,10 +722,10 @@ pub struct GetAutocompleteParams {
     pub gl: Option<String>,
 }
 
-/// Parameters for [`GetFinanceQuoteParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`FinanceQuoteParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct GetFinanceQuoteParams {
-    /// Stock ticker and exchange (e.g. "AAPL:NASDAQ", "GOOGL:NASDAQ", "BTC-USD")
+pub struct FinanceQuoteParams {
+    /// Ticker and exchange (e.g. "AAPL:NASDAQ", "BTC-USD")
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
     /// Language code
@@ -3849,71 +736,59 @@ pub struct GetFinanceQuoteParams {
 /// Parameters for [`FlightsSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct FlightsSearchParams {
-    /// Departure airport IATA code (e.g. JFK) or location ID
+    /// Departure airport IATA code or location ID
     #[serde(skip_serializing_if = "Option::is_none")]
     pub departure_id: Option<String>,
-    /// Arrival airport IATA code (e.g. LHR) or location ID
+    /// Arrival airport IATA code or location ID
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arrival_id: Option<String>,
     /// Outbound date (YYYY-MM-DD)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_date: Option<String>,
-    /// Return date (YYYY-MM-DD, round-trip only)
+    /// Return date (round-trip only)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_date: Option<String>,
-    /// Trip type: round_trip | one_way | multi_city
+    /// round_trip | one_way | multi_city
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trip_type: Option<FlightsSearchTripType>,
-    /// Adult passengers
+    pub trip_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adults: Option<i64>,
-    /// Children passengers
     #[serde(skip_serializing_if = "Option::is_none")]
     pub children: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub infants_in_seat: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub infants_on_lap: Option<i64>,
-    /// Cabin class
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub travel_class: Option<FlightsSearchTravelClass>,
-    /// ISO-4217 currency code
+    pub travel_class: Option<String>,
+    /// ISO-4217 currency
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
-    /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Max stops filter
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub stops: Option<FlightsSearchStops>,
-    /// Max price filter
+    pub stops: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_price: Option<i64>,
+    /// A round-trip offer's departure_token; returns the return-leg flights for that selected outbound (round-trip only).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub departure_token: Option<String>,
 }
 
 /// Parameters for [`HotelDetailsParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct HotelDetailsParams {
-    /// Property token from search results
+    /// Property token
     #[serde(skip_serializing_if = "Option::is_none")]
     pub property_token: Option<String>,
-    /// Check-in date (YYYY-MM-DD)
+    /// YYYY-MM-DD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_in: Option<String>,
-    /// Check-out date (YYYY-MM-DD)
+    /// YYYY-MM-DD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_out: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub adults: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gl: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
 }
 
 /// Parameters for [`HotelsSearchParams`]. All fields optional; required ones are noted per method.
@@ -3922,47 +797,23 @@ pub struct HotelsSearchParams {
     /// Location or hotel name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Check-in date (YYYY-MM-DD)
+    /// YYYY-MM-DD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_in: Option<String>,
-    /// Check-out date (YYYY-MM-DD)
+    /// YYYY-MM-DD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_out: Option<String>,
-    /// Number of adults
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adults: Option<i64>,
-    /// Number of children
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub children: Option<i64>,
-    /// Currency code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
-    /// Language code
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-    /// Sort: price_low, rating_high, most_reviewed
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_by: Option<String>,
-    /// Minimum price
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_price: Option<i64>,
-    /// Maximum price
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_price: Option<i64>,
-    /// Star rating
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hotel_class: Option<i64>,
-    /// Pagination token
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub next_page_token: Option<String>,
 }
 
-/// Parameters for [`SearchImagesParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`ImagesSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct SearchImagesParams {
+pub struct ImagesSearchParams {
     /// Image search query
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
@@ -3975,19 +826,19 @@ pub struct SearchImagesParams {
     /// Time/filter string (e.g. qdr:d)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tbs: Option<String>,
-    /// Image size: l=large, m=medium, i=icon, xXl, etc.
+    /// Image size: l, m, i, xXl
     #[serde(skip_serializing_if = "Option::is_none")]
     pub imgsz: Option<String>,
-    /// Image color: color, gray, transparent, red, orange, etc.
+    /// Image color filter
     #[serde(skip_serializing_if = "Option::is_none")]
     pub imgcolor: Option<String>,
-    /// Image type: face, photo, clipart, lineart, animated
+    /// Image type: face, photo, clipart
     #[serde(skip_serializing_if = "Option::is_none")]
     pub imgtype: Option<String>,
-    /// Safe search: off, active
+    /// Safe search
     #[serde(skip_serializing_if = "Option::is_none")]
     pub safe: Option<String>,
-    /// Page number (0-based, each page = 20 results)
+    /// Page number
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
 }
@@ -3995,126 +846,72 @@ pub struct SearchImagesParams {
 /// Parameters for [`JobsSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct JobsSearchParams {
-    /// Job title / keywords / combined query.
+    /// Job title, keywords
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// City / state / region — concatenated with `q` before sending to Google.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
-    /// Country code (ISO 3166 alpha-2).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
-    /// Alias for `gl`; when present overrides it.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
-    /// Language code.
+    pub job_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-    /// Alias for `hl`; when present overrides it.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub language: Option<String>,
-    /// Google domain for locale-specific results (`google.com`, `google.co.uk`, `google.co.in`, …).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain: Option<String>,
-    /// Employment type — translated into a `chips` filter.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub job_type: Option<JobsSearchJobType>,
-    /// Posted-date window — translated into a `chips` filter.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date_posted: Option<JobsSearchDatePosted>,
-    /// Work arrangement — maps onto Google's remote/hybrid/onsite chips.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ltype: Option<JobsSearchLtype>,
-    /// Raw Google chip-filter string (comma-separated). Merged with any structured filters (`job_type`, `date_posted`, `ltype`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub chips: Option<String>,
-    /// Opaque Google filter token harvested from a prior Jobs search URL.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub uds: Option<String>,
-    /// Google's UULE-encoded location (e.g. `w+CAIQIFJlbGF5IFN0YXRlcw==`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub uule: Option<String>,
-    /// Search radius around the location (Google accepts a distance in miles).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub lrad: Option<String>,
-    /// Opaque token from the previous response's `pagination.next`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub next_page_token: Option<String>,
-    /// Data source. ``rpc`` (default, ~300 ms) replays Google's own ``r06xKb`` batchexecute RPC on the Google Careers portal — clean JSON, 20 roles per page, scope = Google's internal openings. ``serp`` uses the public Jobs search vertical (``udm=8``, SERP-embedded, 3rd-party aggregator) and costs more latency because Google gates it behind JS.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<JobsSearchMode>,
+    pub date_posted: Option<String>,
 }
 
-/// Parameters for [`SearchLensParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`LensSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct SearchLensParams {
+pub struct LensSearchParams {
     /// Public URL of the image to search visually
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+    /// Optional text refinement (e.g. 'pizza')
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub query: Option<String>,
+    /// ISO country code (alias for gl)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Language code (alias for hl)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
     /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
     /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-}
-
-/// Parameters for [`LocalSearchParams`]. All fields optional; required ones are noted per method.
-#[derive(Debug, Clone, Default, Serialize)]
-pub struct LocalSearchParams {
-    /// Search query (e.g. 'pizza in New York')
+    /// Bias towards shoppable product matches
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub q: Option<String>,
-    /// Country code
+    pub product: Option<bool>,
+    /// Include the visual-matches carousel
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gl: Option<String>,
-    /// Language code
+    pub visual_matches: Option<bool>,
+    /// Restrict to exact-match results
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-    /// Google domain
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain: Option<String>,
-    /// City-level geo-targeting (e.g. 'New York, USA')
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<String>,
-    /// UULE encoded location
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub uule: Option<String>,
-    /// Results per page
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub num: Option<i64>,
-    /// Pagination offset
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<i64>,
+    pub exact_matches: Option<bool>,
 }
 
 /// Parameters for [`MapsPhotosParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct MapsPhotosParams {
-    /// Google Maps data ID (0x...:0x...)
+    /// Maps data ID
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_id: Option<String>,
-    /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gl: Option<String>,
+    pub next_page_token: Option<String>,
 }
 
 /// Parameters for [`MapsPlaceParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct MapsPlaceParams {
-    /// Google place ID (ChIJ...)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_id: Option<String>,
-    /// Google Maps data ID (0x...:0x...)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_id: Option<String>,
-    /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
 }
@@ -4122,42 +919,25 @@ pub struct MapsPlaceParams {
 /// Parameters for [`MapsPostsParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct MapsPostsParams {
-    /// Google Maps data ID (0x...:0x...) — from /maps/search results
+    /// Maps data ID
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_id: Option<String>,
-    /// Google place ID (ChIJ...)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub place_id: Option<String>,
-    /// Language code
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-    /// Country code
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gl: Option<String>,
+    pub next_page_token: Option<String>,
 }
 
 /// Parameters for [`MapsReviewsParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct MapsReviewsParams {
-    /// Google Maps data ID (0x...:0x...)
+    /// Maps data ID
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_id: Option<String>,
-    /// Sort order
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_by: Option<MapsReviewsSortBy>,
-    /// Language code
+    pub sort_by: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Country code
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gl: Option<String>,
-    /// Pagination token from previous response
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_page_token: Option<String>,
-    /// Review offset (0-based)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub offset: Option<i64>,
-    /// Reviews per page
     #[serde(skip_serializing_if = "Option::is_none")]
     pub results: Option<i64>,
 }
@@ -4165,143 +945,138 @@ pub struct MapsReviewsParams {
 /// Parameters for [`MapsSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct MapsSearchParams {
-    /// Search query (e.g. 'pizza in New York')
+    /// Search query
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// GPS coords @lat,lng,zoom
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ll: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
-    /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Pagination offset (increments of 20)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<i64>,
 }
 
-/// Parameters for [`SearchNewsParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`NewsSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct SearchNewsParams {
+pub struct NewsSearchParams {
     /// Search query
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
-    /// Maximum articles
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_results: Option<i64>,
 }
 
-/// Parameters for [`NewsByTopicParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`NewsTopicsParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct NewsByTopicParams {
+pub struct NewsTopicsParams {
     /// Topic name
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub topic: Option<NewsByTopicTopic>,
-    /// Language code
+    pub topic: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_results: Option<i64>,
 }
 
-/// Parameters for [`TrendingNewsParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`NewsTrendingParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct TrendingNewsParams {
-    /// Language code
+pub struct NewsTrendingParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_results: Option<i64>,
 }
 
-/// Parameters for [`GetPatentDetailParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`PatentDetailParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct GetPatentDetailParams {
-    /// Patent/publication number (e.g. US10000000B2)
+pub struct PatentDetailParams {
+    /// Patent number
     #[serde(skip_serializing_if = "Option::is_none")]
     pub patent_id: Option<String>,
 }
 
-/// Parameters for [`SearchPatentsParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`PatentsSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct SearchPatentsParams {
-    /// Search query (supports Boolean logic)
+pub struct PatentsSearchParams {
+    /// Search query (Boolean logic supported)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Page number
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
-    /// Results per page
     #[serde(skip_serializing_if = "Option::is_none")]
     pub num: Option<i64>,
-    /// Sort order
+    /// 'new' or 'old'
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<SearchPatentsSort>,
+    pub sort: Option<String>,
     /// Inventor name(s)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inventor: Option<String>,
-    /// Assignee name(s)
+    /// Assignee / company name(s)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub assignee: Option<String>,
-    /// Country code(s)
+    /// Country code (US, EP, WO, …)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    /// Patent language
+    /// Patent language: ENGLISH, GERMAN, CHINESE, FRENCH, JAPANESE, KOREAN, SPANISH
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub language: Option<SearchPatentsLanguage>,
+    pub language: Option<String>,
+    /// GRANT or APPLICATION
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<SearchPatentsStatus>,
+    pub status: Option<String>,
+    /// PATENT or DESIGN
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub patent_type: Option<SearchPatentsPatentType>,
-    /// Before date (YYYYMMDD)
+    pub patent_type: Option<String>,
+    /// Before date YYYYMMDD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub before: Option<String>,
-    /// After date (YYYYMMDD)
+    /// After date YYYYMMDD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub after: Option<String>,
 }
 
-/// Parameters for [`GetProductDetailParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`ProductsDetailParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct GetProductDetailParams {
-    /// Google Shopping product identifier (``gpcid``). Returned as ``product_id``/``gpcid`` on ``/shopping/search`` tiles.
+pub struct ProductsDetailParams {
+    /// Google Shopping ``gpcid`` — the product_id returned on ``/shopping/search`` tiles. Scrapingdog-compatible.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_id: Option<String>,
-    /// Original search query that surfaced the product. Required by Google's ``/async/oapv`` RPC — the page-level ``ei``/``xsrf`` and per-tile ``oapvfc`` tokens are extracted from the SERP Google renders for this exact query, so the product must be discoverable via this query.
+    /// Original search query that surfaced the product. Required by Google's ``/async/oapv`` RPC.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Country code (ISO 3166 alpha-2). Defaults to the country implied by ``domain`` (e.g. ``google.com.au`` → ``au``), falling back to ``us`` when domain doesn't carry a country hint.
+    /// Country code (ISO 3166 alpha-2)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
-    /// Language code.
+    /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Google domain ("google.com" / "google.co.uk" / …) — used to localise the SERP render that produces the session tokens.
+    /// Optional ``catalogid`` from the Shopping tile (improves parity).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain: Option<String>,
-    /// When true, return the full merchant-offer list with deep product URLs for every merchant Google ships an offer-block for. Offers come from the primary oapv response (top ~5 panel merchants: DICK'S, Kohl's, Zappos, etc.) plus a parallel paginated fan-out of ``/async/oapv`` with ``async_context=MORE_STORES`` at offsets sori=5..60 — which surfaces an additional ~50 sellers including GOAT, eBay sub-sellers, Macy's, StockX, Poshmark, Flight Club, etc. (+5 parallel RPCs, ~1 s wall-clock).
+    pub catalog_id: Option<String>,
+    /// Optional ``imageDocid`` for higher-fidelity images.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image_docid: Option<String>,
+    /// Optional ``headlineOfferDocid`` to pin the featured seller.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub headline_offer_docid: Option<String>,
+    /// Optional Google Knowledge-Graph ``mid``.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mid: Option<String>,
+    /// When true, fetch the full merchant-offer list via a secondary RPC (``/async/piu_ps``). Adds ~1 s.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include_offers: Option<bool>,
-    /// When true, also fetch size/colour variants via ``/async/toy_v`` (+1 secondary RPC, ~1 s).
+    /// When true, fetch size/colour variants via a secondary RPC (``/async/toy_v``). Adds ~1 s.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include_variants: Option<bool>,
-    /// When true (only meaningful with ``include_offers=true``), browser-render the Shopping SERP so additional merchant deep URLs surface from the rendered HTML. Best-effort: catalog-feed retailers (DSW / Famous Footwear / Shoe Carnival / Myer / rebel) get deep URLs; paid-Shopping-Ads merchants (Zappos, GOAT, Academy, etc.) still get their homepage because their click-through URLs are signed by Google's aclk redirect and can't be reproduced server-side. Adds ~5–8 s latency.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub resolve_deep_urls: Option<bool>,
 }
 
 /// Parameters for [`ScholarAuthorParams`]. All fields optional; required ones are noted per method.
@@ -4335,7 +1110,7 @@ pub struct ScholarAuthorCitationParams {
 /// Parameters for [`ScholarCiteParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct ScholarCiteParams {
-    /// Cluster ID from a search result (e.g. '5Gohgn6QFikJ')
+    /// Cluster ID from a search result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
     /// Language code
@@ -4352,17 +1127,17 @@ pub struct ScholarProfilesParams {
     /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Pagination token for the next page
+    /// Pagination token (next page)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub after_author: Option<String>,
-    /// Pagination token for the previous page
+    /// Pagination token (previous page)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub before_author: Option<String>,
 }
 
-/// Parameters for [`SearchScholarParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`ScholarSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct SearchScholarParams {
+pub struct ScholarSearchParams {
     /// Search query for scholarly articles
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
@@ -4375,7 +1150,7 @@ pub struct SearchScholarParams {
     /// Year to (e.g. 2024)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub as_yhi: Option<i64>,
-    /// Search type: 0=exclude patents, 7=include patents
+    /// Search type: 0=exclude patents, 7=include
     #[serde(skip_serializing_if = "Option::is_none")]
     pub as_sdt: Option<String>,
     /// Page number (0-based)
@@ -4389,110 +1164,76 @@ pub struct SearchScholarParams {
 /// Parameters for [`SearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct SearchParams {
-    /// Search query (supports Google operators like site:, inurl:, intitle:)
+    /// Search query (supports Google operators)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Country code (e.g. us, gb, de, fr)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gl: Option<String>,
-    /// Language code (e.g. en, es, fr)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-    /// Results per page
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub num: Option<i64>,
-    /// Pagination offset (0, 10, 20...)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<i64>,
-    /// Google domain (e.g. google.com, google.co.uk)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain: Option<String>,
-    /// desktop or mobile
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub device: Option<String>,
-    /// City-level geo-targeting (e.g. 'New York, USA')
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<String>,
-    /// Language restrict (e.g. lang_en)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub lr: Option<String>,
-    /// Time-based search filter (e.g. qdr:d for past 24h)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tbs: Option<String>,
-    /// Safe search (active/off)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub safe: Option<String>,
-    /// Encoded location parameter (UULE)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub uule: Option<String>,
-    /// Include omitted results (0=show all, 1=filter)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub filter: Option<i64>,
-    /// Disable auto-correction (1=exact match)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nfpr: Option<i64>,
-    /// Country restrict (e.g. countryUS|countryGB)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cr: Option<String>,
-    /// Google My Business CID (place ID)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ludocid: Option<String>,
-    /// Knowledge Graph map view ID
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub lsig: Option<String>,
-    /// Knowledge Graph entity ID
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub kgmid: Option<String>,
-    /// Cached search parameters
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub si: Option<String>,
-    /// Layout control (e.g. gwp;0,7)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ibp: Option<String>,
-    /// Google filter string
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub uds: Option<String>,
-    /// When true, chase Google's deferred AI Overview page_token with a follow-up fetch and merge the result into ai_overview. Adds ~1s and 1 credit when the SERP actually defers the overview.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ai_overview: Option<bool>,
-    /// Response mode. **full** (default): complete SERP with all blocks (organic, ads, knowledge graph, local pack, AI overview, news, related questions, etc). **fast**: lite endpoint via `gbv=1` that returns ONLY organic results + related searches in ~0.6-1s cold (vs 1.5-2s full). Use when you only need organic results and can skip rich features.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<SearchMode>,
-}
-
-/// Parameters for [`ShoppingProductParams`]. All fields optional; required ones are noted per method.
-#[derive(Debug, Clone, Default, Serialize)]
-pub struct ShoppingProductParams {
-    /// Product ID from search results
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gl: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-}
-
-/// Parameters for [`ShoppingProductClickParams`]. All fields optional; required ones are noted per method.
-#[derive(Debug, Clone, Default, Serialize)]
-pub struct ShoppingProductClickParams {
-    /// Exact product title from a search result
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub title: Option<String>,
-    /// Merchant source name from the shopping card (e.g. 'Walmart', 'Best Buy'). Forces the resolved URL to that merchant via site: operator.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
-    /// Original search query (optional, improves disambiguation)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub q: Option<String>,
-    /// Stable product_id from the /shopping/search result
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_id: Option<String>,
     /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
     /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub num: Option<i64>,
+    /// Page offset (0, 10, 20...)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start: Option<i64>,
+    /// Google domain
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
+    /// Device target: desktop, mobile, iphone, android, tablet
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub device: Option<SearchDevice>,
+    /// Custom User-Agent (overrides device)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+    /// Response format: json (parsed) or html (raw SERP)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output: Option<SearchOutput>,
+    /// City-level geo-targeting
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<String>,
+    /// Language restrict (e.g. lang_en)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lr: Option<String>,
+    /// Time filter (e.g. qdr:d)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tbs: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub safe: Option<String>,
+    /// UULE encoded location
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub uule: Option<String>,
+    /// Show omitted results
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<i64>,
+    /// Disable auto-correction
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nfpr: Option<i64>,
+    /// Country restrict
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cr: Option<String>,
+    /// Google Place CID
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ludocid: Option<String>,
+    /// Knowledge Graph map ID
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lsig: Option<String>,
+    /// Knowledge Graph entity ID
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kgmid: Option<String>,
+    /// Cached search params
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub si: Option<String>,
+    /// Layout control
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ibp: Option<String>,
+    /// Google filter string
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub uds: Option<String>,
+    /// Chase deferred AI Overview page_token with a follow-up fetch and merge the result. Adds ~1s and 1 credit when the SERP defers the overview.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ai_overview: Option<bool>,
 }
 
 /// Parameters for [`ShoppingSearchParams`]. All fields optional; required ones are noted per method.
@@ -4501,30 +1242,14 @@ pub struct ShoppingSearchParams {
     /// Product search query
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gl: Option<String>,
-    /// Language code
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-    /// Minimum price
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min_price: Option<i64>,
-    /// Maximum price
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_price: Option<i64>,
-    /// Sort: price_low, price_high, rating, reviews
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_by: Option<String>,
-    /// Free shipping filter
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub free_shipping: Option<bool>,
-    /// On sale filter
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_sale: Option<bool>,
-    /// Pagination offset
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<i64>,
 }
 
 /// Parameters for [`ShortsSearchParams`]. All fields optional; required ones are noted per method.
@@ -4559,7 +1284,7 @@ pub struct TrendsAutocompleteParams {
     /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Timezone offset in minutes (Google format)
+    /// Timezone offset in minutes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tz: Option<String>,
 }
@@ -4567,21 +1292,13 @@ pub struct TrendsAutocompleteParams {
 /// Parameters for [`TrendsInterestParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct TrendsInterestParams {
-    /// Search term(s), comma-separated (max 5)
+    /// Search terms
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Geographic location (e.g. US, GB)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub geo: Option<String>,
-    /// Time range (e.g. 'now 1-H', 'today 12-m', 'all', or 'YYYY-MM-DD YYYY-MM-DD')
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<String>,
-    /// Category filter (0 = all)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub category: Option<i64>,
-    /// Property: web, images, news, froogle, youtube
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gprop: Option<String>,
 }
 
 /// Parameters for [`TrendsRegionsParams`]. All fields optional; required ones are noted per method.
@@ -4590,14 +1307,8 @@ pub struct TrendsRegionsParams {
     /// Search term
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
-    /// Geographic location
     #[serde(skip_serializing_if = "Option::is_none")]
     pub geo: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<String>,
-    /// Region granularity. `auto` (default) uses Google's widget default, which is `COUNTRY` for worldwide queries and `REGION` (state/province) for single-country queries. Overriding to `COUNTRY` when `geo` is set returns HTTP 400 from Google — use `REGION`, `DMA`, or `CITY` in that case.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub resolution: Option<TrendsRegionsResolution>,
 }
 
 /// Parameters for [`TrendsRelatedParams`]. All fields optional; required ones are noted per method.
@@ -4608,81 +1319,18 @@ pub struct TrendsRelatedParams {
     pub q: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub geo: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<String>,
-}
-
-/// Parameters for [`TrendsSearchParams`]. All fields optional; required ones are noted per method.
-#[derive(Debug, Clone, Default, Serialize)]
-pub struct TrendsSearchParams {
-    /// Search term(s). Up to 5 comma-separated terms for TIMESERIES / GEO_MAP; single term for GEO_MAP_0 / RELATED_TOPICS / RELATED_QUERIES. Also accepts a topic MID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub q: Option<String>,
-    /// Dispatch on: TIMESERIES (interest over time), GEO_MAP (compared breakdown, multi-query), GEO_MAP_0 (interest by region, single query), RELATED_TOPICS (top + rising topics), RELATED_QUERIES (top + rising queries).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub data_type: Option<TrendsSearchDataType>,
-    /// Country / region code (e.g. US, GB, US-CA).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub geo: Option<String>,
-    /// Time range.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<String>,
-    /// Category filter ID (0 = all).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cat: Option<i64>,
-    /// Property filter: "" (web), "images", "news", "froogle", "youtube".
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gprop: Option<String>,
-    /// Geo resolution for GEO_MAP / GEO_MAP_0: COUNTRY / REGION / DMA / CITY. Omit to use the widget's own default.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub region: Option<String>,
-    /// Alias for `hl`. Defaults to en-US.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub language: Option<String>,
-    /// Timezone offset in minutes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tz: Option<String>,
 }
 
 /// Parameters for [`TrendsTrendingParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct TrendsTrendingParams {
-    /// Country code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub geo: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-    /// Hours-back window for the trending list. Google supports 24, 48, 168 (= 1 week).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hours: Option<i64>,
 }
 
-/// Parameters for [`TrendsTrendingNowParams`]. All fields optional; required ones are noted per method.
+/// Parameters for [`VideosSearchParams`]. All fields optional; required ones are noted per method.
 #[derive(Debug, Clone, Default, Serialize)]
-pub struct TrendsTrendingNowParams {
-    /// Country code (e.g. ``US``, ``LT``, ``GB``).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub geo: Option<String>,
-    /// Look-back window in hours. Google's UI supports 4, 24, 48, 168. Passed through to the upstream feed; the public RSS currently ignores this filter.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hours: Option<i64>,
-    /// Category filter. Accepts Google's letter codes (``b`` business, ``e`` entertainment, ``m`` health, ``t`` sci/tech, ``s`` sports, ``h`` top stories) or the friendly aliases (``business``, ``entertainment``, ``health``, ``sci_tech``/``technology``, ``sports``, ``top_stories``). ``all`` (default) returns every category.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// Trend state. ``active`` keeps only entries with a non-zero search volume (still surging); ``all`` (default) returns every entry including ended ones.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<TrendsTrendingNowStatus>,
-    /// Sort order. ``relevance`` (default) keeps Google's ordering; ``search_volume`` orders by parsed traffic descending; ``title`` sorts alphabetically; ``recency`` falls back to relevance when the feed omits publication timestamps.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<TrendsTrendingNowSort>,
-    /// Language code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hl: Option<String>,
-}
-
-/// Parameters for [`SearchVideosParams`]. All fields optional; required ones are noted per method.
-#[derive(Debug, Clone, Default, Serialize)]
-pub struct SearchVideosParams {
+pub struct VideosSearchParams {
     /// Video search query
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
@@ -4692,13 +1340,13 @@ pub struct SearchVideosParams {
     /// Language code
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hl: Option<String>,
-    /// Time filter (e.g. qdr:d=past day, qdr:w=past week, qdr:m=past month)
+    /// Time filter (e.g. qdr:d)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tbs: Option<String>,
-    /// Safe search: off, active
+    /// Safe search
     #[serde(skip_serializing_if = "Option::is_none")]
     pub safe: Option<String>,
-    /// Page number (0-based, each page = 10 results)
+    /// Page number
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
 }

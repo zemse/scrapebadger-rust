@@ -137,40 +137,49 @@ async fn main() {
     );
 
     // ---- google ----
-    let g_q = |q: &str| google::SearchParams {
+    // Helper closures to build single-`q` param structs concisely.
+    let gq = |q: &str| google::SearchParams {
         q: Some(q.into()),
         ..d()
     };
-    r.run("google.search", c.google().search(g_q("rust lang")))
+    r.run("google.search", c.google().search(gq("rust lang")))
         .await;
     r.run(
-        "google.search_ai_mode",
-        c.google().search_ai_mode(google::SearchAiModeParams {
+        "google.ai_mode_search",
+        c.google().ai_mode_search(google::AiModeSearchParams {
+            q: Some("what is rust".into()),
+            ..d()
+        }),
+    )
+    .await;
+    r.run(
+        "google.ai_overview",
+        c.google().ai_overview(google::AiOverviewParams {
+            q: Some("what is rust".into()),
+            ..d()
+        }),
+    )
+    .await;
+    r.run(
+        "google.autocomplete",
+        c.google().autocomplete(google::AutocompleteParams {
             q: Some("rust".into()),
             ..d()
         }),
     )
     .await;
     r.run(
-        "google.get_autocomplete",
-        c.google().get_autocomplete(google::GetAutocompleteParams {
-            q: Some("rust".into()),
+        "google.images_search",
+        c.google().images_search(google::ImagesSearchParams {
+            q: Some("rust crab".into()),
             ..d()
         }),
     )
     .await;
     r.run(
-        "google.search_images",
-        c.google().search_images(google::SearchImagesParams {
-            q: Some("rust".into()),
-            ..d()
-        }),
-    )
-    .await;
-    r.run(
-        "google.search_videos",
-        c.google().search_videos(google::SearchVideosParams {
-            q: Some("rust".into()),
+        "google.videos_search",
+        c.google().videos_search(google::VideosSearchParams {
+            q: Some("rust tutorial".into()),
             ..d()
         }),
     )
@@ -184,35 +193,27 @@ async fn main() {
     )
     .await;
     r.run(
-        "google.search_news",
-        c.google().search_news(google::SearchNewsParams {
+        "google.news_search",
+        c.google().news_search(google::NewsSearchParams {
             q: Some("rust".into()),
             ..d()
         }),
     )
     .await;
     r.run(
-        "google.news_by_topic",
-        c.google().news_by_topic(google::NewsByTopicParams {
-            topic: Some(google::NewsByTopicTopic::Technology),
+        "google.news_topics",
+        c.google().news_topics(google::NewsTopicsParams {
+            topic: Some("TECHNOLOGY".into()),
             ..d()
         }),
     )
     .await;
-    r.run("google.trending_news", c.google().trending_news(d()))
+    r.run("google.news_trending", c.google().news_trending(d()))
         .await;
-    r.run(
-        "google.local_search",
-        c.google().local_search(google::LocalSearchParams {
-            q: Some("coffee".into()),
-            ..d()
-        }),
-    )
-    .await;
     r.run(
         "google.maps_search",
         c.google().maps_search(google::MapsSearchParams {
-            q: Some("coffee".into()),
+            q: Some("coffee in San Francisco".into()),
             ..d()
         }),
     )
@@ -234,16 +235,16 @@ async fn main() {
     )
     .await;
     r.run(
-        "google.search_patents",
-        c.google().search_patents(google::SearchPatentsParams {
+        "google.patents_search",
+        c.google().patents_search(google::PatentsSearchParams {
             q: Some("battery".into()),
             ..d()
         }),
     )
     .await;
     r.run(
-        "google.search_scholar",
-        c.google().search_scholar(google::SearchScholarParams {
+        "google.scholar_search",
+        c.google().scholar_search(google::ScholarSearchParams {
             q: Some("graphene".into()),
             ..d()
         }),
@@ -266,17 +267,9 @@ async fn main() {
     )
     .await;
     r.run(
-        "google.get_finance_quote",
-        c.google().get_finance_quote(google::GetFinanceQuoteParams {
+        "google.finance_quote",
+        c.google().finance_quote(google::FinanceQuoteParams {
             q: Some("AAPL:NASDAQ".into()),
-            ..d()
-        }),
-    )
-    .await;
-    r.run(
-        "google.trends_search",
-        c.google().trends_search(google::TrendsSearchParams {
-            q: Some("rust".into()),
             ..d()
         }),
     )
@@ -317,36 +310,40 @@ async fn main() {
     r.run("google.trends_trending", c.google().trends_trending(d()))
         .await;
     r.run(
-        "google.trends_trending_now",
-        c.google().trends_trending_now(d()),
-    )
-    .await;
-    r.run(
         "google.flights_search",
         c.google().flights_search(google::FlightsSearchParams {
-            departure_id: Some("DEL".into()),
-            arrival_id: Some("BOM".into()),
-            outbound_date: Some("2026-07-01".into()),
+            departure_id: Some("JFK".into()),
+            arrival_id: Some("LAX".into()),
+            outbound_date: Some("2026-07-15".into()),
+            trip_type: Some("one_way".into()),
             ..d()
         }),
     )
     .await;
+    r.run(
+        "google.hotels_search",
+        c.google().hotels_search(google::HotelsSearchParams {
+            q: Some("hotels in Paris".into()),
+            check_in: Some("2026-07-15".into()),
+            check_out: Some("2026-07-18".into()),
+            ..d()
+        }),
+    )
+    .await;
+    // Detail endpoints need an id from a prior call (data_id / property_token /
+    // author_id / patent_id / product_id) or an image URL — not chained here.
     r.skip(
-        "google.hotels_search/hotel_details",
-        "needs check_in/check_out + property_token",
+        "google.maps_place/maps_reviews/maps_photos/maps_posts",
+        "need a maps data_id from a prior maps_search",
     );
+    r.skip("google.hotel_details", "needs a property_token");
+    r.skip("google.products_detail", "needs a product_id + q");
+    r.skip("google.patent_detail", "needs a patent_id");
     r.skip(
-        "google.maps_reviews/maps_photos/maps_place/maps_posts",
-        "needs a maps data_id/place id",
+        "google.scholar_author/scholar_author_citation",
+        "need an author_id",
     );
-    r.skip(
-        "google.shopping_product[_click]",
-        "needs a product_id/title from a prior search",
-    );
-    r.skip("google.get_product_detail", "needs product_id + q");
-    r.skip("google.get_patent_detail", "needs a patent_id");
-    r.skip("google.scholar_author[_citation]", "needs an author_id");
-    r.skip("google.search_lens", "needs an image url");
+    r.skip("google.lens_search", "needs an image url");
 
     // ---- reddit (chained) ----
     r.run(
