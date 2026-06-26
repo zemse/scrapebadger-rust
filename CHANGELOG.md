@@ -1,32 +1,39 @@
 # Changelog
 
-## Unreleased
-
-### Fixed
-- **Google endpoints now work.** Every Google path in the hand-authored
-  `specs/google.json` was wrong (`/api/v1/<sub>`, missing the `google` segment),
-  so all 39 calls returned `404 "Scraper 'X' is not configured"`. Re-vendored
-  from the live Portal OpenAPI with correct `/v1/google/...` paths (35
-  endpoints). Dropped 4 endpoints that don't exist on the live API
-  (`trends/search`, `trends/trending-now`, `local/search`,
-  `shopping/product[_click]`); some Google method names changed accordingly
-  (e.g. `search_news` → `news_search`, `get_autocomplete` → `autocomplete`,
-  `search_scholar` → `scholar_search`). Live-verified: 22/25 endpoints pass with
-  0 type failures.
+## [0.3.0] - 2026-06-26
 
 ### Added
 - Three new platforms, generated from the live Portal OpenAPI and exposed in
-  both the SDK and the nested CLI (total coverage now 207 endpoints):
-  - **eBay** (`scrapebadger ebay`, 11 endpoints): search, item details and
-    reviews, sellers (with feedback and items), categories (with items),
-    completed listings, autocomplete, markets.
-  - **TikTok** (`scrapebadger tiktok`, 25 endpoints): videos, users, hashtags,
-    music, comments, search, trending (videos/hashtags/songs), ads, regions.
-  - **YouTube** (`scrapebadger youtube`, 38 endpoints): videos (with comments,
-    captions, transcripts, related, streams, live chat), channels, playlists,
-    posts, shorts, music search, search, trending, and reference data.
-  - All responses are `serde_json::Value` (the live spec leaves 200 bodies
+  both the SDK and the nested CLI (total coverage now 207 endpoints across 10
+  platforms):
+  - **eBay** (`ebay`, 11 endpoints): search, item details and reviews, sellers
+    (feedback, items), categories (+ items), completed listings, autocomplete,
+    markets.
+  - **TikTok** (`tiktok`, 25 endpoints): videos, users, hashtags, music,
+    comments, search, trending (videos/hashtags/songs), ads, regions.
+  - **YouTube** (`youtube`, 38 endpoints): videos (comments, captions,
+    transcripts, related, streams, live chat), channels, playlists, posts,
+    shorts, music search, search, trending, reference data.
+  - New responses are `serde_json::Value` (the live spec leaves 200 bodies
     untyped); all three are live-verified via `examples/conformance.rs`.
+
+### Fixed
+- **Google now works.** In 0.2.0 every Google call returned
+  `404 "Scraper 'X' is not configured"`: the hand-authored `specs/google.json`
+  used wrong paths (`/api/v1/<sub>`, missing the `google` segment). Re-vendored
+  from the live Portal OpenAPI with correct `/v1/google/...` paths (35
+  endpoints). Live-verified: 22/25 endpoints pass, 0 type failures.
+
+### Changed
+- **Breaking:** several Google SDK method / CLI command renames —
+  `search_news` → `news_search`, `get_autocomplete` → `autocomplete`,
+  `search_scholar` → `scholar_search`, `get_finance_quote` → `finance_quote`,
+  and related.
+
+### Removed
+- **Breaking:** five Google methods that don't exist on the live API —
+  `trends_search`, `trends_trending_now`, `local_search`, `shopping_product`,
+  `shopping_product_click`.
 
 ## 0.2.0 — 2026-06-09
 
