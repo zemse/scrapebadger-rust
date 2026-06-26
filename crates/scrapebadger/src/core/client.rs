@@ -40,8 +40,8 @@ impl Client {
     /// Execute a request with auth, retry, and typed error handling, decoding
     /// the success body into `T`. Used by all generated endpoint code.
     ///
-    /// `path` must already include the version prefix (`/v1/...` or
-    /// `/api/v1/...`); it is concatenated onto the configured base URL.
+    /// `path` must already include the `/v1/...` version prefix; it is
+    /// concatenated onto the configured base URL.
     pub async fn send<T: DeserializeOwned>(
         &self,
         method: Method,

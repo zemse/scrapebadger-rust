@@ -34,6 +34,7 @@ async fn main() -> scrapebadger::Result<()> {
             departure_id: Some("DEL".into()),
             arrival_id: Some("BOM".into()),
             outbound_date: Some("2026-07-01".into()),
+            trip_type: Some("one_way".into()), // round_trip (default) also needs return_date
             ..Default::default()
         })
         .await?;
@@ -54,7 +55,7 @@ Every endpoint is `client.<platform>().<method>(<path args…>, params)`. Inputs
 
 ### Namespaces
 
-`account()` · `amazon()` · `google()` · `reddit()` · `twitter()` · `vinted()` · `web()`
+`account()` · `amazon()` · `ebay()` · `google()` · `reddit()` · `tiktok()` · `twitter()` · `vinted()` · `web()` · `youtube()`
 
 ### Pagination
 
@@ -109,7 +110,7 @@ scrapebadger config set-key sb_live_xxx
 
 scrapebadger account me
 scrapebadger web scrape --url https://example.com --format markdown --render-js
-scrapebadger google flights search --departure-id DEL --arrival-id BOM --outbound-date 2026-07-01
+scrapebadger google flights search --departure-id DEL --arrival-id BOM --outbound-date 2026-07-01 --trip-type one_way
 scrapebadger amazon products get B08N5WRWNW
 scrapebadger reddit subreddits posts sneakers --sort new --limit 10 --select '.posts[].title'
 ```

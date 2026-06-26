@@ -59,11 +59,15 @@ scrapebadger amazon products get B08N5WRWNW
 scrapebadger amazon products reviews B08N5WRWNW
 scrapebadger amazon search --query "mechanical keyboard"
 
-# Google — web search, maps, flights, trends
+# Google — web search, maps, flights, trends (note: `google search` has no -o, JSON is default)
 scrapebadger google search --q "rust async runtime"
 scrapebadger google maps search --q "coffee near bandra mumbai"
-scrapebadger google flights search --departure-id DEL --arrival-id BOM --outbound-date 2026-07-01
+scrapebadger google flights search --departure-id DEL --arrival-id BOM --outbound-date 2026-07-01 --trip-type one_way
+scrapebadger google jobs search --q "rust developer"
 scrapebadger google trends interest --q "rustlang"
+
+# eBay — search, item detail, sellers
+scrapebadger ebay search --query "vintage camera"
 
 # Twitter/X — users, tweets, search
 scrapebadger twitter users by-username elonmusk
@@ -74,6 +78,14 @@ scrapebadger twitter tweets advanced-search --query "scrapebadger"
 scrapebadger reddit subreddits posts sneakers --sort new --limit 10
 scrapebadger reddit posts comments 1abc234
 scrapebadger reddit search posts --q "best espresso machine"
+
+# TikTok — trending, search, user videos
+scrapebadger tiktok trending videos --region US
+scrapebadger tiktok search videos --query "rustlang"
+
+# YouTube — search, channels, trending
+scrapebadger youtube search --query "rust tutorial"
+scrapebadger youtube trending get
 
 # Vinted — filtered second-hand fashion search
 scrapebadger vinted search --query "leather jacket" --order newest_first

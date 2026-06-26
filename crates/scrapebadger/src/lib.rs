@@ -18,6 +18,7 @@
 //!         departure_id: Some("DEL".into()),
 //!         arrival_id: Some("BOM".into()),
 //!         outbound_date: Some("2026-07-01".into()),
+//!         trip_type: Some("one_way".into()), // round_trip (default) also needs return_date
 //!         ..Default::default()
 //!     })
 //!     .await?;

@@ -1,8 +1,7 @@
 use std::time::Duration;
 
-/// Default API base URL. All endpoint paths already carry their own version
-/// prefix (`/v1/...` for most platforms, `/api/v1/...` for Google), so the
-/// client simply concatenates `base_url + path`.
+/// Default API base URL. All endpoint paths already carry their own `/v1/...`
+/// version prefix, so the client simply concatenates `base_url + path`.
 pub const DEFAULT_BASE_URL: &str = "https://scrapebadger.com";
 
 /// Environment variable read when no API key is passed explicitly.

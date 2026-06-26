@@ -8,9 +8,10 @@ release. Only open work remains below.
 
 ## New platforms (live Portal API as of 2026-06-26)
 
-Three platforms added — eBay, TikTok, YouTube — vendored, generated, wired into
-the SDK + CLI, and live-verified. Total CLI/SDK coverage is now **211
-endpoints** (health endpoints excluded, matching the other platforms). Each was
+Three platforms added (eBay, TikTok, YouTube): vendored, generated, wired into
+the SDK + CLI, and live-verified. Combined with the Google path fix below, total
+CLI/SDK coverage is now **207 endpoints** (health endpoints excluded, matching
+the other platforms). Each was
 extracted from the live `/api/openapi.json` into `specs/<plat>.json` and built
 through the standard pipeline: `cargo run -p xtask -- gen` → CLI tree → live
 conformance. Responses are `serde_json::Value` (the live spec leaves all 200
