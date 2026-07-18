@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.4.0] - 2026-07-18
+
+### Added
+- Nine new platforms, vendored from the live Portal OpenAPI and exposed in both
+  the SDK and the nested CLI (total coverage now **269 endpoints across 19
+  platforms**). Marketplace and real-estate scrapers:
+  - **LinkedIn** (`linkedin`, 10 endpoints): public job search & detail,
+    company / school / profile pages, posts, articles, Learning courses, and
+    `geo/suggest` id resolution.
+  - **Depop** (`depop`, 5): product search & detail, shop/user profiles, and a
+    user's product listings.
+  - **Leboncoin** (`leboncoin`, 10, France): ad search & detail, similar ads,
+    seller profiles & listings, plus category/department/region reference data.
+  - **Idealista** (`idealista`, 8, Spain): listing search (+ `search/all`),
+    property detail, engagement stats, agency profiles, and location suggest.
+  - **Immobiliare** (`immobiliare`, 8, Italy): listing search & detail, agency
+    profiles & listings, price €/m² insights, autocomplete, and filter reference.
+  - **Zillow** (`zillow`, 6, US), **Redfin** (`redfin`, 6, US), **Realtor**
+    (`realtor`, 4, US): property search & detail (by id or URL), agents, and
+    region/address autocomplete.
+  - **LoopNet** (`loopnet`, 5, commercial): listing search & detail, broker
+    profiles, and property-type/market reference data.
+  - New responses are `serde_json::Value` (the live spec leaves 200 bodies
+    untyped); all nine are live-verified via `examples/conformance.rs`.
+- `scripts/vendor_specs.py`, a reproducible way to slice a platform's spec out
+  of the live Portal OpenAPI (the process was previously ad hoc/uncommitted).
+
 ## [0.3.0] - 2026-06-26
 
 ### Added

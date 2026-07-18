@@ -1,15 +1,16 @@
 # TASKS
 
 Pending backlog for the `scrapebadger` Rust crate (lib + bin). Completed work
-(foundation, transport, CLI, all 10 platforms incl. the eBay/TikTok/YouTube
-additions and the Google path fix) is recorded in git history, `docs/CLI.md`
-(CI-generated coverage), and the CHANGELOG. Only open work remains below.
-Current coverage: **207 endpoints across 10 platforms.**
+(foundation, transport, CLI, all 19 platforms incl. the eBay/TikTok/YouTube and
+LinkedIn/real-estate/marketplace additions and the Google path fix) is recorded
+in git history, `docs/CLI.md` (CI-generated coverage), and the CHANGELOG. Only
+open work remains below.
+Current coverage: **269 endpoints across 19 platforms.**
 
 ## Release
-- [ ] Cut a minor version (the 3 new platforms + Google fix are additive) — bump
-      to 0.3.0, publish to crates.io, tag a GitHub release. Requires explicit
-      go-ahead (irreversible); run via the `release` skill.
+- [ ] Cut 0.4.0 (the 9 new platforms are additive) — publish to crates.io, tag a
+      GitHub release. Requires explicit go-ahead (irreversible); run via the
+      `release` skill. Version already bumped to 0.4.0 in `Cargo.toml`.
 
 ## Known minor issues
 - [ ] CLI flag collision: `google search` exposes a Google API param named

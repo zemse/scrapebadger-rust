@@ -1,9 +1,10 @@
 # scrapebadger (Rust)
 
 Async Rust SDK and CLI for the [ScrapeBadger](https://scrapebadger.com)
-web-scraping API — **207 endpoints** across Amazon, eBay, Google, Reddit,
-TikTok, Twitter/X, Vinted, Web Scraping, YouTube, and Account, plus real-time
-Twitter Streams.
+web-scraping API with **269 endpoints** across 19 platforms: Amazon, Depop,
+eBay, Google, Idealista, Immobiliare, Leboncoin, LinkedIn, LoopNet, Realtor,
+Redfin, Reddit, TikTok, Twitter/X, Vinted, Web Scraping, YouTube, Zillow, and
+Account, plus real-time Twitter Streams.
 
 One crate, a library and a binary both named `scrapebadger`.
 
@@ -17,7 +18,7 @@ Or as a library:
 
 ```toml
 [dependencies]
-scrapebadger = "0.2"
+scrapebadger = "0.4"
 ```
 
 ## Setup
@@ -35,14 +36,23 @@ Or `export SCRAPEBADGER_API_KEY=sb_live_xxx`, or pass `--api-key` per call.
 | Platform | Command | Endpoints | What you get |
 |---|---|---|---|
 | **Amazon** | `scrapebadger amazon` | 14 | products, offers, reviews, sellers, search, bestsellers, deals, categories |
+| **Depop** | `scrapebadger depop` | 5 | product search & detail, shop/user profiles, user listings |
 | **eBay** | `scrapebadger ebay` | 11 | search, item details & reviews, sellers, categories, completed listings |
 | **Google** | `scrapebadger google` | 35 | search, maps, shopping, flights, hotels, news, jobs, trends, scholar, patents, finance, images, lens |
+| **Idealista** | `scrapebadger idealista` | 8 | Spain property search & detail, engagement stats, agencies, location suggest |
+| **Immobiliare** | `scrapebadger immobiliare` | 8 | Italy property search & detail, agencies & listings, price insights, autocomplete |
+| **Leboncoin** | `scrapebadger leboncoin` | 10 | France classifieds search & detail, similar ads, sellers, category/region reference |
+| **LinkedIn** | `scrapebadger linkedin` | 10 | job search & detail, company/school/profile pages, posts, articles, Learning, geo suggest |
+| **LoopNet** | `scrapebadger loopnet` | 5 | commercial real-estate search & detail, brokers, property-type/market reference |
+| **Realtor** | `scrapebadger realtor` | 4 | Realtor.com (US) property search & detail, location autocomplete |
+| **Redfin** | `scrapebadger redfin` | 6 | Redfin (US) property search & detail, agents, region autocomplete |
 | **Reddit** | `scrapebadger reddit` | 20 | posts, comments, subreddits, users, wikis, search |
 | **TikTok** | `scrapebadger tiktok` | 25 | videos, users, hashtags, music, comments, search, trending, ads |
 | **Twitter / X** | `scrapebadger twitter` | 53 | tweets, users, followers, search, trends, lists, communities, spaces + real-time streams |
 | **Vinted** | `scrapebadger vinted` | 8 | item & user listings, search with brand/color/condition filters |
 | **Web** | `scrapebadger web` | 2 | scrape any URL (markdown/html, JS rendering), bot-protection detection |
 | **YouTube** | `scrapebadger youtube` | 38 | videos, channels, playlists, comments, transcripts, captions, search, trending |
+| **Zillow** | `scrapebadger zillow` | 6 | Zillow (US) property search & detail, agents, region autocomplete |
 | **Account** | `scrapebadger account` | 1 | credits & usage |
 
 ## CLI
@@ -87,8 +97,22 @@ scrapebadger tiktok search videos --query "rustlang"
 scrapebadger youtube search --query "rust tutorial"
 scrapebadger youtube trending get
 
-# Vinted — filtered second-hand fashion search
+# Vinted / Depop — second-hand fashion search
 scrapebadger vinted search --query "leather jacket" --order newest_first
+scrapebadger depop search --query "carhartt jacket" --market gb
+
+# LinkedIn — jobs, companies, public profiles
+scrapebadger linkedin jobs search --keywords "rust engineer" --location London
+scrapebadger linkedin companies get microsoft
+scrapebadger linkedin profiles get williamhgates
+
+# Real estate — US (Zillow/Redfin/Realtor), EU (Idealista/Immobiliare), commercial (LoopNet)
+scrapebadger zillow search --location "Austin, TX"
+scrapebadger redfin search --location "Seattle, WA"
+scrapebadger loopnet search --location "New York, NY" --listing-type for-lease
+
+# Leboncoin — French classifieds
+scrapebadger leboncoin search --text "velo route"
 
 # Web — scrape any URL
 scrapebadger web scrape --url https://example.com --format markdown --render-js
@@ -117,7 +141,7 @@ scrapebadger raw /v1/amazon/products/B08N5WRWNW
 scrapebadger raw --method POST /v1/web/scrape -d '{"url":"https://example.com"}'
 ```
 
-Full 207-command reference: [`crates/scrapebadger/docs/CLI.md`](crates/scrapebadger/docs/CLI.md).
+Full 269-command reference: [`crates/scrapebadger/docs/CLI.md`](crates/scrapebadger/docs/CLI.md).
 
 ## Library
 

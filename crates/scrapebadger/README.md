@@ -1,9 +1,10 @@
 # scrapebadger
 
 Async Rust SDK **and** CLI for the [ScrapeBadger](https://scrapebadger.com)
-web-scraping API — **207 endpoints** across Amazon, eBay, Google (35 endpoints),
-Reddit, TikTok, Twitter/X, Vinted, Web Scraping, YouTube, and Account,
-plus real-time Twitter Streams (WebSocket + HMAC webhooks).
+web-scraping API with **269 endpoints** across 19 platforms: Amazon, Depop,
+eBay, Google, Idealista, Immobiliare, Leboncoin, LinkedIn, LoopNet, Realtor,
+Redfin, Reddit, TikTok, Twitter/X, Vinted, Web Scraping, YouTube, Zillow, and
+Account, plus real-time Twitter Streams (WebSocket + HMAC webhooks).
 
 One crate ships a library and a binary, both named `scrapebadger`.
 
@@ -98,7 +99,7 @@ Verify webhook callbacks with
 
 ## CLI
 
-Every one of the 207 endpoints is a **nested subcommand**
+Every one of the 269 endpoints is a **nested subcommand**
 (`scrapebadger <platform> <group> <action> [<ids>] [--flags]`), generated from
 the same specs as the SDK. The full tree is in [`docs/CLI.md`](docs/CLI.md) and
 on [docs.rs](https://docs.rs/scrapebadger) under `cli_reference`.

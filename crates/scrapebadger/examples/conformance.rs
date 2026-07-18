@@ -25,6 +25,9 @@ use std::future::Future;
 use std::time::Duration;
 
 use scrapebadger::{account, amazon, ebay, google, reddit, tiktok, twitter, vinted, web, youtube};
+use scrapebadger::{
+    depop, idealista, immobiliare, leboncoin, linkedin, loopnet, realtor, redfin, zillow,
+};
 use scrapebadger::{Error, Result, ScrapeBadger};
 
 #[derive(Default)]
@@ -38,6 +41,25 @@ struct Report {
 /// `Default::default()` shorthand for params structs.
 fn d<T: Default>() -> T {
     T::default()
+}
+
+/// Pull a scalar id out of an untyped (`serde_json::Value`) response for
+/// chaining detail calls. `path` navigates objects and arrays: a segment like
+/// `"results"` indexes a field, `"0"` indexes an array element. Numbers are
+/// stringified so numeric ids (zpid, list_id, …) chain the same as string ones.
+fn pick(v: &Option<serde_json::Value>, path: &[&str]) -> Option<String> {
+    let mut cur = v.as_ref()?;
+    for seg in path {
+        cur = match seg.parse::<usize>() {
+            Ok(i) => cur.as_array()?.get(i)?,
+            Err(_) => cur.get(seg)?,
+        };
+    }
+    match cur {
+        serde_json::Value::String(s) if !s.is_empty() => Some(s.clone()),
+        serde_json::Value::Number(n) => Some(n.to_string()),
+        _ => None,
+    }
 }
 
 impl Report {
@@ -788,6 +810,425 @@ async fn main() {
         "youtube.get_video/get_channel/get_playlist/*transcript/*comments",
         "need a video id / channel id / playlist id",
     );
+
+    // ---- depop ----
+    r.run("depop.list_markets", c.depop().list_markets(d()))
+        .await;
+    let depop_search = r
+        .run(
+            "depop.search",
+            c.depop().search(depop::SearchParams {
+                query: Some("nike".into()),
+                market: Some("gb".into()),
+                ..d()
+            }),
+        )
+        .await;
+    // Depop's guest search often returns an empty result set (0 products), so
+    // the detail/user endpoints usually can't be id-chained from it.
+    match pick(&depop_search, &["products", "0", "id"]) {
+        Some(id) => {
+            r.run(
+                "depop.get_product",
+                c.depop().get_product(&id, d::<depop::GetProductParams>()),
+            )
+            .await;
+        }
+        None => r.skip("depop.get_product", "search returned no products to chain"),
+    }
+    match pick(&depop_search, &["products", "0", "seller", "username"]) {
+        Some(user) => {
+            r.run("depop.get_user", c.depop().get_user(&user, d()))
+                .await;
+            r.run(
+                "depop.get_user_products",
+                c.depop().get_user_products(&user, d()),
+            )
+            .await;
+        }
+        None => r.skip(
+            "depop.get_user/get_user_products",
+            "no shop username to chain",
+        ),
+    }
+
+    // ---- linkedin (chained) ----
+    let lin_jobs = r
+        .run(
+            "linkedin.jobs_search",
+            c.linkedin().jobs_search(linkedin::JobsSearchParams {
+                keywords: Some("rust engineer".into()),
+                location: Some("London".into()),
+                ..d()
+            }),
+        )
+        .await;
+    match pick(&lin_jobs, &["jobs", "0", "job_id"]) {
+        Some(job) => {
+            r.run("linkedin.get_job", c.linkedin().get_job(&job, d()))
+                .await;
+        }
+        None => r.skip("linkedin.get_job", "no job id in search"),
+    }
+    let lin_co = r
+        .run(
+            "linkedin.geo_suggest",
+            c.linkedin().geo_suggest(linkedin::GeoSuggestParams {
+                query: Some("microsoft".into()),
+                type_: Some("company".into()),
+                ..d()
+            }),
+        )
+        .await;
+    match pick(&lin_co, &["suggestions", "0", "id"]) {
+        Some(cid) => {
+            r.run(
+                "linkedin.company_jobs",
+                c.linkedin().company_jobs(&cid, d()),
+            )
+            .await;
+        }
+        None => r.skip("linkedin.company_jobs", "no company id from geo_suggest"),
+    }
+    r.run(
+        "linkedin.get_company",
+        c.linkedin().get_company("microsoft", d()),
+    )
+    .await;
+    r.run(
+        "linkedin.get_school",
+        c.linkedin().get_school("stanford-university", d()),
+    )
+    .await;
+    r.run(
+        "linkedin.get_profile",
+        c.linkedin().get_profile("williamhgates", d()),
+    )
+    .await;
+    r.run(
+        "linkedin.get_article",
+        c.linkedin().get_article("welcome-2024-bill-gates", d()),
+    )
+    .await;
+    r.run(
+        "linkedin.get_course",
+        c.linkedin().get_course("learning-python", d()),
+    )
+    .await;
+    r.skip(
+        "linkedin.get_post",
+        "public post slugs are volatile / anti-bot gated",
+    );
+
+    // ---- idealista (chained) ----
+    r.run("idealista.list_markets", c.idealista().list_markets(d()))
+        .await;
+    let ide_suggest = r
+        .run(
+            "idealista.suggest",
+            c.idealista().suggest(idealista::SuggestParams {
+                query: Some("Madrid".into()),
+                ..d()
+            }),
+        )
+        .await;
+    let ide_loc = pick(&ide_suggest, &["locations", "0", "locationId"])
+        .unwrap_or_else(|| "0-EU-ES-28".into());
+    let ide_search = r
+        .run(
+            "idealista.search",
+            c.idealista().search(idealista::SearchParams {
+                location: Some(ide_loc.clone()),
+                operation: Some("sale".into()),
+                ..d()
+            }),
+        )
+        .await;
+    r.run(
+        "idealista.search_all",
+        c.idealista().search_all(idealista::SearchAllParams {
+            location: Some(ide_loc),
+            operation: Some("sale".into()),
+            max_results: Some(30),
+            ..d()
+        }),
+    )
+    .await;
+    match pick(&ide_search, &["elementList", "0", "propertyCode"]) {
+        Some(pc) => {
+            r.run(
+                "idealista.property_detail",
+                c.idealista().property_detail(&pc, d()),
+            )
+            .await;
+            r.run(
+                "idealista.property_stats",
+                c.idealista().property_stats(&pc, d()),
+            )
+            .await;
+        }
+        None => r.skip(
+            "idealista.property_detail/property_stats",
+            "no propertyCode in search",
+        ),
+    }
+    r.skip(
+        "idealista.agency/agency_by_phone",
+        "need a real agency short_name / phone",
+    );
+
+    // ---- immobiliare (chained) ----
+    r.run(
+        "immobiliare.list_markets",
+        c.immobiliare().list_markets(d()),
+    )
+    .await;
+    r.run("immobiliare.reference", c.immobiliare().reference(d()))
+        .await;
+    r.run(
+        "immobiliare.autocomplete",
+        c.immobiliare()
+            .autocomplete(immobiliare::AutocompleteParams {
+                query: Some("Milano".into()),
+                ..d()
+            }),
+    )
+    .await;
+    let imm_search = r
+        .run(
+            "immobiliare.search",
+            c.immobiliare().search(immobiliare::SearchParams {
+                location: Some("Milano".into()),
+                ..d()
+            }),
+        )
+        .await;
+    match pick(&imm_search, &["results", "0", "id"]) {
+        Some(lid) => {
+            r.run(
+                "immobiliare.get_listing",
+                c.immobiliare().get_listing(&lid, d()),
+            )
+            .await;
+        }
+        None => r.skip("immobiliare.get_listing", "no listing id in search"),
+    }
+    r.run(
+        "immobiliare.price_stats",
+        c.immobiliare().price_stats(immobiliare::PriceStatsParams {
+            region_id: Some("lom".into()),
+            ..d()
+        }),
+    )
+    .await;
+    r.skip(
+        "immobiliare.get_agency/get_agency_listings",
+        "need an agency id",
+    );
+
+    // ---- leboncoin (chained) ----
+    r.run("leboncoin.list_markets", c.leboncoin().list_markets(d()))
+        .await;
+    r.run(
+        "leboncoin.list_categories",
+        c.leboncoin().list_categories(d()),
+    )
+    .await;
+    r.run("leboncoin.list_regions", c.leboncoin().list_regions(d()))
+        .await;
+    r.run(
+        "leboncoin.list_departments",
+        c.leboncoin().list_departments(d()),
+    )
+    .await;
+    r.run(
+        "leboncoin.search_locations",
+        c.leboncoin()
+            .search_locations(leboncoin::SearchLocationsParams {
+                q: Some("Paris".into()),
+                ..d()
+            }),
+    )
+    .await;
+    let lbc_search = r
+        .run(
+            "leboncoin.search_ads",
+            c.leboncoin().search_ads(leboncoin::SearchAdsParams {
+                text: Some("velo".into()),
+                ..d()
+            }),
+        )
+        .await;
+    // Leboncoin ads are volatile — a `list_id` from search may 404 seconds later.
+    match pick(&lbc_search, &["ads", "0", "list_id"]) {
+        Some(ad) => {
+            r.run("leboncoin.get_ad", c.leboncoin().get_ad(&ad, d()))
+                .await;
+            r.run("leboncoin.get_similar", c.leboncoin().get_similar(&ad, d()))
+                .await;
+        }
+        None => r.skip("leboncoin.get_ad/get_similar", "no ad id in search"),
+    }
+    match pick(&lbc_search, &["ads", "0", "user_id"]) {
+        Some(seller) => {
+            r.run(
+                "leboncoin.get_seller",
+                c.leboncoin().get_seller(&seller, d()),
+            )
+            .await;
+            r.run(
+                "leboncoin.get_seller_listings",
+                c.leboncoin().get_seller_listings(&seller, d()),
+            )
+            .await;
+        }
+        None => r.skip(
+            "leboncoin.get_seller/get_seller_listings",
+            "no seller id in search",
+        ),
+    }
+
+    // ---- loopnet (chained) ----
+    r.run("loopnet.list_markets", c.loopnet().list_markets(d()))
+        .await;
+    r.run(
+        "loopnet.list_property_types",
+        c.loopnet().list_property_types(d()),
+    )
+    .await;
+    let loop_search = r
+        .run(
+            "loopnet.search",
+            c.loopnet().search(loopnet::SearchParams {
+                location: Some("New York, NY".into()),
+                listing_type: Some("for-lease".into()),
+                ..d()
+            }),
+        )
+        .await;
+    match pick(&loop_search, &["listings", "0", "listing_id"]) {
+        Some(lid) => {
+            r.run("loopnet.get_listing", c.loopnet().get_listing(&lid, d()))
+                .await;
+        }
+        None => r.skip("loopnet.get_listing", "no listing id in search"),
+    }
+    r.skip("loopnet.get_broker", "need a broker slug + id");
+
+    // ---- realtor (chained) ----
+    r.run("realtor.list_markets", c.realtor().list_markets(d()))
+        .await;
+    r.run(
+        "realtor.autocomplete",
+        c.realtor().autocomplete(realtor::AutocompleteParams {
+            query: Some("Austin, TX".into()),
+            ..d()
+        }),
+    )
+    .await;
+    let realtor_search = r
+        .run(
+            "realtor.search",
+            c.realtor().search(realtor::SearchParams {
+                location: Some("Austin, TX".into()),
+                ..d()
+            }),
+        )
+        .await;
+    match pick(&realtor_search, &["results", "0", "property_id"]) {
+        Some(pid) => {
+            r.run("realtor.get_property", c.realtor().get_property(&pid, d()))
+                .await;
+        }
+        None => r.skip("realtor.get_property", "no property id in search"),
+    }
+
+    // ---- redfin (chained) ----
+    r.run("redfin.list_markets", c.redfin().list_markets(d()))
+        .await;
+    r.run(
+        "redfin.autocomplete",
+        c.redfin().autocomplete(redfin::AutocompleteParams {
+            query: Some("Seattle".into()),
+            ..d()
+        }),
+    )
+    .await;
+    let redfin_search = r
+        .run(
+            "redfin.search",
+            c.redfin().search(redfin::SearchParams {
+                location: Some("Seattle, WA".into()),
+                ..d()
+            }),
+        )
+        .await;
+    match pick(&redfin_search, &["results", "0", "property_id"]) {
+        Some(pid) => {
+            r.run("redfin.get_property", c.redfin().get_property(&pid, d()))
+                .await;
+        }
+        None => r.skip("redfin.get_property", "no property id in search"),
+    }
+    // Fetch-by-URL is frequently anti-bot blocked (422 blocking_page_detected).
+    match pick(&redfin_search, &["results", "0", "url"]) {
+        Some(url) => {
+            r.run(
+                "redfin.get_property_by_url",
+                c.redfin()
+                    .get_property_by_url(redfin::GetPropertyByUrlParams {
+                        url: Some(url),
+                        ..d()
+                    }),
+            )
+            .await;
+        }
+        None => r.skip("redfin.get_property_by_url", "no url in search"),
+    }
+    r.skip("redfin.get_agent", "need an agent url / id");
+
+    // ---- zillow (chained) ----
+    r.run("zillow.list_markets", c.zillow().list_markets(d()))
+        .await;
+    r.run(
+        "zillow.autocomplete",
+        c.zillow().autocomplete(zillow::AutocompleteParams {
+            query: Some("Austin".into()),
+            ..d()
+        }),
+    )
+    .await;
+    let zillow_search = r
+        .run(
+            "zillow.search",
+            c.zillow().search(zillow::SearchParams {
+                location: Some("Austin, TX".into()),
+                ..d()
+            }),
+        )
+        .await;
+    match pick(&zillow_search, &["results", "0", "zpid"]) {
+        Some(zpid) => {
+            r.run("zillow.get_property", c.zillow().get_property(&zpid, d()))
+                .await;
+        }
+        None => r.skip("zillow.get_property", "no zpid in search"),
+    }
+    match pick(&zillow_search, &["results", "0", "detail_url"]) {
+        Some(url) => {
+            r.run(
+                "zillow.get_property_by_url",
+                c.zillow()
+                    .get_property_by_url(zillow::GetPropertyByUrlParams {
+                        url: Some(url),
+                        ..d()
+                    }),
+            )
+            .await;
+        }
+        None => r.skip("zillow.get_property_by_url", "no detail_url in search"),
+    }
+    r.skip("zillow.get_agent", "need an agent username / url");
 
     // ---- summary ----
     let total = r.pass.len() + r.type_fail.len() + r.api_err.len();
