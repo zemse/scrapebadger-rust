@@ -29,14 +29,23 @@ use schema::SchemaCtx;
 const PLATFORMS: &[(&str, &str, &str)] = &[
     ("account", "account", "Account"),
     ("amazon", "amazon", "Amazon"),
+    ("depop", "depop", "Depop"),
     ("ebay", "ebay", "Ebay"),
     ("google", "google", "Google"),
+    ("idealista", "idealista", "Idealista"),
+    ("immobiliare", "immobiliare", "Immobiliare"),
+    ("leboncoin", "leboncoin", "Leboncoin"),
+    ("linkedin", "linkedin", "Linkedin"),
+    ("loopnet", "loopnet", "Loopnet"),
+    ("realtor", "realtor", "Realtor"),
+    ("redfin", "redfin", "Redfin"),
     ("reddit", "reddit", "Reddit"),
     ("tiktok", "tiktok", "Tiktok"),
     ("twitter", "twitter", "Twitter"),
     ("vinted", "vinted", "Vinted"),
     ("web-scraping", "web", "Web"),
     ("youtube", "youtube", "Youtube"),
+    ("zillow", "zillow", "Zillow"),
 ];
 
 fn main() {

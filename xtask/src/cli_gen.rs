@@ -439,11 +439,23 @@ fn render_docs(eps: &[Ep]) -> String {
     let titles: &[(&str, &str)] = &[
         ("account", "Account"),
         ("amazon", "Amazon"),
+        ("depop", "Depop"),
+        ("ebay", "eBay"),
         ("google", "Google"),
+        ("idealista", "Idealista"),
+        ("immobiliare", "Immobiliare"),
+        ("leboncoin", "Leboncoin"),
+        ("linkedin", "LinkedIn"),
+        ("loopnet", "LoopNet"),
+        ("realtor", "Realtor"),
+        ("redfin", "Redfin"),
         ("reddit", "Reddit"),
+        ("tiktok", "TikTok"),
         ("twitter", "Twitter / X"),
         ("vinted", "Vinted"),
         ("web", "Web Scraping"),
+        ("youtube", "YouTube"),
+        ("zillow", "Zillow"),
     ];
     let mut s = String::new();
     s.push_str("# scrapebadger CLI — command reference\n\n");

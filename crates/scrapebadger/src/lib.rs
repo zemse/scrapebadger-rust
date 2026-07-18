@@ -41,14 +41,23 @@ pub mod core;
 // `cargo run -p xtask -- gen` from the vendored OpenAPI specs in `specs/`.
 pub mod account;
 pub mod amazon;
+pub mod depop;
 pub mod ebay;
 pub mod google;
+pub mod idealista;
+pub mod immobiliare;
+pub mod leboncoin;
+pub mod linkedin;
+pub mod loopnet;
+pub mod realtor;
 pub mod reddit;
+pub mod redfin;
 pub mod tiktok;
 pub mod twitter;
 pub mod vinted;
 pub mod web;
 pub mod youtube;
+pub mod zillow;
 
 /// Full `scrapebadger` **CLI** command reference — every endpoint as a nested
 /// subcommand. Generated from `specs/*.json` (the same source as this SDK), so
@@ -69,14 +78,23 @@ use crate::core::{resolve_api_key, Client, Config as CoreConfig};
 // Re-export the top-level platform handle types for convenience.
 pub use account::Account;
 pub use amazon::Amazon;
+pub use depop::Depop;
 pub use ebay::Ebay;
 pub use google::Google;
+pub use idealista::Idealista;
+pub use immobiliare::Immobiliare;
+pub use leboncoin::Leboncoin;
+pub use linkedin::Linkedin;
+pub use loopnet::Loopnet;
+pub use realtor::Realtor;
 pub use reddit::Reddit;
+pub use redfin::Redfin;
 pub use tiktok::Tiktok;
 pub use twitter::Twitter;
 pub use vinted::Vinted;
 pub use web::Web;
 pub use youtube::Youtube;
+pub use zillow::Zillow;
 
 /// The ScrapeBadger API client. Cheap to clone (reference-counted inside).
 #[derive(Clone)]
@@ -115,6 +133,11 @@ impl ScrapeBadger {
         Amazon::new(self.client.clone())
     }
 
+    /// Depop product search, product details, shops, and user listings.
+    pub fn depop(&self) -> Depop {
+        Depop::new(self.client.clone())
+    }
+
     /// eBay search, item details, reviews, sellers, and catalog reference data.
     pub fn ebay(&self) -> Ebay {
         Ebay::new(self.client.clone())
@@ -123,6 +146,41 @@ impl ScrapeBadger {
     /// Google product APIs (Search, Maps, Flights, News, Trends, and more).
     pub fn google(&self) -> Google {
         Google::new(self.client.clone())
+    }
+
+    /// Idealista (Spain) property search, listing details, stats, and agencies.
+    pub fn idealista(&self) -> Idealista {
+        Idealista::new(self.client.clone())
+    }
+
+    /// Immobiliare (Italy) property search, listing details, agencies, and price insights.
+    pub fn immobiliare(&self) -> Immobiliare {
+        Immobiliare::new(self.client.clone())
+    }
+
+    /// Leboncoin (France) ad search, ad details, sellers, and reference data.
+    pub fn leboncoin(&self) -> Leboncoin {
+        Leboncoin::new(self.client.clone())
+    }
+
+    /// LinkedIn public jobs, companies, schools, profiles, posts, and articles.
+    pub fn linkedin(&self) -> Linkedin {
+        Linkedin::new(self.client.clone())
+    }
+
+    /// LoopNet commercial real-estate listings, brokers, and reference data.
+    pub fn loopnet(&self) -> Loopnet {
+        Loopnet::new(self.client.clone())
+    }
+
+    /// Realtor.com (US) property search, listing details, and autocomplete.
+    pub fn realtor(&self) -> Realtor {
+        Realtor::new(self.client.clone())
+    }
+
+    /// Redfin (US) property search, listing details, agents, and autocomplete.
+    pub fn redfin(&self) -> Redfin {
+        Redfin::new(self.client.clone())
     }
 
     /// Reddit posts, comments, subreddits, and users.
@@ -153,6 +211,11 @@ impl ScrapeBadger {
     /// YouTube videos, channels, playlists, comments, transcripts, and trending.
     pub fn youtube(&self) -> Youtube {
         Youtube::new(self.client.clone())
+    }
+
+    /// Zillow (US) property search, listing details, agents, and autocomplete.
+    pub fn zillow(&self) -> Zillow {
+        Zillow::new(self.client.clone())
     }
 }
 

@@ -1,0 +1,536 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger Redfin API",
+    "version": "1.0.0",
+    "description": "Redfin (US) real-estate scraping: property search & detail, agent profiles, and region/address autocomplete."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/redfin/agent": {
+      "get": {
+        "operationId": "get_agent_v1_redfin_agent_get",
+        "summary": "Get agent profile + listings",
+        "description": "Get a Redfin real-estate agent's profile and their active listings.",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Full Redfin /realestateagents/ URL",
+              "title": "Url"
+            },
+            "description": "Full Redfin /realestateagents/ URL"
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Redfin agent id",
+              "title": "Agent Id"
+            },
+            "description": "Redfin agent id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Agent V1 Redfin Agent Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/redfin/autocomplete": {
+      "get": {
+        "operationId": "autocomplete_v1_redfin_autocomplete_get",
+        "summary": "Region/address suggestions",
+        "description": "Resolve a search term to Redfin regions/addresses.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Partial location \u2014 city, ZIP, address, neighborhood",
+              "title": "Query"
+            },
+            "description": "Partial location \u2014 city, ZIP, address, neighborhood"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Autocomplete V1 Redfin Autocomplete Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/redfin/markets": {
+      "get": {
+        "operationId": "list_markets_v1_redfin_markets_get",
+        "summary": "List coverage markets",
+        "description": "List Redfin coverage regions (US).",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Redfin Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/redfin/property": {
+      "get": {
+        "operationId": "get_property_by_url_v1_redfin_property_get",
+        "summary": "Get property detail by URL",
+        "description": "Get a single Redfin property's full detail by its home URL.",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Full Redfin property URL (/CA/City/.../home/12345678)",
+              "title": "Url"
+            },
+            "description": "Full Redfin property URL (/CA/City/.../home/12345678)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Property By Url V1 Redfin Property Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/redfin/property/{property_id}": {
+      "get": {
+        "operationId": "get_property_v1_redfin_property__property_id__get",
+        "summary": "Get property detail",
+        "description": "Get a single Redfin property's full detail by its numeric propertyId.",
+        "parameters": [
+          {
+            "name": "property_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Property Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Property V1 Redfin Property  Property Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/redfin/search": {
+      "get": {
+        "operationId": "search_v1_redfin_search_get",
+        "summary": "Search properties",
+        "description": "Search Redfin for for-sale / for-rent / recently-sold properties.",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "City/state, ZIP, address or neighborhood",
+              "title": "Location"
+            },
+            "description": "City/state, ZIP, address or neighborhood"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "relevant|newest|price_high_to_low|price_low_to_high|square_feet|lot_size|price_per_sqft|beds|baths",
+              "title": "Sort"
+            },
+            "description": "relevant|newest|price_high_to_low|price_low_to_high|square_feet|lot_size|price_per_sqft|beds|baths"
+          },
+          {
+            "name": "price_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Min"
+            }
+          },
+          {
+            "name": "price_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Max"
+            }
+          },
+          {
+            "name": "beds_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 10,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Beds Min"
+            }
+          },
+          {
+            "name": "baths_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "maximum": 10,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Baths Min"
+            }
+          },
+          {
+            "name": "home_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "house|condo|townhouse|multi_family|land|mobile|coop|other",
+              "title": "Home Type"
+            },
+            "description": "house|condo|townhouse|multi_family|land|mobile|coop|other"
+          },
+          {
+            "name": "sqft_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sqft Min"
+            }
+          },
+          {
+            "name": "sqft_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sqft Max"
+            }
+          },
+          {
+            "name": "lot_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lot Min"
+            }
+          },
+          {
+            "name": "lot_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lot Max"
+            }
+          },
+          {
+            "name": "year_built_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1800
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Year Built Min"
+            }
+          },
+          {
+            "name": "year_built_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1800
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Year Built Max"
+            }
+          },
+          {
+            "name": "max_days_on_market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Days On Market"
+            }
+          },
+          {
+            "name": "north",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Map bounds for tiling past the cap",
+              "title": "North"
+            },
+            "description": "Map bounds for tiling past the cap"
+          },
+          {
+            "name": "south",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "South"
+            }
+          },
+          {
+            "name": "east",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "East"
+            }
+          },
+          {
+            "name": "west",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "West"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Redfin Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

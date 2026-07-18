@@ -1,0 +1,632 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger LinkedIn API",
+    "version": "1.0.0",
+    "description": "LinkedIn public-data scraping: job search & detail, company/school/profile pages, posts, articles, Learning courses, and geo-id resolution."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/linkedin/articles/{article_slug}": {
+      "get": {
+        "operationId": "get_article_v1_linkedin_articles__article_slug__get",
+        "summary": "Get a public article",
+        "description": "A public Pulse article \u2014 title, body, author, reactions (JSON-LD).",
+        "parameters": [
+          {
+            "name": "article_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Article Slug"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Article V1 Linkedin Articles  Article Slug  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/companies/{company_id}/jobs": {
+      "get": {
+        "operationId": "company_jobs_v1_linkedin_companies__company_id__jobs_get",
+        "summary": "Get a company's job postings",
+        "description": "Public job postings for a company (numeric company id from the company endpoint).",
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Company Id"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Pagination offset (0, 25, 50, ...)",
+              "default": 0,
+              "title": "Start"
+            },
+            "description": "Pagination offset (0, 25, 50, ...)"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Company Jobs V1 Linkedin Companies  Company Id  Jobs Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/companies/{universal_name}": {
+      "get": {
+        "operationId": "get_company_v1_linkedin_companies__universal_name__get",
+        "summary": "Get company",
+        "description": "Public company page \u2014 industry, size, HQ, followers, specialties (JSON-LD + SSR).",
+        "parameters": [
+          {
+            "name": "universal_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Universal Name"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Company V1 Linkedin Companies  Universal Name  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/geo/suggest": {
+      "get": {
+        "operationId": "geo_suggest_v1_linkedin_geo_suggest_get",
+        "summary": "Suggest location geo ids",
+        "description": "Resolve a name to LinkedIn ids (job-search ``geo_id`` / ``company_id`` helper).",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Location text, e.g. 'London'",
+              "title": "Query"
+            },
+            "description": "Location text, e.g. 'London'"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "geo | company",
+              "default": "geo",
+              "title": "Type"
+            },
+            "description": "geo | company"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Geo Suggest V1 Linkedin Geo Suggest Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/jobs/search": {
+      "get": {
+        "operationId": "jobs_search_v1_linkedin_jobs_search_get",
+        "summary": "Search LinkedIn jobs",
+        "description": "Search public LinkedIn job postings (guest API, no login).",
+        "parameters": [
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Job title / keywords",
+              "title": "Keywords"
+            },
+            "description": "Job title / keywords"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Location text, e.g. 'New York'",
+              "title": "Location"
+            },
+            "description": "Location text, e.g. 'New York'"
+          },
+          {
+            "name": "geo_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "LinkedIn numeric geo id (overrides location)",
+              "title": "Geo Id"
+            },
+            "description": "LinkedIn numeric geo id (overrides location)"
+          },
+          {
+            "name": "company_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Restrict to a company (numeric id)",
+              "title": "Company Id"
+            },
+            "description": "Restrict to a company (numeric id)"
+          },
+          {
+            "name": "date_posted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "past_24h | past_week | past_month | any",
+              "title": "Date Posted"
+            },
+            "description": "past_24h | past_week | past_month | any"
+          },
+          {
+            "name": "experience",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "internship|entry|associate|mid_senior|director|executive (comma-separated)",
+              "title": "Experience"
+            },
+            "description": "internship|entry|associate|mid_senior|director|executive (comma-separated)"
+          },
+          {
+            "name": "job_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "full_time|part_time|contract|temporary|internship|volunteer|other",
+              "title": "Job Type"
+            },
+            "description": "full_time|part_time|contract|temporary|internship|volunteer|other"
+          },
+          {
+            "name": "workplace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "onsite|remote|hybrid (comma-separated)",
+              "title": "Workplace"
+            },
+            "description": "onsite|remote|hybrid (comma-separated)"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "relevant | recent",
+              "title": "Sort"
+            },
+            "description": "relevant | recent"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Pagination offset (0, 25, 50, ...)",
+              "default": 0,
+              "title": "Start"
+            },
+            "description": "Pagination offset (0, 25, 50, ...)"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Jobs Search V1 Linkedin Jobs Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/jobs/{job_id}": {
+      "get": {
+        "operationId": "get_job_v1_linkedin_jobs__job_id__get",
+        "summary": "Get job detail",
+        "description": "Full detail for one job posting (guest API, no login).",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Job V1 Linkedin Jobs  Job Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/learning/{course_slug}": {
+      "get": {
+        "operationId": "get_course_v1_linkedin_learning__course_slug__get",
+        "summary": "Get a course",
+        "description": "A public LinkedIn Learning course \u2014 provider, workload, instructors, rating.",
+        "parameters": [
+          {
+            "name": "course_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Course Slug"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Course V1 Linkedin Learning  Course Slug  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/posts/{post_slug}": {
+      "get": {
+        "operationId": "get_post_v1_linkedin_posts__post_slug__get",
+        "summary": "Get a public post",
+        "description": "A public activity share \u2014 text, author, reactions, comments (JSON-LD).",
+        "parameters": [
+          {
+            "name": "post_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Post Slug"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Post V1 Linkedin Posts  Post Slug  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/profiles/{public_id}": {
+      "get": {
+        "operationId": "get_profile_v1_linkedin_profiles__public_id__get",
+        "summary": "Get public profile",
+        "description": "Public profile by vanity id (the ``/in/{public_id}`` slug) \u2014 name, headline,\nlocation, about, experience, education (public JSON-LD + SSR subset).",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Profile V1 Linkedin Profiles  Public Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkedin/schools/{universal_name}": {
+      "get": {
+        "operationId": "get_school_v1_linkedin_schools__universal_name__get",
+        "summary": "Get school",
+        "description": "Public school page \u2014 name, description, website, follower/alumni counts.",
+        "parameters": [
+          {
+            "name": "universal_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Universal Name"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Residential proxy country",
+              "default": "us",
+              "title": "Country"
+            },
+            "description": "Residential proxy country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get School V1 Linkedin Schools  Universal Name  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

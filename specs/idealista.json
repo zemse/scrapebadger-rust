@@ -1,0 +1,907 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger Idealista API",
+    "version": "1.0.0",
+    "description": "Idealista (Spain) real-estate scraping: listing search & detail, engagement stats, agency profiles, and location resolution."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/idealista/agency/by-phone/{phone}": {
+      "get": {
+        "operationId": "agency_by_phone_v1_idealista_agency_by_phone__phone__get",
+        "summary": "Agency by phone",
+        "description": "Reverse-lookup the agency behind a contact phone (national number), with its listings.",
+        "parameters": [
+          {
+            "name": "phone",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Phone"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "es|it|pt",
+              "default": "es",
+              "title": "Market"
+            },
+            "description": "es|it|pt"
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "sale|rent",
+              "title": "Operation"
+            },
+            "description": "sale|rent"
+          },
+          {
+            "name": "property_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms",
+              "title": "Property Type"
+            },
+            "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "max_items",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Max Items"
+            }
+          },
+          {
+            "name": "include_listings",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Include Listings"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Agency By Phone V1 Idealista Agency By Phone  Phone  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/idealista/agency/{short_name}": {
+      "get": {
+        "operationId": "agency_v1_idealista_agency__short_name__get",
+        "summary": "Agency profile + listings",
+        "description": "An agency's microsite profile plus a page of its listings (by URL-slug shortName).",
+        "parameters": [
+          {
+            "name": "short_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Short Name"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "es|it|pt",
+              "default": "es",
+              "title": "Market"
+            },
+            "description": "es|it|pt"
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "sale|rent",
+              "title": "Operation"
+            },
+            "description": "sale|rent"
+          },
+          {
+            "name": "property_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms",
+              "title": "Property Type"
+            },
+            "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "max_items",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Max Items"
+            }
+          },
+          {
+            "name": "include_listings",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Include Listings"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Agency V1 Idealista Agency  Short Name  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/idealista/markets": {
+      "get": {
+        "operationId": "list_markets_v1_idealista_markets_get",
+        "summary": "List markets",
+        "description": "List supported Idealista markets (ES, IT, PT).",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Idealista Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/idealista/properties/{property_code}": {
+      "get": {
+        "operationId": "property_detail_v1_idealista_properties__property_code__get",
+        "summary": "Get property detail",
+        "description": "Get a single Idealista listing's full detail (energy cert, characteristics, media).",
+        "parameters": [
+          {
+            "name": "property_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Property Code"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "es|it|pt",
+              "default": "es",
+              "title": "Market"
+            },
+            "description": "es|it|pt"
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Response language (en, es, it, pt)",
+              "default": "en",
+              "title": "Locale"
+            },
+            "description": "Response language (en, es, it, pt)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Property Detail V1 Idealista Properties  Property Code  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/idealista/properties/{property_code}/stats": {
+      "get": {
+        "operationId": "property_stats_v1_idealista_properties__property_code__stats_get",
+        "summary": "Get listing engagement stats",
+        "description": "Engagement counters for a listing: views, email contacts, sent-to-friend, favourites.",
+        "parameters": [
+          {
+            "name": "property_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Property Code"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "es|it|pt",
+              "default": "es",
+              "title": "Market"
+            },
+            "description": "es|it|pt"
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Language for stat labels",
+              "default": "en",
+              "title": "Locale"
+            },
+            "description": "Language for stat labels"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Property Stats V1 Idealista Properties  Property Code  Stats Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/idealista/search": {
+      "get": {
+        "operationId": "search_v1_idealista_search_get",
+        "summary": "Search listings",
+        "description": "Search Idealista real-estate listings by location code.",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Idealista location code (from /suggest)",
+              "title": "Location"
+            },
+            "description": "Idealista location code (from /suggest)"
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "sale|rent",
+              "default": "sale",
+              "title": "Operation"
+            },
+            "description": "sale|rent"
+          },
+          {
+            "name": "property_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms",
+              "default": "homes",
+              "title": "Property Type"
+            },
+            "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "es|it|pt",
+              "default": "es",
+              "title": "Market"
+            },
+            "description": "es|it|pt"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "max_items",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 30,
+              "title": "Max Items"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "distance|size|rooms|floor|ratioeurm2|price|street|photos|modificationDate|publicationDate|weigh|priceDown|preservationTypeAndPrice|privateAds",
+              "title": "Sort By"
+            },
+            "description": "distance|size|rooms|floor|ratioeurm2|price|street|photos|modificationDate|publicationDate|weigh|priceDown|preservationTypeAndPrice|privateAds"
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "asc|desc",
+              "default": "desc",
+              "title": "Sort Order"
+            },
+            "description": "asc|desc"
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Price"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Price"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Size"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Size"
+            }
+          },
+          {
+            "name": "min_rooms",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Rooms"
+            }
+          },
+          {
+            "name": "max_rooms",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Rooms"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Response language (en, es, it, pt)",
+              "title": "Locale"
+            },
+            "description": "Response language (en, es, it, pt)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Idealista Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/idealista/search/all": {
+      "get": {
+        "operationId": "search_all_v1_idealista_search_all_get",
+        "summary": "Search all (beats result cap)",
+        "description": "Full inventory for a location, beating Idealista's ~1800 per-search cap via\nprice-range tiling (deduped). Billed per page fetched.",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Idealista location code (from /suggest)",
+              "title": "Location"
+            },
+            "description": "Idealista location code (from /suggest)"
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "sale|rent",
+              "default": "sale",
+              "title": "Operation"
+            },
+            "description": "sale|rent"
+          },
+          {
+            "name": "property_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms",
+              "default": "homes",
+              "title": "Property Type"
+            },
+            "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "es|it|pt",
+              "default": "es",
+              "title": "Market"
+            },
+            "description": "es|it|pt"
+          },
+          {
+            "name": "max_results",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 3000,
+              "minimum": 1,
+              "default": 500,
+              "title": "Max Results"
+            }
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Price"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Price"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Size"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Size"
+            }
+          },
+          {
+            "name": "min_rooms",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Rooms"
+            }
+          },
+          {
+            "name": "max_rooms",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Rooms"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Response language (en, es, it, pt)",
+              "title": "Locale"
+            },
+            "description": "Response language (en, es, it, pt)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search All V1 Idealista Search All Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/idealista/suggest": {
+      "get": {
+        "operationId": "suggest_v1_idealista_suggest_get",
+        "summary": "Resolve locations",
+        "description": "Resolve a free-text query into Idealista location codes for a search.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Free-text location, e.g. 'sagrada familia'",
+              "title": "Query"
+            },
+            "description": "Free-text location, e.g. 'sagrada familia'"
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "sale|rent",
+              "default": "sale",
+              "title": "Operation"
+            },
+            "description": "sale|rent"
+          },
+          {
+            "name": "property_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms",
+              "default": "homes",
+              "title": "Property Type"
+            },
+            "description": "homes|offices|premises|garages|newDevelopments|lands|storageRooms|buildings|bedrooms"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "es|it|pt",
+              "default": "es",
+              "title": "Market"
+            },
+            "description": "es|it|pt"
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Response language (en, es, it, pt)",
+              "title": "Locale"
+            },
+            "description": "Response language (en, es, it, pt)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Suggest V1 Idealista Suggest Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

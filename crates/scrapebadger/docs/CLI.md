@@ -1,6 +1,6 @@
 # scrapebadger CLI — command reference
 
-All **207** endpoints as nested subcommands, generated from `specs/*.json` — the same source as the SDK. The general shape is:
+All **269** endpoints as nested subcommands, generated from `specs/*.json` — the same source as the SDK. The general shape is:
 
 ```text
 scrapebadger PLATFORM GROUP [SUBGROUP] ACTION [IDS...] [--flags]
@@ -35,6 +35,36 @@ amazon search                        Search Products
 amazon sellers feedback <seller_id>  Seller Feedback
 amazon sellers get <seller_id>       Get Seller
 amazon sellers products <seller_id>  Seller Products
+```
+
+## Depop
+
+`scrapebadger depop` — 5 endpoints
+
+```text
+depop markets                    List markets
+depop products get <product_id>  Get product detail
+depop search                     Search Depop products
+depop users get <username>       Get shop/user profile
+depop users products <username>  Get a user's products
+```
+
+## eBay
+
+`scrapebadger ebay` — 11 endpoints
+
+```text
+ebay autocomplete                    Keyword suggestions
+ebay categories get                  List categories
+ebay categories items <category_id>  Browse a category
+ebay completed                       Completed / sold listings
+ebay items get <item_id>             Get item detail
+ebay items reviews <item_id>         Get item reviews
+ebay markets                         List markets
+ebay search                          Search listings
+ebay sellers feedback <username>     Get seller feedback
+ebay sellers get <username>          Get seller profile
+ebay sellers items <username>        Get seller listings
 ```
 
 ## Google
@@ -79,6 +109,106 @@ google trends trending          Trending searches
 google videos search            Search Google Videos
 ```
 
+## Idealista
+
+`scrapebadger idealista` — 8 endpoints
+
+```text
+idealista agency by-phone get <phone>       Agency by phone
+idealista agency get <short_name>           Agency profile + listings
+idealista markets                           List markets
+idealista properties get <property_code>    Get property detail
+idealista properties stats <property_code>  Get listing engagement stats
+idealista search all                        Search all (beats result cap)
+idealista search get                        Search listings
+idealista suggest                           Resolve locations
+```
+
+## Immobiliare
+
+`scrapebadger immobiliare` — 8 endpoints
+
+```text
+immobiliare agencies get <agency_id>       Get agency profile
+immobiliare agencies listings <agency_id>  Get an agency's listings
+immobiliare autocomplete                   Location autocomplete
+immobiliare listings get <listing_id>      Get listing detail
+immobiliare market-insights prices         Price €/m² time series
+immobiliare markets                        List markets
+immobiliare reference                      List filter enums
+immobiliare search                         Search listings
+```
+
+## Leboncoin
+
+`scrapebadger leboncoin` — 10 endpoints
+
+```text
+leboncoin ads get <list_id>           Get ad detail
+leboncoin ads similar <list_id>       Get similar ads
+leboncoin categories                  List categories
+leboncoin departments                 List departments
+leboncoin locations search            Location autocomplete
+leboncoin markets                     List markets
+leboncoin regions                     List regions
+leboncoin search                      Search Leboncoin ads
+leboncoin sellers get <user_id>       Get seller profile
+leboncoin sellers listings <user_id>  Get a seller's ads
+```
+
+## LinkedIn
+
+`scrapebadger linkedin` — 10 endpoints
+
+```text
+linkedin articles get <article_slug>     Get a public article
+linkedin companies get <universal_name>  Get company
+linkedin companies jobs <company_id>     Get a company's job postings
+linkedin geo suggest                     Suggest location geo ids
+linkedin jobs get <job_id>               Get job detail
+linkedin jobs search                     Search LinkedIn jobs
+linkedin learning get <course_slug>      Get a course
+linkedin posts get <post_slug>           Get a public post
+linkedin profiles get <public_id>        Get public profile
+linkedin schools get <universal_name>    Get school
+```
+
+## LoopNet
+
+`scrapebadger loopnet` — 5 endpoints
+
+```text
+loopnet brokers get <slug> <broker_id>  Get broker profile
+loopnet listings get <listing_id>       Get listing detail
+loopnet markets                         List coverage markets
+loopnet property-types                  List property types
+loopnet search                          Search commercial real estate
+```
+
+## Realtor
+
+`scrapebadger realtor` — 4 endpoints
+
+```text
+realtor autocomplete                  Location autocomplete
+realtor markets                       List markets
+realtor properties get <property_id>  Get full property detail
+realtor search                        Search property listings
+```
+
+## Redfin
+
+`scrapebadger redfin` — 6 endpoints
+
+```text
+redfin agent                       Get agent profile + listings
+redfin autocomplete                Region/address suggestions
+redfin markets                     List coverage markets
+redfin property get <property_id>  Get property detail
+redfin property list               Get property detail by URL
+redfin search                      Search properties
+```
+
 ## Reddit
 
 `scrapebadger reddit` — 20 endpoints
@@ -104,6 +234,38 @@ reddit users get <username>                    Get user profile
 reddit users moderated <username>              Get user's moderated subreddits
 reddit users posts <username>                  Get user's posts
 reddit users trophies <username>               Get user's trophies
+```
+
+## TikTok
+
+`scrapebadger tiktok` — 25 endpoints
+
+```text
+tiktok ads search                     Search the TikTok Ad Library
+tiktok comments replies <comment_id>  Get comment replies
+tiktok hashtags get <name>            Get hashtag detail
+tiktok hashtags videos <name>         Get hashtag videos
+tiktok music get <music_id>           Get music/sound detail
+tiktok music videos <music_id>        Get music videos
+tiktok oembed                         Get oEmbed metadata
+tiktok regions                        List regions
+tiktok search get                     General search
+tiktok search hashtags                Search hashtags
+tiktok search users                   Search users
+tiktok search videos                  Search videos
+tiktok trending hashtags              Trending hashtags
+tiktok trending songs                 Trending songs
+tiktok trending videos                Trending videos
+tiktok users followers <username>     Get followers (deprecated)
+tiktok users following <username>     Get following (deprecated)
+tiktok users get <username>           Get user profile
+tiktok users liked <username>         Get liked videos (deprecated)
+tiktok users reposts <username>       Get reposts
+tiktok users videos <username>        Get user videos
+tiktok videos comments <video_id>     Get comments
+tiktok videos get <video_id>          Get video detail
+tiktok videos related <video_id>      Get related videos
+tiktok videos transcript <video_id>   Get transcript
 ```
 
 ## Twitter / X
@@ -188,4 +350,62 @@ vinted users items <user_id>  Get User Items
 ```text
 web detect  Detect Protection
 web scrape  Scrape URL
+```
+
+## YouTube
+
+`scrapebadger youtube` — 38 endpoints
+
+```text
+youtube autocomplete                                     Keyword suggestions
+youtube categories                                       Video categories
+youtube channels about <channel_id>                      Channel about
+youtube channels community <channel_id>                  Community posts
+youtube channels get <channel_id>                        Get channel detail
+youtube channels playlists <channel_id>                  Channel playlists
+youtube channels resolve                                 Resolve handle/URL to id
+youtube channels search <channel_id>                     Search within a channel
+youtube channels shorts <channel_id>                     Channel shorts
+youtube channels streams <channel_id>                    Channel streams
+youtube channels subscriber-count <channel_id>           Subscriber count (fast)
+youtube channels videos <channel_id>                     Channel videos
+youtube hashtags get <tag>                               Videos under a hashtag
+youtube home                                             Guest home feed
+youtube languages                                        UI languages
+youtube markets                                          Supported markets
+youtube mixes get <playlist_id>                          Get a mix / radio queue
+youtube music search                                     Search YouTube Music
+youtube oembed                                           oEmbed metadata
+youtube playlists get <playlist_id>                      Get playlist detail
+youtube playlists items <playlist_id>                    Playlist items page
+youtube posts comments <post_id>                         Community post comments
+youtube posts get <post_id>                              Get a community post
+youtube regions                                          Content regions
+youtube search                                           Search YouTube
+youtube shorts by-sound get <sound_id>                   Shorts by sound
+youtube shorts get <video_id>                            Get a Short
+youtube trending get                                     Trending videos
+youtube trending shorts                                  Trending shorts
+youtube videos batch                                     Batch video detail
+youtube videos captions <video_id>                       List caption tracks
+youtube videos comments get <video_id>                   Video comments
+youtube videos comments replies <video_id> <comment_id>  Comment replies
+youtube videos get <video_id>                            Get video detail
+youtube videos live-chat <video_id>                      Live chat messages
+youtube videos related <video_id>                        Related videos
+youtube videos streams <video_id>                        Stream formats
+youtube videos transcript <video_id>                     Video transcript
+```
+
+## Zillow
+
+`scrapebadger zillow` — 6 endpoints
+
+```text
+zillow agent                Get agent profile + listings
+zillow autocomplete         Region/address suggestions
+zillow markets              List coverage markets
+zillow property get <zpid>  Get property detail
+zillow property list        Get property detail by URL
+zillow search               Search properties
 ```

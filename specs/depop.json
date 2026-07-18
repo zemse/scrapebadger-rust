@@ -1,0 +1,428 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger Depop API",
+    "version": "1.0.0",
+    "description": "Depop marketplace scraping: product search & detail, shop/user profiles, and a user's product listings."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/depop/markets": {
+      "get": {
+        "operationId": "list_markets_v1_depop_markets_get",
+        "summary": "List markets",
+        "description": "List supported Depop markets (country + currency).",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Depop Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/depop/products/{product_id}": {
+      "get": {
+        "operationId": "get_product_v1_depop_products__product_id__get",
+        "summary": "Get product detail",
+        "description": "Full detail for a single product (by numeric id or slug).",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Market code",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "Market code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Product V1 Depop Products  Product Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/depop/search": {
+      "get": {
+        "operationId": "search_v1_depop_search_get",
+        "summary": "Search Depop products",
+        "description": "Search the Depop catalog with filters (cursor-paginated).",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search text, e.g. 'nike vintage'",
+              "title": "Query"
+            },
+            "description": "Search text, e.g. 'nike vintage'"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Market code (us, gb, au, it, fr, ...)",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "Market code (us, gb, au, it, fr, ...)"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Results per page",
+              "default": 24,
+              "title": "Per Page"
+            },
+            "description": "Results per page"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor (from previous page)",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor (from previous page)"
+          },
+          {
+            "name": "price_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Minimum price",
+              "title": "Price Min"
+            },
+            "description": "Minimum price"
+          },
+          {
+            "name": "price_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Maximum price",
+              "title": "Price Max"
+            },
+            "description": "Maximum price"
+          },
+          {
+            "name": "brands",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated brand IDs",
+              "title": "Brands"
+            },
+            "description": "Comma-separated brand IDs"
+          },
+          {
+            "name": "categories",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated category IDs",
+              "title": "Categories"
+            },
+            "description": "Comma-separated category IDs"
+          },
+          {
+            "name": "sizes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated size IDs",
+              "title": "Sizes"
+            },
+            "description": "Comma-separated size IDs"
+          },
+          {
+            "name": "conditions",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated condition slugs (brand_new, used_excellent, ...)",
+              "title": "Conditions"
+            },
+            "description": "Comma-separated condition slugs (brand_new, used_excellent, ...)"
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "male | female",
+              "title": "Gender"
+            },
+            "description": "male | female"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "relevance | newlyListed | priceAscending | priceDescending",
+              "title": "Sort"
+            },
+            "description": "relevance | newlyListed | priceAscending | priceDescending"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Depop Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/depop/users/{username}": {
+      "get": {
+        "operationId": "get_user_v1_depop_users__username__get",
+        "summary": "Get shop/user profile",
+        "description": "Public shop/user profile by username.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Market code",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "Market code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User V1 Depop Users  Username  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/depop/users/{username}/products": {
+      "get": {
+        "operationId": "get_user_products_v1_depop_users__username__products_get",
+        "summary": "Get a user's products",
+        "description": "A user's active listings (cursor-paginated).",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Market code",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "Market code"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 24,
+              "title": "Per Page"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get User Products V1 Depop Users  Username  Products Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

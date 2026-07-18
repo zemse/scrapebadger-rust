@@ -1,0 +1,525 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger Leboncoin API",
+    "version": "1.0.0",
+    "description": "Leboncoin (France) classifieds scraping: ad search & detail, similar ads, seller profiles & listings, and category/region reference data."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/leboncoin/ads/{list_id}": {
+      "get": {
+        "operationId": "get_ad_v1_leboncoin_ads__list_id__get",
+        "summary": "Get ad detail",
+        "description": "Full detail for a Leboncoin ad.",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "List Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Ad V1 Leboncoin Ads  List Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/ads/{list_id}/similar": {
+      "get": {
+        "operationId": "get_similar_v1_leboncoin_ads__list_id__similar_get",
+        "summary": "Get similar ads",
+        "description": "Ads Leboncoin surfaces as similar to the given ad.",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "List Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Similar V1 Leboncoin Ads  List Id  Similar Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/categories": {
+      "get": {
+        "operationId": "list_categories_v1_leboncoin_categories_get",
+        "summary": "List categories",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Categories V1 Leboncoin Categories Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/departments": {
+      "get": {
+        "operationId": "list_departments_v1_leboncoin_departments_get",
+        "summary": "List departments",
+        "parameters": [
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Region Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Departments V1 Leboncoin Departments Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/locations/search": {
+      "get": {
+        "operationId": "search_locations_v1_leboncoin_locations_search_get",
+        "summary": "Location autocomplete",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Place name",
+              "title": "Q"
+            },
+            "description": "Place name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search Locations V1 Leboncoin Locations Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/markets": {
+      "get": {
+        "operationId": "list_markets_v1_leboncoin_markets_get",
+        "summary": "List markets",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Leboncoin Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/regions": {
+      "get": {
+        "operationId": "list_regions_v1_leboncoin_regions_get",
+        "summary": "List regions",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Regions V1 Leboncoin Regions Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/search": {
+      "get": {
+        "operationId": "search_ads_v1_leboncoin_search_get",
+        "summary": "Search Leboncoin ads",
+        "description": "Search Leboncoin classifieds (France; scope by region/department/city).",
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Free-text query",
+              "title": "Text"
+            },
+            "description": "Free-text query"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category id (see /categories)",
+              "title": "Category"
+            },
+            "description": "Category id (see /categories)"
+          },
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Region id (see /regions)",
+              "title": "Region Id"
+            },
+            "description": "Region id (see /regions)"
+          },
+          {
+            "name": "department_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Department id, e.g. 75",
+              "title": "Department Id"
+            },
+            "description": "Department id, e.g. 75"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "City"
+            }
+          },
+          {
+            "name": "zipcode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zipcode"
+            }
+          },
+          {
+            "name": "price_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Min"
+            }
+          },
+          {
+            "name": "price_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Max"
+            }
+          },
+          {
+            "name": "owner_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "all | pro | private",
+              "default": "all",
+              "title": "Owner Type"
+            },
+            "description": "all | pro | private"
+          },
+          {
+            "name": "ad_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "offer | demand",
+              "default": "offer",
+              "title": "Ad Type"
+            },
+            "description": "offer | demand"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "relevance|newest|oldest|price_low|price_high",
+              "default": "relevance",
+              "title": "Sort"
+            },
+            "description": "relevance|newest|oldest|price_low|price_high"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 35,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search Ads V1 Leboncoin Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/sellers/{user_id}": {
+      "get": {
+        "operationId": "get_seller_v1_leboncoin_sellers__user_id__get",
+        "summary": "Get seller profile",
+        "description": "Public seller/pro-store profile.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Seller V1 Leboncoin Sellers  User Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leboncoin/sellers/{user_id}/listings": {
+      "get": {
+        "operationId": "get_seller_listings_v1_leboncoin_sellers__user_id__listings_get",
+        "summary": "Get a seller's ads",
+        "description": "A seller's active ads.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 35,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Seller Listings V1 Leboncoin Sellers  User Id  Listings Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

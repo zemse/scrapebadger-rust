@@ -1,0 +1,580 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger Zillow API",
+    "version": "1.0.0",
+    "description": "Zillow (US) real-estate scraping: property search & detail, agent profiles, and region/address autocomplete."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/zillow/agent": {
+      "get": {
+        "operationId": "get_agent_v1_zillow_agent_get",
+        "summary": "Get agent profile + listings",
+        "description": "Get a Zillow professional's profile and their active listings.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Zillow profile username",
+              "title": "Username"
+            },
+            "description": "Zillow profile username"
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Full Zillow /profile/... URL",
+              "title": "Url"
+            },
+            "description": "Full Zillow /profile/... URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Agent V1 Zillow Agent Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/zillow/autocomplete": {
+      "get": {
+        "operationId": "autocomplete_v1_zillow_autocomplete_get",
+        "summary": "Region/address suggestions",
+        "description": "Resolve a search term to Zillow regions/addresses.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Partial location \u2014 city, ZIP, address, neighborhood",
+              "title": "Query"
+            },
+            "description": "Partial location \u2014 city, ZIP, address, neighborhood"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Autocomplete V1 Zillow Autocomplete Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/zillow/markets": {
+      "get": {
+        "operationId": "list_markets_v1_zillow_markets_get",
+        "summary": "List coverage markets",
+        "description": "List Zillow coverage regions (US + Canada).",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Zillow Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/zillow/property": {
+      "get": {
+        "operationId": "get_property_by_url_v1_zillow_property_get",
+        "summary": "Get property detail by URL",
+        "description": "Get a single Zillow property's full detail by its homedetails URL.",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Full Zillow /homedetails/... URL",
+              "title": "Url"
+            },
+            "description": "Full Zillow /homedetails/... URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Property By Url V1 Zillow Property Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/zillow/property/{zpid}": {
+      "get": {
+        "operationId": "get_property_v1_zillow_property__zpid__get",
+        "summary": "Get property detail",
+        "description": "Get a single Zillow property's full detail by zpid.",
+        "parameters": [
+          {
+            "name": "zpid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Zpid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Property V1 Zillow Property  Zpid  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/zillow/search": {
+      "get": {
+        "operationId": "search_v1_zillow_search_get",
+        "summary": "Search properties",
+        "description": "Search Zillow for for-sale / for-rent / recently-sold properties.",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "City/state, ZIP, address or neighborhood",
+              "title": "Location"
+            },
+            "description": "City/state, ZIP, address or neighborhood"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "for_sale|for_rent|sold",
+              "default": "for_sale",
+              "title": "Status"
+            },
+            "description": "for_sale|for_rent|sold"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "homes_for_you|newest|price_high_to_low|price_low_to_high|bedrooms|bathrooms|square_feet|lot_size|year_built",
+              "title": "Sort"
+            },
+            "description": "homes_for_you|newest|price_high_to_low|price_low_to_high|bedrooms|bathrooms|square_feet|lot_size|year_built"
+          },
+          {
+            "name": "price_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Min"
+            }
+          },
+          {
+            "name": "price_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Max"
+            }
+          },
+          {
+            "name": "beds_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 10,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Beds Min"
+            }
+          },
+          {
+            "name": "baths_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "maximum": 10,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Baths Min"
+            }
+          },
+          {
+            "name": "home_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "houses|condos|townhomes|apartments|manufactured|lots|multi_family",
+              "title": "Home Type"
+            },
+            "description": "houses|condos|townhomes|apartments|manufactured|lots|multi_family"
+          },
+          {
+            "name": "sqft_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sqft Min"
+            }
+          },
+          {
+            "name": "sqft_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sqft Max"
+            }
+          },
+          {
+            "name": "lot_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lot Min"
+            }
+          },
+          {
+            "name": "lot_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lot Max"
+            }
+          },
+          {
+            "name": "year_built_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1800
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Year Built Min"
+            }
+          },
+          {
+            "name": "year_built_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1800
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Year Built Max"
+            }
+          },
+          {
+            "name": "hoa_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hoa Max"
+            }
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Keywords"
+            }
+          },
+          {
+            "name": "days_on",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Days On"
+            }
+          },
+          {
+            "name": "north",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Map bounds for tiling past the 820 cap",
+              "title": "North"
+            },
+            "description": "Map bounds for tiling past the 820 cap"
+          },
+          {
+            "name": "south",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "South"
+            }
+          },
+          {
+            "name": "east",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "East"
+            }
+          },
+          {
+            "name": "west",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "West"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Zillow Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

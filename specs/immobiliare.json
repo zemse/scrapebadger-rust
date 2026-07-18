@@ -1,0 +1,623 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger Immobiliare API",
+    "version": "1.0.0",
+    "description": "Immobiliare (Italy) real-estate scraping: listing search & detail, agency profiles & listings, price insights, and location autocomplete."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/immobiliare/agencies/{agency_id}": {
+      "get": {
+        "operationId": "get_agency_v1_immobiliare_agencies__agency_id__get",
+        "summary": "Get agency profile",
+        "description": "Public agency/advertiser profile.",
+        "parameters": [
+          {
+            "name": "agency_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Agency Id"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "it | es | gr | lu",
+              "default": "it",
+              "title": "Market"
+            },
+            "description": "it | es | gr | lu"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Agency V1 Immobiliare Agencies  Agency Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/immobiliare/agencies/{agency_id}/listings": {
+      "get": {
+        "operationId": "get_agency_listings_v1_immobiliare_agencies__agency_id__listings_get",
+        "summary": "Get an agency's listings",
+        "description": "An agency's active listings.",
+        "parameters": [
+          {
+            "name": "agency_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Agency Id"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "it | es | gr | lu",
+              "default": "it",
+              "title": "Market"
+            },
+            "description": "it | es | gr | lu"
+          },
+          {
+            "name": "contract",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "sale | rent",
+              "default": "sale",
+              "title": "Contract"
+            },
+            "description": "sale | rent"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Agency Listings V1 Immobiliare Agencies  Agency Id  Listings Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/immobiliare/autocomplete": {
+      "get": {
+        "operationId": "autocomplete_v1_immobiliare_autocomplete_get",
+        "summary": "Location autocomplete",
+        "description": "Resolve a place name to region/province/city ids usable in search.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Free-text place name, e.g. 'Milano'",
+              "title": "Query"
+            },
+            "description": "Free-text place name, e.g. 'Milano'"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "it | es | gr | lu",
+              "default": "it",
+              "title": "Market"
+            },
+            "description": "it | es | gr | lu"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Autocomplete V1 Immobiliare Autocomplete Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/immobiliare/listings/{listing_id}": {
+      "get": {
+        "operationId": "get_listing_v1_immobiliare_listings__listing_id__get",
+        "summary": "Get listing detail",
+        "description": "Full detail for a single listing.",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Listing Id"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "it | es | gr | lu",
+              "default": "it",
+              "title": "Market"
+            },
+            "description": "it | es | gr | lu"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Listing V1 Immobiliare Listings  Listing Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/immobiliare/market-insights/prices": {
+      "get": {
+        "operationId": "price_stats_v1_immobiliare_market_insights_prices_get",
+        "summary": "Price \u20ac/m\u00b2 time series",
+        "description": "Historical \u20ac/m\u00b2 price statistics for an area.",
+        "parameters": [
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "it | es | gr | lu",
+              "default": "it",
+              "title": "Market"
+            },
+            "description": "it | es | gr | lu"
+          },
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Region id, e.g. 'lom'",
+              "title": "Region Id"
+            },
+            "description": "Region id, e.g. 'lom'"
+          },
+          {
+            "name": "province_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Province id, e.g. 'MI'",
+              "title": "Province Id"
+            },
+            "description": "Province id, e.g. 'MI'"
+          },
+          {
+            "name": "city_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "City id (idComune)",
+              "title": "City Id"
+            },
+            "description": "City id (idComune)"
+          },
+          {
+            "name": "contract",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "sale | rent",
+              "default": "sale",
+              "title": "Contract"
+            },
+            "description": "sale | rent"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Price Stats V1 Immobiliare Market Insights Prices Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/immobiliare/markets": {
+      "get": {
+        "operationId": "list_markets_v1_immobiliare_markets_get",
+        "summary": "List markets",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Immobiliare Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/immobiliare/reference": {
+      "get": {
+        "operationId": "reference_v1_immobiliare_reference_get",
+        "summary": "List filter enums",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Reference V1 Immobiliare Reference Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/immobiliare/search": {
+      "get": {
+        "operationId": "search_v1_immobiliare_search_get",
+        "summary": "Search listings",
+        "description": "Search Immobiliare-group listings (scope by location + contract + filters).",
+        "parameters": [
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "it | es | gr | lu",
+              "default": "it",
+              "title": "Market"
+            },
+            "description": "it | es | gr | lu"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Free-text place (auto-resolved)",
+              "title": "Location"
+            },
+            "description": "Free-text place (auto-resolved)"
+          },
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "fkRegione (from /autocomplete)",
+              "title": "Region Id"
+            },
+            "description": "fkRegione (from /autocomplete)"
+          },
+          {
+            "name": "province_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "idProvincia (from /autocomplete)",
+              "title": "Province Id"
+            },
+            "description": "idProvincia (from /autocomplete)"
+          },
+          {
+            "name": "city_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "idComune (from /autocomplete)",
+              "title": "City Id"
+            },
+            "description": "idComune (from /autocomplete)"
+          },
+          {
+            "name": "contract",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "sale | rent",
+              "default": "sale",
+              "title": "Contract"
+            },
+            "description": "sale | rent"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "see /reference",
+              "default": "residential",
+              "title": "Category"
+            },
+            "description": "see /reference"
+          },
+          {
+            "name": "price_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Min"
+            }
+          },
+          {
+            "name": "price_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Max"
+            }
+          },
+          {
+            "name": "surface_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Surface Min"
+            }
+          },
+          {
+            "name": "surface_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Surface Max"
+            }
+          },
+          {
+            "name": "rooms_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rooms Min"
+            }
+          },
+          {
+            "name": "rooms_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rooms Max"
+            }
+          },
+          {
+            "name": "bathrooms_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Bathrooms Min"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "see /reference",
+              "default": "relevance",
+              "title": "Sort"
+            },
+            "description": "see /reference"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Immobiliare Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

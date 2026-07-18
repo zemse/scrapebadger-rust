@@ -1,0 +1,448 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger Realtor API",
+    "version": "1.0.0",
+    "description": "Realtor.com (US) real-estate scraping: property search & detail and location autocomplete."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/realtor/autocomplete": {
+      "get": {
+        "operationId": "autocomplete_v1_realtor_autocomplete_get",
+        "summary": "Location autocomplete",
+        "description": "Resolve a location query into candidate places to feed /search.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Freetext location (city, ZIP/postal, address\u2026)",
+              "title": "Query"
+            },
+            "description": "Freetext location (city, ZIP/postal, address\u2026)"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "us (realtor.com) | ca (realtor.ca)",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "us (realtor.com) | ca (realtor.ca)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 25,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Autocomplete V1 Realtor Autocomplete Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtor/markets": {
+      "get": {
+        "operationId": "list_markets_v1_realtor_markets_get",
+        "summary": "List markets",
+        "description": "List supported Realtor markets (US = realtor.com, CA = realtor.ca).",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Realtor Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtor/properties/{property_id}": {
+      "get": {
+        "operationId": "get_property_v1_realtor_properties__property_id__get",
+        "summary": "Get full property detail",
+        "description": "Full listing detail: features, tax & price history, schools, photos, agents.",
+        "parameters": [
+          {
+            "name": "property_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Property Id"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "us (realtor.com) | ca (realtor.ca)",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "us (realtor.com) | ca (realtor.ca)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Property V1 Realtor Properties  Property Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtor/search": {
+      "get": {
+        "operationId": "search_v1_realtor_search_get",
+        "summary": "Search property listings",
+        "description": "Search for-sale/for-rent/sold listings with rich filters.",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "'Austin, TX', a ZIP, 'Toronto, ON'\u2026",
+              "title": "Location"
+            },
+            "description": "'Austin, TX', a ZIP, 'Toronto, ON'\u2026"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "us (realtor.com) | ca (realtor.ca)",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "us (realtor.com) | ca (realtor.ca)"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "for_sale | for_rent | sold | pending",
+              "default": "for_sale",
+              "title": "Status"
+            },
+            "description": "for_sale | for_rent | sold | pending"
+          },
+          {
+            "name": "price_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Min"
+            }
+          },
+          {
+            "name": "price_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Max"
+            }
+          },
+          {
+            "name": "beds_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Beds Min"
+            }
+          },
+          {
+            "name": "baths_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Baths Min"
+            }
+          },
+          {
+            "name": "sqft_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "US only",
+              "title": "Sqft Min"
+            },
+            "description": "US only"
+          },
+          {
+            "name": "sqft_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "US only",
+              "title": "Sqft Max"
+            },
+            "description": "US only"
+          },
+          {
+            "name": "property_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "US only, CSV of property types",
+              "title": "Property Type"
+            },
+            "description": "US only, CSV of property types"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "relevant | newest | price_low | price_high | photo_count",
+              "default": "relevant",
+              "title": "Sort"
+            },
+            "description": "relevant | newest | price_low | price_high | photo_count"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 200,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "lat_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "CA bbox south",
+              "title": "Lat Min"
+            },
+            "description": "CA bbox south"
+          },
+          {
+            "name": "lat_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "CA bbox north",
+              "title": "Lat Max"
+            },
+            "description": "CA bbox north"
+          },
+          {
+            "name": "lng_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "CA bbox west",
+              "title": "Lng Min"
+            },
+            "description": "CA bbox west"
+          },
+          {
+            "name": "lng_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "CA bbox east",
+              "title": "Lng Max"
+            },
+            "description": "CA bbox east"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Realtor Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}

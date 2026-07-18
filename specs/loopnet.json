@@ -1,0 +1,334 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScrapeBadger LoopNet API",
+    "version": "1.0.0",
+    "description": "LoopNet commercial real-estate scraping: listing search & detail, broker profiles, and property-type/market reference data."
+  },
+  "servers": [
+    {
+      "url": "https://scrapebadger.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/loopnet/brokers/{slug}/{broker_id}": {
+      "get": {
+        "operationId": "get_broker_v1_loopnet_brokers__slug___broker_id__get",
+        "summary": "Get broker profile",
+        "description": "Get a LoopNet broker profile + their listings by slug + id.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          },
+          {
+            "name": "broker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Broker Id"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "us|ca|uk|fr|es",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "us|ca|uk|fr|es"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Broker V1 Loopnet Brokers  Slug   Broker Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/loopnet/listings/{listing_id}": {
+      "get": {
+        "operationId": "get_listing_v1_loopnet_listings__listing_id__get",
+        "summary": "Get listing detail",
+        "description": "Get a single LoopNet listing's full detail by its numeric id.",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Listing Id"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "us|ca|uk|fr|es",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "us|ca|uk|fr|es"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Listing V1 Loopnet Listings  Listing Id  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/loopnet/markets": {
+      "get": {
+        "operationId": "list_markets_v1_loopnet_markets_get",
+        "summary": "List coverage markets",
+        "description": "List LoopNet coverage markets (US, CA, UK, FR, ES).",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Markets V1 Loopnet Markets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/loopnet/property-types": {
+      "get": {
+        "operationId": "list_property_types_v1_loopnet_property_types_get",
+        "summary": "List property types",
+        "description": "List LoopNet property-type facets accepted by /search.",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Property Types V1 Loopnet Property Types Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/loopnet/search": {
+      "get": {
+        "operationId": "search_v1_loopnet_search_get",
+        "summary": "Search commercial real estate",
+        "description": "Search LoopNet for-lease / for-sale / auction listings across all markets.",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "City/state, ZIP, state code, or 'usa'",
+              "title": "Location"
+            },
+            "description": "City/state, ZIP, state code, or 'usa'"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "us|ca|uk|fr|es",
+              "default": "us",
+              "title": "Market"
+            },
+            "description": "us|ca|uk|fr|es"
+          },
+          {
+            "name": "listing_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "for-lease|for-sale|auctions",
+              "default": "for-lease",
+              "title": "Listing Type"
+            },
+            "description": "for-lease|for-sale|auctions"
+          },
+          {
+            "name": "property_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Slug from /property-types",
+              "title": "Property Type"
+            },
+            "description": "Slug from /property-types"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Price"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Price"
+            }
+          },
+          {
+            "name": "price_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "unit | sf | acre",
+              "title": "Price Type"
+            },
+            "description": "unit | sf | acre"
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Size"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Search V1 Loopnet Search Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  }
+}
